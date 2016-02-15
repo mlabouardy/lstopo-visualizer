@@ -1,0 +1,21 @@
+{
+  "name": "ped_green",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://mlabouardy@bitbucket.org/berguizzz/ped_green.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/berguizzz/ped_green#readme",
+  "dependencies": {
+    "express": "^4.13.4",
+    "morgan": "^1.6.1",
+    "path": "^0.12.7"
+  }
+}
