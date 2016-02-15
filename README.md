@@ -27,8 +27,8 @@
 
 # Stack
 
-* [AngularJS] - HTML enhanced for web apps!
-* [HTML/CSS] - HTML enhanced for web apps!
-* [Docker] - HTML enhanced for web apps!
-* [Selenium] - HTML enhanced for web apps!
-* [Jenkins] - HTML enhanced for web apps!
+* AngularJS
+* HTML/CSS
+* Docker
+* Selenium
+* Jenkins
