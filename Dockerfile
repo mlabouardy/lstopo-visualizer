@@ -1,15 +1,10 @@
-FROM    centos:centos6
+FROM  mlabouardy/apache
 MAINTAINER mlabouardy <mohamed@labouardy.com>
 
-RUN     yum install -y epel-release
-RUN     yum install -y nodejs npm
-
-# Install app dependencies
-COPY package.json /src/package.json
-RUN cd /src; npm install
+# Copy app
+COPY . /var/www/html/ped
 
 # Bundle app source
 COPY . /src
 
-EXPOSE  3000
-CMD ["node", "/src/server.js"]
+EXPOSE  80
