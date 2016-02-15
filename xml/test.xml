@@ -1,0 +1,8 @@
+<annuaire>
+   <personne class = "etudiant">
+   <nom>Pillou</nom>
+   <prenom>Jean-Francois</prenom>
+   <telephone>555-123456</telephone>
+  <email>webmaster@commentcamarche.net</email>
+  </personne>
+</annuaire>
