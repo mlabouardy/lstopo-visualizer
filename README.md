@@ -1,6 +1,5 @@
 # DEMO
-  http://51.254.132.239:3006/#/
+  http://vps204912.ovh.net:3006/ped/#/
 
 # Continous Integration
-  Jenkins: http://51.254.132.239:8083/job/PED_GREEN/
-  
+  Jenkins: http://vps204912.ovh.net:8083/job/PED_GREEN/
