@@ -46,5 +46,6 @@ angular.module('myApp')
 
         $scope.extractCores($scope.jsonObj.topology.object.object[0].object.object);
         $scope.extractCachesL2($scope.cacheL3.object);
+        $scope.extractEntities($scope.jsonObj.topology.object);
     }
 );
