@@ -1,41 +1,56 @@
-<div id="main">
-        <h2>lstopo</h2>
-        <p>{{machine}} ({{convertSizeInMb(mb)}}MB)</p>
-        <div id="cachesAndCores">
-        	{{infoSocket}}
-        	<table id="cache3">
-        		<tr>
-        			<td>
-        				L{{cacheL3._depth}} ({{convertSizeInKb(cacheL3._cache_size)}}KB)
-        			</td>
-        		</tr>
-        	</table>
+    <h2>lstopo</h2>
+    <table class="table bc">
+        <tbody>
+            <tr ng-repeat="entity in entities">
+                <td>
+                    <table class="table bc">
+                        <tr>
+                            <td id="cachesAndCores">
+                                <p>{{entity._type}} ({{convertSizeInMb(entity._local_memory)}}MB)</p>
+                                {{infoSocket}}
+                                <table class="table biggestCache">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <p>L{{entity.object[0].object._depth}} ({{convertSizeInKb(entity.object[0].object._cache_size)}}KB)</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
-        	<table id="cache2">
-        		<tr>
-        			<td ng-repeat="cache2 in cacheL2">
-        				L{{cache2._depth}} ({{convertSizeInKb(cache2._cache_size)}}KB)
-        			</td>
-        		</tr>
-        	</table>
+                                <table class="table secondCache">
+                                    <tbody>
+                                        <tr>
+                                            <td ng-repeat="cache2 in cacheL2">
+                                                <p>L{{cache2._depth}} ({{convertSizeInKb(cache2._cache_size)}}KB)</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
-	    	<table id="cores">
-	    		<tr>
-			    	<td ng-repeat="core in cores"> <!--  ng-style="{width: sizeCore}" -->
-			    		<p>{{core._type}} P#{{core._os_index}}</p>
-			    		<table id="pus">
-			    			<tr ng-repeat="pu in core.object">
-			    				<td>
-			    					<p>{{pu._type}} P#{{pu._os_index}}</p>
-			    				</td>
-			    			</tr>
-			    		</table>
-			    	</td>
-		    	</tr>
-	    	</table>
-    	</div>
-
-</div>
-<div id="main1" >
-
-</div>
+                                <table class="table cores">
+                                    <tbody>
+                                        <tr>
+                                            <td ng-repeat="core in cores">
+                                                <p>{{core._type}} P#{{core._os_index}}</p>
+                                                <table class="table pus">
+                                                    <tr ng-repeat="pu in core.object">
+                                                        <td>
+                                                            <p>{{pu._type}} P#{{pu._os_index}}</p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td id="pcis">
+                                <p>Emplacement des PCIs</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
