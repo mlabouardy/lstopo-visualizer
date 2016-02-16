@@ -5,11 +5,23 @@ angular.module('myApp')
         $scope.cacheL2 = [];
 
         $scope.machine = $scope.jsonObj.topology.object._type; //Type de la machine
-        $scope.mb = Math.floor((parseInt($scope.jsonObj.topology.object._local_memory)/1024)/1024); //Mémoire totale (en MB)
+        $scope.mb = $scope.jsonObj.topology.object._local_memory; //Mémoire totale
 
         $scope.infoSocket = $scope.jsonObj.topology.object.object[0]._type+ " P#"+$scope.jsonObj.topology.object.object[0]._os_index; //Information sur le socket
 
         $scope.cacheL3 = $scope.jsonObj.topology.object.object[0].object; //Attention! La variable contient encore le tableau avec tout les autres caches et les cores
+        $scope.entities = [];
+
+        $scope.extractEntities = function(entities){
+            if(entities instanceof Array){
+                for(var i=0; i<entities.length; i++){
+                    $scope.entities.push(entities[i]);
+                }
+            }
+            else{
+                $scope.entities.push(entities);
+            }
+        }
 
         $scope.extractCores = function(array){
             for(var i = 0; i<array.length; i++){
@@ -26,6 +38,10 @@ angular.module('myApp')
 
         $scope.convertSizeInKb = function(size){
             return parseInt(size)/1024;
+        }
+
+        $scope.convertSizeInMb = function(size){
+            return Math.floor(parseInt(size)/(1024*1024));
         }
 
         $scope.extractCores($scope.jsonObj.topology.object.object[0].object.object);
