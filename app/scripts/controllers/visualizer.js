@@ -1,9 +1,9 @@
 angular.module('myApp')
 .controller('VisualizerCtrl', function($scope, $location, jsonObj){
+		
         $scope.jsonObj = jsonObj.getJson(); //Variable avec toutes les informations du JSON
         $scope.cores = []; //Tableau qui contient les informations sur les cores
         $scope.cacheL2 = [];
-
         $scope.machine = $scope.jsonObj.topology.object._type; //Type de la machine
         $scope.mb = $scope.jsonObj.topology.object._local_memory; //Mémoire totale
 
@@ -43,7 +43,7 @@ angular.module('myApp')
         $scope.convertSizeInMb = function(size){
             return Math.floor(parseInt(size)/(1024*1024));
         }
-
+		
         $scope.extractCores($scope.jsonObj.topology.object.object[0].object.object);
         $scope.extractCachesL2($scope.cacheL3.object);
     }
