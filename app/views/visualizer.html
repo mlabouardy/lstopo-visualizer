@@ -21,8 +21,28 @@
                                 <table class="table secondCache">
                                     <tbody>
                                         <tr>
-                                            <td ng-repeat="cache2 in cacheL2">
+                                            <td ng-repeat="cache2 in entity.object[0].object.object">
                                                 <p>L{{cache2._depth}} ({{convertSizeInKb(cache2._cache_size)}}KB)</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <table class="table cacheL1">
+                                    <tbody>
+                                        <tr>
+                                            <td ng-repeat="cache1 in entity.object[0].object.object">
+                                                <p>L{{cache1.object._depth}} ({{convertSizeInKb(cache1.object._cache_size)}}KB)</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <table class="table cacheL1">
+                                    <tbody>
+                                        <tr>
+                                            <td ng-repeat="cache1bis in entity.object[0].object.object">
+                                                <p>L{{cache1bis.object._depth}} ({{convertSizeInKb(cache1bis.object._cache_size)}}KB)</p>
                                             </td>
                                         </tr>
                                     </tbody>

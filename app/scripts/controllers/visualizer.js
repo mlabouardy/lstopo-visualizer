@@ -5,9 +5,6 @@ angular.module('myApp')
         $scope.cores = []; //Tableau qui contient les informations sur les cores
         $scope.cacheL2 = [];
 
-        $scope.machine = $scope.jsonObj.topology.object._type; //Type de la machine
-        $scope.mb = Math.floor((parseInt($scope.jsonObj.topology.object._local_memory)/1024)/1024); //Mémoire totale (en MB)
-
         $scope.infoSocket = $scope.jsonObj.topology.object.object[0]._type+ " P#"+$scope.jsonObj.topology.object.object[0]._os_index; //Information sur le socket
 
         $scope.cacheL3 = null //$scope.jsonObj.topology.object.object[0].object; //Attention! La variable contient encore le tableau avec tout les autres caches et les cores
@@ -16,16 +13,39 @@ angular.module('myApp')
         $scope.deep_core = "";
 
         var search = "$scope.jsonObj.topology.object";
-        
-        $scope.extractCores = function(){
-            var array = $scope.deep_core +"[i]";
-            console.log($scope.jsonObj.topology.object);
-            for(var i = 0; i<eval($scope.deep_core).length; i++){
-                $scope.cores.push((eval(array)).object.object.object);
+
+        $scope.extractEntities = function(){
+            var entities = (eval(search));
+
+            if(entities instanceof Array){
+                for(var i=0; i<entities.length; i++){
+                    $scope.entities.push(entities[i]);
+                }
+            }
+            else{
+                $scope.entities.push(entities);
             }
         }
 
-        //Contrairement à $scope.cacheL3 dans laquelle il y a trop d'informations pour les caches L2 la fonction récupère que 3 paramètres
+        $scope.extractCacheL3 = function(){
+            while(true){
+                if((eval(search)) instanceof Array){
+                    search += "[0]";
+                }
+                else{
+                    if ((eval(search))._depth == 3 && (eval(search)) != null){
+                        $scope.cacheL3 = (eval(search));
+                        break;
+                    }
+                    else{
+                        search += ".object";
+                    }
+                }
+            }
+
+            $scope.deep_core = search + ".object";
+        }
+
         $scope.extractCachesL2 = function(){
             var array = $scope.cacheL3;
             var tmp_l2 = "array.object";
@@ -53,43 +73,6 @@ angular.module('myApp')
             }*/
         }
 
-        $scope.convertSizeInKb = function(size){
-            return parseInt(size)/1024;
-        }
-
-        $scope.extractEntities = function(){
-            var entities = (eval(search));
-
-            if(entities instanceof Array){
-                for(var i=0; i<entities.length; i++){
-                    $scope.entities.push(entities[i]);
-                }
-            }
-            else{
-                $scope.entities.push(entities);
-            }
-        }
-
-        $scope.extractCacheL3 = function(){
-            console.log((eval(search)));
-            while(true){
-                if((eval(search)) instanceof Array){
-                    search += "[0]";
-                }
-                else{
-                    if ((eval(search))._depth == 3 && (eval(search)) != null){
-                        $scope.cacheL3 = (eval(search));
-                        break;
-                    }
-                    else{
-                        search += ".object";
-                    }
-                }
-            }
-
-             $scope.deep_core = search + ".object";
-        }
-
         $scope.extractCachesL1Bis= function(){
             var array = [];
             var check  = true;
@@ -113,12 +96,22 @@ angular.module('myApp')
                 });  
              });
         }
-
-        $scope.convertSizeInMb = function(size){
-            return parseInt(size)/(1024*1024);
+        
+        $scope.extractCores = function(){
+            var array = $scope.deep_core +"[i]";
+            for(var i = 0; i<eval($scope.deep_core).length; i++){
+                $scope.cores.push((eval(array)).object.object.object);
+            }
         }
 
-        
+        $scope.convertSizeInKb = function(size){
+            return Math.floor(parseInt(size)/1024);
+        }
+
+        $scope.convertSizeInMb = function(size){
+            return Math.floor(parseInt(size)/(1024*1024));
+        }
+ 
         $scope.extractEntities();
         $scope.extractCacheL3();
         $scope.extractCachesL2();
