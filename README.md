@@ -17,18 +17,20 @@
 
     ![Alt text](preview/selenium.png "")
 
-  - Docker Dashboard:
-    http://vps204912.ovh.net:3000/
+  - Dev environment:
+      ![Alt text](preview/containers.png "")
 
-    - Current containers:
-        ![Alt text](preview/containers.png "")
-    - Current app release images:
-        ![Alt text](preview/images.png "")
+  - Current app versions:
+      ![Alt text](preview/images.png "")
 
 # Stack
 
 * AngularJS
 * HTML/CSS
 * Docker
-* Selenium
+* Selenium WebDriver
 * Jenkins
+* Assert
+* NodeJS
+* ExpressJS
+* Mocha
