@@ -2,235 +2,281 @@ angular.module('myApp')
 .controller('VisualizerCtrl', function($scope, $location, jsonObj){
 
         $scope.jsonObj = jsonObj.getJson(); //Variable avec toutes les informations du JSON
-        $scope.cores = []; //Tableau qui contient les informations sur les cores
-        $scope.cacheL2 = [];
-
         $scope.machine = $scope.jsonObj.topology.object._type; //Type de la machine
         $scope.mb = Math.floor((parseInt($scope.jsonObj.topology.object._local_memory)/1024)/1024); //Mémoire totale (en MB)
 
         $scope.infoSocket = $scope.jsonObj.topology.object.object[0]._type+ " P#"+$scope.jsonObj.topology.object.object[0]._os_index; //Information sur le socket
 
-        //variables for the display
+        //Cores
         $scope.entities = [];
-        $scope.cacheL3 = []; 
+        $scope.packages = [];
+        $scope.machines = [];
+        $scope.cacheL3 = [];
         $scope.cacheL2 = [];
         $scope.cachesL1 = [];
-        $scope.deep_core = "";
-
-        //use to browse items in the json file. We use it with the eval function to find them.
-        var search = "$scope.jsonObj.topology.object";
+        $scope.cacheL1Bis = [];
         
-        //extract core but not work for the moment on jolly.
-        $scope.extractCores = function(){
-            $scope.cacheL2.forEach(function(cache,index){
-                var tab_tmp = [];
-                for(var i = 0; i<cache.length; i++){
-                    tab_tmp.push((eval($scope.deep_core))[i].object.object.object);
-                }
-                $scope.cores.push(tab_tmp);
-            });
-        }
-
-        //Contrairement à $scope.cacheL3 dans laquelle il y a trop d'informations pour les caches L2 la fonction récupère que 3 paramètres
-        $scope.extractCachesL2 = function(){
-            search += ".object";
-            $scope.deep_core = search;
-           
-            $scope.cacheL3.forEach(function(cache,index){
-                var tmp_l2 = "cache";
-                var tab_tmp = [];
-                //while child are not L2 we continue our search et we modify search to do it
-                while(true){
-                    //if L2 is an array
-                    if ((eval(tmp_l2)) instanceof Array){
-                        for(var i = 0; i<(eval(tmp_l2)).length; i++){
-                           tab_tmp.push(eval(tmp_l2)[i]);
-                       }
-                       break;
-                   }
-                   else{
-                    //if L2 is just an object
-                       if ((eval(tmp_l2))._depth == 2 && (eval(tmp_l2)) != null){
-                        tab_tmp.push(eval(tmp_l2)[i]);
-                        break;
-                    }
-                    else{
-                        tmp_l2 += ".object";
-                    }
-                }
-            }
-            $scope.cacheL2.push(tab_tmp);
-            });
-        }
-
         $scope.convertSizeInKb = function(size){
             return parseInt(size)/1024;
         }
 
-        $scope.extractEntities = function(){
-            var entities = ($scope.jsonObj.topology.object);
-            if(entities instanceof Array){
-                for(var i=0; i<entities.length; i++){
-                    $scope.entities.push(entities[i]);
-                }
+        function machine(search, packages){
+            var indexPack = 0;
+            var tmp = [];
+            var entities_tmp = [];
+            if (search instanceof Array){
+                search.forEach(function(node,index){
+                    if (packages != undefined){
+                        $scope.packages.push({ _os_index : indexPack.toString()});
+                        indexPack++;
+                    }
+                    if (node._type != "Bridge"){
+                        
+                        tmp.push({_type : node._type, _local_memory : node._local_memory});
+                        //to find L3 in machines
+                        if (node.object instanceof Array){
+                            entities_tmp.push(node.object[0]);
+                        }
+                        else{
+                            entities_tmp.push(node.object);
+                        }
+                    }
+                    
+                });
             }
-            else{
-                $scope.entities.push(entities);
+            else {
+                 if (packages != undefined){
+                        $scope.packages.push({ _os_index : indexPack.toString()});
+                        indexPack++;
+                    }
+
+                    if (search._type != "Bridge"){
+                        tmp.push({_type : search._type, _local_memory : search._local_memory});
+
+                         //to find L3 in machines
+                        if (search.object instanceof Array){
+                            entities_tmp.push(search.object[0]);
+                        }
+                        else{
+                            entities_tmp.push(search.object);
+                        }
+                    }
             }
+            $scope.entities.push(entities_tmp);
+            $scope.machines.push(tmp);
         }
 
         // we extract all L3cache
-        $scope.extractCacheL3 = function(){
+        $scope.extractPackagesMachines = function(){
             while(true){
-                 //if is an array so if we have a lot of l3 cache so a lot of package for example
-                if((eval(search)) instanceof Array){
-                    //if it's just an array with core and bridges
-                    if (eval(search)[0]._type != "Package"){
-                        search += "[0]";
-                    }
-                    //so if we have multiples packages
-                    else{
-                        eval(search).forEach(function(entity,index){
-                            for(var i = 0; i < entity.object.length ; i++){
-                                var tmp_l3 = "entity.object[i]";
-                                while(true){
-                                    if((eval(tmp_l3)) instanceof Array){
-                                        tmp_l3 += "[0]";
-                                    }
-                                    else
-                                    {
-                                         //we verify that current object have wanted properties
-                                        if ((eval(tmp_l3))._depth == 3 && (eval(tmp_l3)) != null){
-                                            $scope.cacheL3.push(eval(tmp_l3));
-                                            break;
-                                        }
-                                        else{
-                                             tmp_l3 += ".object";
-                                        }
-                                    }
-                                }
-                            }     
-                        });
-                        break;
-                    }
-                }
+                 if((eval(search)) instanceof Array){
 
-                //if is not an array so just Core with no bridges
-                else{
-                    //we verify that current object have wanted properties
-                    if ((eval(search))._depth == 3 && (eval(search)) != null){
-                        $scope.cacheL3.push(eval(search));
-                        break;
+                    if (eval(search)[0]._type == "Package"){
+                        (eval(search)).forEach(function(packages,index){
+                            $scope.packages.push({ _os_index : packages._os_index });
+                            machine(packages.object);
+                        });
                     }
-                    else{
-                         search += ".object";
+                    if(eval(search)[0]._type == "Group"){
+                        eval(search).forEach(function(packages,index){
+                            packages.object.forEach(function(packages_tmp,index){
+                                $scope.packages.push({ _os_index : packages_tmp._os_index });
+                                machine(packages_tmp);
+                            });
+                        });
                     }
-                }
+                    if (eval(search)[0]._type != "Package" && eval(search)[0]._type != "Group" ){
+                        machine(eval(search),"package");
+                    }
+        
+                    break;
+                 }   
+                 else{
+                    search += ".object";
+                 }
             }
         }
 
-        /* The more complicated function. We search in the json file:
-        *   - first L1cacheD
-        *   - then we search L1cacheI.
-        */   
-        $scope.extractCachesL1Bis= function(){
-            var array = [];
-             var tmpL1 = [];
-                    //var deep = "$scope.cacheL2[0].object";
+        $scope.extractCachesL3= function(){
+            var tmp_l3 = [];
+            var tmp_entity =[];
 
-                    //we use cacheL2 to find L1 elements
-                    $scope.cacheL2.forEach(function(cache,index){ 
-                        //if it's an array of L2
-                        if (cache instanceof Array){
-                            console.log("coucou");
-                            //for all elements of an array
-                            for (i =0; i < cache.length; i++){
-                                var deepL1 = "cache[i].object"; 
-                                //we search all L1 elements
-                                while(true){
-                                    //if we have an array of first L1 cache that mean's that one first L1 element have one or more second L1 elements
-                                    if ((eval(deepL1)) instanceof Array){
-                                        for(i = 0; i < eval(deepL1).length; i++){
-                                            var tmp = [];
-                                            var deep_array = deepL1 + "[i]";
-                                            while(true){
-                                                if((eval(deep_array))._depth != null && (eval(deep_array))._depth == 1){
-                                                    tmp.push(eval(deep_array));
-                                                    deep_array += ".object";
-                                                }
-                                                else{
-                                                    break;
-                                                } 
-                                            }
-                                            tmpL1.push(tmp);
-                                        }
-                                        break;
-                                    }
+            $scope.entities.forEach(function(cacheL3,index){
+                var tmp_cacheL3 = [];
+                var tmp_cacheL2 = [];
 
-                                    else{
-                                        var tmp = [];
-                                        if((eval(deepL1)) != null && (eval(deepL1))._depth == 1){
-                                            tmp.push(cache.object);
-                                            deepL1 += ".object";
-                                        }
-                                        else{
-                                            break;
-                                        }
+                if (cacheL3 instanceof Array){
+                    var deep = "cache_entity"
+                    cacheL3.forEach(function(cache_entity,index){
+                        while(true){
 
-                                        tmpL1 = tmp;  
-                                    }
+                            if (eval(deep)._depth != null && eval(deep)._depth == 3){
+                                tmp_cacheL3.push({ _cache_size : (eval(deep))._cache_size});
+                                tmp_cacheL2.push(eval(deep).object);
+                                break;
+                            }
+                            else{
+                                deep += ".object";
+                            }
+                        } 
+                    });
+                }
+                else{
+                    var deep = "cacheL3"
+                    while(true){
+                        if (cacheL3._depth != null && cacheL3._depth == 3){
+                            tmp_cacheL3.push({ _cache_size : cacheL3._cache_size});
+                            tmp_cacheL2.push(cacheL3.object);
+                            break;
+                        }
+                        else{
+                            deep += ".object";
+                        }
+                    }
+                }
+                $scope.cacheL3.push(tmp_cacheL3);
+                $scope.cacheL2.push(tmp_cacheL2);
+            });
+        
+            $scope.entities = $scope.cacheL2;
+        }
+
+        //Contrairement à $scope.cacheL3 dans laquelle il y a trop d'informations pour les caches L2 la fonction récupère que 3 paramètres
+        $scope.extractCachesL2 = function(){
+
+           $scope.cacheL2 = [];
+
+           $scope.entities.forEach(function(packages,index){
+            var packages_cache = [];
+            var packages_cacheL1 = [];
+                packages.forEach(function(machines){
+                    var cache_in_packages = [];
+                    var cache_in_packagesL1 = [];
+                    machines.forEach(function(cacheL2,index){
+                        cache_in_packages.push(cacheL2._cache_size);
+                        cache_in_packagesL1.push(cacheL2.object)
+                    });
+                    packages_cacheL1.push(cache_in_packagesL1);
+                    packages_cache.push(cache_in_packages);
+
+                });
+                $scope.cachesL1.push(packages_cacheL1);
+                $scope.cacheL2.push(packages_cache);
+           });
+
+           $scope.entities = $scope.cachesL1;
+        }
+
+        $scope.extractCachesL1= function(){
+            $scope.cachesL1 = [];
+            var final_entities = [];
+            $scope.entities.forEach(function(packages,index){
+                 var packages_cacheL1 = [];
+                 var packages_cacheL1Bis = [];
+                 var package_entity = [];
+                packages.forEach(function(machines,index){
+                    var cache_in_packagesL1 = [];
+                    var cache_in_packagesL1Bis = [];
+                    var cache_in_packagesentity = [];
+                    machines.forEach(function(L1,index){
+                        if(L1 instanceof Array){
+                            var array_L1 = [];
+                            var array_L1Bis = [];
+                            var array_L1Entity = [];
+                            L1.forEach(function(individualL1,index){
+                                array_L1.push(individualL1._cache_size);
+                                if (individualL1.object._depth != null && individualL1.object._depth == 1){
+                                    array_L1Bis.push(individualL1.object);
                                 }
+                                else{
+                                    array_L1Entity.push(individualL1.object);
+                                }
+                            });
+                            cache_in_packagesL1.push(array_L1);
+                            cache_in_packagesL1Bis.push(array_L1Bis);
+                            cache_in_packagesentity.push(array_L1Entity);
+                        }
+                        else{
+                            cache_in_packagesL1.push(L1._cache_size)
+                            if (L1.object._depth != null && L1.object._depth == 1){
+                                 cache_in_packagesL1Bis.push(L1.object);
+                            }
+                            else{
+                                cache_in_packagesentity.push(L1.object);
                             }
                         }
                     });
+                     packages_cacheL1.push(cache_in_packagesL1);
+                     packages_cacheL1Bis.push(cache_in_packagesL1Bis);
+                     package_entity.push(cache_in_packagesentity);
+                });
+                
+                $scope.cachesL1.push(packages_cacheL1);
+                $scope.cacheL1Bis.push(packages_cacheL1Bis);
+                final_entities.push(package_entity);
+               
+            });
 
-                    
-             /*      while(true){
-                        if ((eval(deep)) instanceof Array){
-                            for(i = 0; i < eval(deep).length; i++){
-                                var tmp = [];
-                                var deep_array = deep + "[i]";
-                                while(true){
-                                    if((eval(deep_array))._depth != null && (eval(deep_array))._depth == 1){
-                                        tmp.push(eval(deep_array));
-                                        deep_array += ".object";
-                                    }
-                                    else{
-                                        break;
-                                    } 
-                                }
-                                tmpL1.push(tmp);
-                            }
+            $scope.entities =  final_entities;
+        }
+
+        $scope.extractCachesL1Bis = function(){
+            var check = false;
+
+            //check if cacheL1Bis is not an empty array
+            $scope.cacheL1Bis.forEach(function(array){
+                var deep = "array[0]"
+                while(true){
+                    if (eval(deep) instanceof Array){
+                        deep += "[0]"
+                    }
+                    else{
+                        if (eval(deep) != undefined){
+                        check = true;
+                        break;
+                        }
+                        else{
                             break;
                         }
+                    }
+                }
+            });
 
-                        else{
-                            var tmp = [];
-                            if((eval(deep)) != null && (eval(deep))._depth == 1){
-                                tmp.push(Core.object);
-                                deep += ".object";
-                            }
-                            else{
-                                break;
-                            }
+            var L1Bis = [];
+            var tmp_entities = [];
+            if (check == true){
+                $scope.cacheL1Bis.forEach(function(packages){
+                    var packages_cacheL1Bis = [];
+                    var packages_entity = [];
+                    packages.forEach(function(machines){
+                        var cache_in_packagesL1Bis = [];
+                        var cache_in_packagesEntity = [];
+                        machines.forEach(function(cacheL2,index){
+                            cache_in_packagesEntity.push(cacheL2.object);
+                            cache_in_packagesL1Bis.push(cacheL2._cache_size);
+                        });
+                        packages_cacheL1Bis.push(cache_in_packagesL1Bis);
+                        packages_entity.push(cache_in_packagesEntity);
+                    });
+                    L1Bis.push(packages_cacheL1Bis);
+                    tmp_entities.push(packages_entity);
+                });
 
-                            tmpL1 = tmp;  
-                        }
-                    }*/
-                    
-                    array.push(tmpL1);
-                    console.log(tmpL1)
+                $scope.entities = tmp_entities;
+            }
         }
+
 
         $scope.convertSizeInMb = function(size){
             return parseInt(size)/(1024*1024);
         }
 
         
-        $scope.extractEntities();
-        $scope.extractCacheL3();
+       // $scope.extractEntities();
+        $scope.extractPackagesMachines();
+        $scope.extractCachesL3()
         $scope.extractCachesL2();
+        $scope.extractCachesL1();
         $scope.extractCachesL1Bis();
-        $scope.extractCores();
     }
     );
