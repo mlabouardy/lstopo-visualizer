@@ -2,6 +2,7 @@ angular.module('myApp')
 .controller('VisualizerCtrl', function($scope, $location, jsonObj){
 
         $scope.jsonObj = jsonObj.getJson(); //Variable avec toutes les informations du JSON
+        
         $scope.machine = $scope.jsonObj.topology.object._type; //Type de la machine
         $scope.mb = Math.floor((parseInt($scope.jsonObj.topology.object._local_memory)/1024)/1024); //Mémoire totale (en MB)
 
@@ -15,6 +16,8 @@ angular.module('myApp')
         $scope.cacheL2 = [];
         $scope.cachesL1 = [];
         $scope.cacheL1Bis = [];
+        //use to browse items in the json file. We use it with the eval function to find them.
+        var search = "$scope.jsonObj.topology.object";
         
         $scope.convertSizeInKb = function(size){
             return parseInt(size)/1024;
@@ -104,21 +107,32 @@ angular.module('myApp')
             $scope.entities.forEach(function(cacheL3,index){
                 var tmp_cacheL3 = [];
                 var tmp_cacheL2 = [];
-
                 if (cacheL3 instanceof Array){
                     var deep = "cache_entity"
                     cacheL3.forEach(function(cache_entity,index){
                         while(true){
-
-                            if (eval(deep)._depth != null && eval(deep)._depth == 3){
-                                tmp_cacheL3.push({ _cache_size : (eval(deep))._cache_size});
-                                tmp_cacheL2.push(eval(deep).object);
+                            if(eval(deep) instanceof Array){
+                                var L3_in_entity = [];
+                                var L2_in_L3 = [];
+                                eval(deep).forEach(function(number_L3_entity, index){
+                                    L3_in_entity.push({ _cache_size : number_L3_entity._cache_size});
+                                    L2_in_L3.push(number_L3_entity.object);
+                                });
+                                tmp_cacheL3.push(L3_in_entity);
+                                tmp_cacheL2.push(L2_in_L3);
                                 break;
                             }
                             else{
-                                deep += ".object";
-                            }
-                        } 
+                                if (eval(deep)._depth != null && eval(deep)._depth == 3){
+                                    tmp_cacheL3.push({ _cache_size : (eval(deep))._cache_size});
+                                    tmp_cacheL2.push(eval(deep).object);
+                                    break;
+                                }
+                                else{
+                                    deep += ".object";
+                                }
+                            } 
+                        }
                     });
                 }
                 else{
@@ -137,7 +151,6 @@ angular.module('myApp')
                 $scope.cacheL3.push(tmp_cacheL3);
                 $scope.cacheL2.push(tmp_cacheL2);
             });
-        
             $scope.entities = $scope.cacheL2;
         }
 
@@ -153,6 +166,7 @@ angular.module('myApp')
                     var cache_in_packages = [];
                     var cache_in_packagesL1 = [];
                     machines.forEach(function(cacheL2,index){
+                        
                         cache_in_packages.push(cacheL2._cache_size);
                         cache_in_packagesL1.push(cacheL2.object)
                     });
@@ -264,6 +278,14 @@ angular.module('myApp')
 
                 $scope.entities = tmp_entities;
             }
+
+            console.log($scope.packages);
+            console.log($scope.machines);
+            console.log($scope.cacheL3);
+            console.log($scope.cacheL2);
+            console.log($scope.cachesL1);
+            console.log(L1Bis);
+            console.log($scope.entities);
         }
 
 
