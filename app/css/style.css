@@ -38,6 +38,25 @@
 	border: 3px #6F6F6F solid;
 }
 
+.cacheL1 {
+	border-collapse: separate;
+	background-color: #DEDEDE;
+	border-spacing: 1em 0;
+}
+
+.cacheL1 tbody{
+	background-color: #DEDEDE;
+}
+
+.cacheL1 tr {
+	background-color: #DEDEDE;
+}
+
+.cacheL1 tbody > tr > td {
+	background-color: #DEDEDE;
+	border: 3px #6F6F6F solid;
+}
+
 .cores {
 	border-collapse: separate;
 	border-spacing: 1em 0;
