@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://mlabouardy@bitbucket.org/berguizzz/ped_green.git"
   },
-  "author": "",
+  "author": "Mohamed Labouardy, Bertrand Guillozet, Youssef Chagtab, ...",
   "license": "ISC",
   "homepage": "https://bitbucket.org/berguizzz/ped_green#readme",
   "dependencies": {
