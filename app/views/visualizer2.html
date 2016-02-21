@@ -35,6 +35,19 @@
                         </span>
                     </div>
 
+                    <div class="cores">
+                        <span ng-repeat="core in entity.packageOfCacheAndCores.cores" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.cores, 'Core')}">
+                            <p>{{core.type}} P#{{core.os_index}}</p>
+
+                            <div class="pus">
+                                <div class="pu" ng-repeat="pu in core.pus">
+                                    <p>{{pu.type}} P#{{pu.os_index}}</p>
+                                </div>
+                            </div>
+
+                        </span>
+                    </div>
+
                 </div>
             </div>
 

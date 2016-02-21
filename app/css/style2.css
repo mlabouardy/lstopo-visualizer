@@ -10,6 +10,7 @@
 	border: 2px solid #7F7F7F;
 	background-color: #EFDFDE;
 	margin-bottom: 1%;
+	padding-left: 1%;
 }
 
 .insidePackage {
@@ -29,4 +30,29 @@
 	border: 2px solid #7F7F7F;
 	background-color: #FFFFFF;
 	margin-right: 1%;
+	padding-left: 1%;
+}
+
+.cores {
+	margin-bottom: 1%;
+	text-align:justify;
+}
+
+.cores > span {
+	display:inline-block;
+	border: 2px solid #7F7F7F;
+	background-color: #BEBEBE;
+	margin-right: 1%;
+	padding-left: 1%;
+	padding-bottom: 1%;
+}
+
+.pus {
+	background-color: #FFFFFF;
+	width: 80%;
+    margin: 0 auto;
+}
+
+.pu{
+	border: 2px solid #7F7F7F;
 }

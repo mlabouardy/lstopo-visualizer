@@ -1,5 +1,5 @@
 angular.module('myApp')
-.controller('VisualizerCtrl', function($scope, $location, jsonObj){
+.controller('Visualizer2Ctrl', function($scope, $location, jsonObj){
 
         $scope.jsonObj = jsonObj.getJson().topology.object;
         $scope.entities = [];
@@ -51,6 +51,12 @@ angular.module('myApp')
             this.entities = [];
         }
 
+        function groupOfEntityWithNodeAndPackage(type, depth){
+            this.type = type;
+            this.depth = depth;
+            this.entities = [];
+        }
+
         $scope.extractEntities = function(){
             for(var i=0; i < $scope.jsonObj.object.length; i++){
 
@@ -61,17 +67,44 @@ angular.module('myApp')
                 else if ($scope.jsonObj.object[i]._type == "Package"){
                     $scope.entities.push($scope.fillPackageOfEntityWithNodeAndCaches($scope.jsonObj.object[i]));
                 }
+
+                else if ($scope.jsonObj.object[i]._type == "Group"){
+                    console.log("groupe numero : "+i);
+                    $scope.entities.push($scope.fillGroupOfEntityWithNodeAndPackage($scope.jsonObj.object[i]));
+                }
             }
+        }
+
+        $scope.fillGroupOfEntityWithNodeAndPackage = function(datas){
+            var group = new groupOfEntityWithNodeAndPackage(datas._type, datas._depth);
+
+            if(datas.object instanceof Array){
+                for(var i=0; i<datas.object.length; i++){
+                    if(datas.object[i]._type == "NUMANode"){
+                        console.log("numero du numanode dans le groupe : "+i);
+                        group.entities.push($scope.fillEntityWithNodeAndPackage(datas.object[i]));
+                    }
+                }
+            }
+
+            return group;
         }
 
         $scope.fillEntityWithNodeAndPackage = function(datas){
             var node = new entityWithNodeAndPackage();
             node.numanode = new numanode(datas._type, datas._os_index, datas._local_memory);
 
-            if(datas.object instanceof Array && datas.object[0]._type == "Package"){
+            if(datas.object instanceof Array){
                 var package = new packageOfCacheAndCores(datas.object[0]._type, datas.object[0]._os_index);
 
                 $scope.extractCachesAndCores(datas.object[0].object, package);
+
+                node.packageOfCacheAndCores = package;
+            }
+            else{
+                var package = new packageOfCacheAndCores(datas.object._type, datas.object._os_index);
+
+                $scope.extractCachesAndCores(datas.object.object, package);
 
                 node.packageOfCacheAndCores = package;
             }
@@ -106,40 +139,84 @@ angular.module('myApp')
 
         $scope.extractCachesAndCores = function(datas, entity){
             //Extraction du cache L3
-            var cacheL3 = new cache(datas._type, datas._cache_size, datas._depth);
-            entity.caches.push(cacheL3);
 
+            if(datas instanceof Array){
+                for(var i=0; i<datas.length; i++){
+                    var cacheL3 = new cache(datas[i]._type, datas[i]._cache_size, datas[i]._depth);
+                    entity.caches.push(cacheL3);
+
+                    $scope.extractSecondLevelOfCache(datas[i].object, entity);
+                }
+            }
+            else{
+                var cacheL3 = new cache(datas._type, datas._cache_size, datas._depth);
+                entity.caches.push(cacheL3);
+                
+                $scope.extractSecondLevelOfCache(datas.object, entity)
+            }
+        }
+
+        $scope.extractSecondLevelOfCache = function(datas, entity){
             //Extraction des caches L2
-            if(datas.object instanceof Array){
+            if(datas instanceof Array){
 
-                for(var j=0; j<datas.object.length; j++){
+                for(var j=0; j<datas.length; j++){
                     var cacheL2 = new cache(
-                        datas.object[j]._type,
-                        datas.object[j]._cache_size, 
-                        datas.object[j]._depth);
+                        datas[j]._type,
+                        datas[j]._cache_size, 
+                        datas[j]._depth);
                     entity.caches.push(cacheL2);
 
                     //Extraction des caches L1
-                    if(datas.object[j].object instanceof Array){
-                        for(var y=0; y<datas.object[j].object.length; y++){
+                    if(datas[j].object instanceof Array){
+                        for(var y=0; y<datas[j].object.length; y++){
                             var cacheL1 = new cache(
-                                datas.object[j].object[y]._type,
-                                datas.object[j].object[y]._cache_size,
-                                datas.object[j].object[y]._depth);
+                                datas[j].object[y]._type,
+                                datas[j].object[y]._cache_size,
+                                datas[j].object[y]._depth);
                             entity.caches.push(cacheL1);
 
-                            $scope.extractLastLevelOfCacheAndCores(datas.object[j].object[y].object, entity);
+                            $scope.extractLastLevelOfCacheAndCores(data[j].object[y].object, entity);
                         }
                     }
                     else{
                         var cacheL1 = new cache(
-                                datas.object[j].object._type,
-                                datas.object[j].object._cache_size,
-                                datas.object[j].object._depth);
+                                datas[j].object._type,
+                                datas[j].object._cache_size,
+                                datas[j].object._depth);
                         entity.caches.push(cacheL1);
 
-                        $scope.extractLastLevelOfCacheAndCores(datas.object[j].object.object, entity);
+                        $scope.extractLastLevelOfCacheAndCores(datas[j].object.object, entity);
                     }
+                }
+            }
+            else{
+                var cacheL2 = new cache(
+                        datas._type,
+                        datas._cache_size, 
+                        datas._depth);
+                entity.caches.push(cacheL2);
+
+                //Extraction des caches L1
+                if(datas.object instanceof Array){
+                    for(var y=0; y<datas[j].object.length; y++){
+                        var cacheL1 = new cache(
+                            datas[j].object[y]._type,
+                            datas[j].object[y]._cache_size,
+                            datas[j].object[y]._depth);
+                        entity.caches.push(cacheL1);
+
+                        $scope.extractLastLevelOfCacheAndCores(data[j].object[y].object, entity);
+                    }
+                }
+                else{
+                    var cacheL1 = new cache(
+                            datas.object._type,
+                            datas.object._cache_size,
+                            datas.object._depth);
+                    entity.caches.push(cacheL1);
+
+                    $scope.extractLastLevelOfCacheAndCores(datas.object.object, entity);
                 }
             }
         }
