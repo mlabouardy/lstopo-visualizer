@@ -1,0 +1,32 @@
+.node {
+	border: 2px solid #7F7F7F;
+	background-color: #D2E7A4;
+	width: 100%;
+	padding: 1%;
+	margin: 1%;
+}
+
+.numanode {
+	border: 2px solid #7F7F7F;
+	background-color: #EFDFDE;
+	margin-bottom: 1%;
+}
+
+.insidePackage {
+	width: 60%;
+	border: 2px solid #7F7F7F;
+	background-color: #DEDEDE;
+	padding: 1%;
+}
+
+.caches {
+	margin-bottom: 1%;
+	text-align:justify;
+}
+
+.caches > span {
+	display:inline-block;
+	border: 2px solid #7F7F7F;
+	background-color: #FFFFFF;
+	margin-right: 1%;
+}

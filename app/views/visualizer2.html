@@ -1,0 +1,46 @@
+<h2>lstopo</h2>
+
+<div>
+    <div ng-repeat="entity in entities">
+        <div ng-if="isNode(entity)">
+            
+            <div class="node">
+                <div class="numanode">
+                    <p>{{entity.numanode.type}} P#{{entity.numanode.os_index}} ({{convertMemory(entity.numanode.local_memory, "gb")}}GB)</p>
+                </div>
+                <div class="insidePackage">
+                    <p>{{entity.packageOfCacheAndCores.type}} P#{{entity.packageOfCacheAndCores.os_index}}</p>
+
+                    <div class="caches">
+                        <span ng-repeat="cache3 in entity.packageOfCacheAndCores.caches | filter:{ type: 'L3Cache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L3Cache')}">
+                            <p>L{{cache3.depth}} ({{convertMemory(cache3.cache_size, "mb")}}MB)</p>
+                        </span>
+                    </div>
+
+                    <div class="caches">
+                        <span ng-repeat="cache2 in entity.packageOfCacheAndCores.caches | filter:{ type: 'L2Cache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L2Cache')}">
+                            <p>L{{cache2.depth}} ({{convertMemory(cache2.cache_size, "kb")}}KB)</p>
+                        </span>
+                    </div>
+
+                    <div class="caches">
+                        <span ng-repeat="cache1 in entity.packageOfCacheAndCores.caches | filter:{ type: 'L1Cache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L1Cache')}">
+                            <p>L{{cache1.depth}} ({{convertMemory(cache1.cache_size, "kb")}}KB)</p>
+                        </span>
+                    </div>
+
+                    <div class="caches">
+                        <span ng-repeat="cache1bis in entity.packageOfCacheAndCores.caches | filter:{ type: 'L1iCache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L1iCache')}">
+                            <p>L{{cache1bis.depth}}i ({{convertMemory(cache1bis.cache_size, "kb")}}KB)</p>
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div ng-if="isPackage(entity)">
+            <p>package</p>
+        </div>
+    </div>
+</div>
