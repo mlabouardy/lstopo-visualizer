@@ -176,7 +176,7 @@ angular.module('myApp')
                                 datas[j].object[y]._depth);
                             entity.caches.push(cacheL1);
 
-                            $scope.extractLastLevelOfCacheAndCores(data[j].object[y].object, entity);
+                            $scope.extractLastLevelOfCacheAndCores(datas[j].object[y].object, entity);
                         }
                     }
                     else{

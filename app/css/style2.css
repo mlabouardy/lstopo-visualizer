@@ -6,6 +6,14 @@
 	margin: 1%;
 }
 
+.package {
+	border: 2px solid #7F7F7F;
+	background-color: #DEDEDE;
+	width: 100%;
+	padding: 1%;
+	margin: 1%;
+}
+
 .numanode {
 	border: 2px solid #7F7F7F;
 	background-color: #EFDFDE;
@@ -18,6 +26,11 @@
 	border: 2px solid #7F7F7F;
 	background-color: #DEDEDE;
 	padding: 1%;
+}
+
+.insideNode {
+	width: 60%;
+	background-color: #D2E7A4;
 }
 
 .caches {
@@ -38,7 +51,22 @@
 	text-align:justify;
 }
 
-.cores > span {
+.cores > span { 
+	display:inline-block;
+	border: 2px solid #7F7F7F;
+	background-color: #BEBEBE;
+	margin-right: 1%;
+	padding-left: 1%;
+	padding-bottom: 1%;
+}
+
+.coresInNode {
+	margin-bottom: 1%;
+	text-align:justify;
+	background-color: #D2E7A4;
+}
+
+.coresInNode > span { 
 	display:inline-block;
 	border: 2px solid #7F7F7F;
 	background-color: #BEBEBE;
@@ -48,11 +76,12 @@
 }
 
 .pus {
-	background-color: #FFFFFF;
 	width: 80%;
     margin: 0 auto;
 }
 
 .pu{
 	border: 2px solid #7F7F7F;
+	background-color: #FFFFFF;
+	padding-left: 1%;
 }
