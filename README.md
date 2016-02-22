@@ -34,3 +34,5 @@
 * NodeJS
 * ExpressJS
 * Mocha
+* JShint
+* CSSlint

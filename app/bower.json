@@ -6,6 +6,7 @@
     "jquery": "~2.2.0",
     "xml2json": "~1.1.1",
     "angular-x2js": "~0.2.0",
-    "jstree" : "~3.2.1"
+    "jstree": "~3.2.1",
+    "bootstrap-css": "~3.3.6"
   }
 }

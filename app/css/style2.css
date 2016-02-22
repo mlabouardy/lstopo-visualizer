@@ -1,0 +1,87 @@
+.node {
+	border: 2px solid #7F7F7F;
+	background-color: #D2E7A4;
+	width: 100%;
+	padding: 1%;
+	margin: 1%;
+}
+
+.package {
+	border: 2px solid #7F7F7F;
+	background-color: #DEDEDE;
+	width: 100%;
+	padding: 1%;
+	margin: 1%;
+}
+
+.numanode {
+	border: 2px solid #7F7F7F;
+	background-color: #EFDFDE;
+	margin-bottom: 1%;
+	padding-left: 1%;
+}
+
+.insidePackage {
+	width: 60%;
+	border: 2px solid #7F7F7F;
+	background-color: #DEDEDE;
+	padding: 1%;
+}
+
+.insideNode {
+	width: 60%;
+	background-color: #D2E7A4;
+}
+
+.caches {
+	margin-bottom: 1%;
+	text-align:justify;
+}
+
+.caches > span {
+	display:inline-block;
+	border: 2px solid #7F7F7F;
+	background-color: #FFFFFF;
+	margin-right: 1%;
+	padding-left: 1%;
+}
+
+.cores {
+	margin-bottom: 1%;
+	text-align:justify;
+}
+
+.cores > span { 
+	display:inline-block;
+	border: 2px solid #7F7F7F;
+	background-color: #BEBEBE;
+	margin-right: 1%;
+	padding-left: 1%;
+	padding-bottom: 1%;
+}
+
+.coresInNode {
+	margin-bottom: 1%;
+	text-align:justify;
+	background-color: #D2E7A4;
+}
+
+.coresInNode > span { 
+	display:inline-block;
+	border: 2px solid #7F7F7F;
+	background-color: #BEBEBE;
+	margin-right: 1%;
+	padding-left: 1%;
+	padding-bottom: 1%;
+}
+
+.pus {
+	width: 80%;
+    margin: 0 auto;
+}
+
+.pu{
+	border: 2px solid #7F7F7F;
+	background-color: #FFFFFF;
+	padding-left: 1%;
+}
