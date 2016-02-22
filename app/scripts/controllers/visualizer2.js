@@ -277,7 +277,16 @@ angular.module('myApp')
         }
 
         $scope.isPackage = function(entity){
-            if(entity.type){
+            if(entity.type == "Package"){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+        $scope.isGroup = function(entity){
+             if(entity.type == "Group"){
                 return true;
             }
             else{
