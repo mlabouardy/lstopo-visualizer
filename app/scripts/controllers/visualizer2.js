@@ -43,6 +43,9 @@ angular.module('myApp')
         function entityWithNodeAndPackage() {
             this.numanode = {};
             this.packageOfCacheAndCores = {};
+
+            //PCI
+            this.entitiesBridge = [];
         }
 
         function packageOfEntityWithNodeAndCaches(type, os_index) {
@@ -55,6 +58,81 @@ angular.module('myApp')
             this.type = type;
             this.depth = depth;
             this.entities = [];
+        }
+
+        //PCI
+        function entityBridge(type, depth){
+            this.type = type;
+            this.depth = depth;
+            this.entitiesBridge = [];
+            this.entitiesPci = [];
+        }
+
+        //PCI
+        function entityPci(type, os_index){
+            this.type = type;
+            this.os_index = os_index;
+            this.entitiesEth = [];
+        }
+
+        //PCI
+        function entityEth(type, name){
+            this.type = type;
+            this.name = name;
+        }
+
+        //PCI
+        $scope.extractBridges = function(datas, entity){
+            var bridge = new entityBridge(datas._type, datas._depth);
+
+            $scope.extractBridgesChild(datas.object, bridge);
+
+            entity.entitiesBridge.push(bridge);
+        }
+
+        //PCI
+        $scope.extractBridgesChild = function(datas, bridge){
+            if(datas instanceof Array){
+                for(var i=0; i<datas.length; i++){
+                    if(datas[i]._type == "Bridge"){
+                        var bridgeChild = new entityBridge(datas[i]._type);
+
+                        $scope.extractBridgesChild(datas[i].object, bridgeChild);
+                        
+                        bridge.entitiesBridge.push(bridgeChild);
+                    } 
+                    else if(datas[i]._type == "PCIDev"){
+                        $scope.extractPci(datas[i], bridge);
+                    }
+                }
+            }
+            else if(datas._type == "Bridge"){
+                var bridgeChild = new entityBridge(datas._type);
+
+                $scope.extractBridgesChild(datas.object, bridgeChild);
+
+                bridge.entitiesBridge.push(bridgeChild);
+            }
+            else if(datas._type == "PCIDev"){
+                $scope.extractPci(datas, bridge);
+            }
+        }
+
+        //PCI
+        $scope.extractPci = function(datas, bridge){
+
+            if(datas instanceof Array){
+                for(var i=0; i<datas.length; i++){
+                    var pci = new entityPci(datas[i]._type, datas[i]._os_index);
+
+                    bridge.entitiesPci.push(pci);
+                }
+            }
+            else{
+                var pci = new entityPci(datas._type, datas._os_index);
+
+                bridge.entitiesPci.push(pci);
+            }
         }
 
         $scope.extractEntities = function(){
@@ -94,7 +172,9 @@ angular.module('myApp')
             var node = new entityWithNodeAndPackage();
             node.numanode = new numanode(datas._type, datas._os_index, datas._local_memory);
 
+
             if(datas.object instanceof Array){
+                $scope.extractBridges(datas.object[1], node);
                 var package = new packageOfCacheAndCores(datas.object[0]._type, datas.object[0]._os_index);
 
                 $scope.extractCachesAndCores(datas.object[0].object, package);
