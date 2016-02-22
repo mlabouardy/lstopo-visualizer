@@ -1,76 +1,208 @@
-    <h2>lstopo</h2>
+<h2>lstopo</h2>
+<div ng-if="CheckGroup(group)">
     <table class="table bc">
         <tbody>
-            <tr ng-repeat="entity in entities track by $index">
-                <td>
-                    <table class="table bc">
-                        <tr>
-                            <td id="cachesAndCores">
-                                <p>{{entity._type}} ({{convertSizeInMb(entity._local_memory)}}MB)</p>
-                                {{infoSocket}}
-                                <table class="table biggestCache">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <p>L{{cacheL3[$index]._depth}} ({{convertSizeInKb(cacheL3[$index]._cache_size)}}KB)</p>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+            <tr ng-repeat="package in packages track by $index">
+                <div>
+                    <div ng-if="CheckPackage(package)">
+                        <td ng-repeat="pack in package track by $index">
+                            {{$parent.$index}}
+                    </div>
+                        Package P#{{package._os_index}}
+                        <table class="table bc">
 
-                                <table class="table secondCache">
-                                    <tbody>
-                                        <tr>
-                                            <td ng-repeat="cache2 in cacheL2[$index]">
-                                                <p>L{{cache2._depth}} ({{convertSizeInKb(cache2._cache_size)}}KB)</p>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <tr ng-repeat="machines in machines[$parent.$index] track by $index">
+                                <td id="cachesAndCores">
+                                    <p>{{machines._type}} ({{convertSizeInMb(machines._local_memory)}}MB)</p>
+                                    <table class="table biggestCache">
+                                        <tbody>
 
-                                <table class="table cacheL1">
-                                    <tbody>
-                                        <tr>
-                                            <td ng-repeat="cache1 in entity.object[0].object.object">
-                                                <p>L{{cache1.object._depth}} ({{convertSizeInKb(cache1.object._cache_size)}}KB)</p>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                            <tr ng-repeat="cachesL3 in cacheL3[$parent.$index][$index] track by $index">
+                                                    <td ng-if="!CheckL3(cachesL3)">
+                                                        L3 ({{convertSizeInKb(cachesL3)}}KB)</td>
+                                                    <td ng-repeat="L3 in cachesL3" ng-if="CheckL3(cachesL3)">
+                                                    L3 ({{convertSizeInKb(L3._cache_size)}}KB)
+                                                    </td>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
 
-                                <table class="table cacheL1">
-                                    <tbody>
-                                        <tr>
-                                            <td ng-repeat="cache1bis in entity.object[0].object.object">
-                                                <p>L{{cache1bis.object._depth}} ({{convertSizeInKb(cache1bis.object._cache_size)}}KB)</p>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                    <table class="table secondCache">
+                                        <tbody>
+                                            <tr ng-repeat="cache2 in cacheL2[$parent.$index] track by $index">
+                                                <td ng-repeat="L2 in cache2 track by $index">
+                                                    L2 ({{convertSizeInKb(L2)}}KB) 
+                                                </td>       
+                                            </tr>
+                                        </tbody>
+                                    </table>
 
-                                <table class="table cores">
-                                    <tbody>
-                                        <tr>
-                                            <td ng-repeat="core in cores[$index]">
-                                                <p>{{core._type}} P#{{core._os_index}}</p>
-                                                <table class="table pus">
-                                                    <tr ng-repeat="pu in core.object">
-                                                        <td>
-                                                            <p>{{pu._type}} P#{{pu._os_index}}</p>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                            <td id="pcis">
-                                <p>Emplacement des PCIs</p>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
+                                    <table class="table cacheL1">
+                                        <tbody>
+                                            <tr ng-repeat="cache1 in cachesL1[$parent.$index] track by $index">
+                                                <td ng-repeat="L1 in cache1 track by $index">
+                                                    L1D ({{convertSizeInKb(L1)}}KB) 
+                                                </td>       
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="table cacheL1">
+                                        <tbody>
+                                            <tr ng-repeat="cache1Bis in cacheL1Bis[$parent.$index] track by $index">
+                                                <td ng-repeat="L1Bis in cache1Bis track by $index">
+                                                    L1I ({{convertSizeInKb(L1Bis)}}KB) 
+                                                </td>       
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="table cores">
+                                        <tbody>
+                                            <tr ng-repeat="cores in entities[$parent.$parent.$index]">
+                                                
+                                                <td ng-repeat="core in cores">
+                                                    <p>{{cores._type}} P#{{core._os_index}}</p>
+                                                   <table class="table pus"  ng-if="CheckCore(core)">
+                                                            <tr ng-repeat="pu in core.object">
+                                                                <td>
+
+                                                                    <p>
+                                                                        {{pu._type}} P#{{pu._os_index}}</p>
+                                                                </td>
+                                                            </tr>
+                                                    </table>
+
+
+                                                    <table class="table pus"  ng-if="!CheckCore(core)">
+                                                            <tr ng-if="!CheckCoreAndArray(core)">
+                                                                <td>
+                                                                    <p>{{core.object._type}} P#{{core.object._os_index}}</p>
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr ng-if="CheckCoreAndArray(core)">
+                                                                <td ng-repeat="co in core">
+                                                                    <p>{{co.object._type}} P#{{co.object._os_index}}</p>
+                                                                </td>
+                                                            </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td id="pcis">
+                                    <p>Emplacement des PCIs</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </div>
             </tr>
         </tbody>
     </table>
+</div>
+
+
+
+     <div ng-if="!CheckGroup(group)" ng-repeat="groups in group track by $index">
+        Groups {{groups}}
+        <table class="table bc">
+            <tbody>
+                <tr ng-repeat="package in packages[$index]">
+                    <div>
+                        <div ng-if="!CheckPackage(package)">
+                            <td>
+                                  
+                        </div>
+                        <div ng-if="CheckPackage(package)">
+                            <td ng-repeat="pack in package track by $index">
+                        </div>
+                            Package P#{{package._os_index}}
+                            <table class="table bc">
+                                <tr ng-repeat="machine in machines[$parent.$index] track by $index">
+                                    <td id="cachesAndCores">
+                                        <p>{{machine._type}} ({{convertSizeInMb(machine._local_memory)}}MB)</p>
+                                        <table class="table biggestCache">
+                                            <tbody>
+                                                <tr ng-repeat="cachesL3 in cacheL3[$parent.$index] track by $index">
+                                                        <td ng-if="!CheckL3(cachesL3)"> L3 ({{convertSizeInKb(cachesL3._cache_size)}}KB)</td>
+                                                        <td ng-repeat="L3 in cachesL3" ng-if="CheckL3(cachesL3)">
+                                                        L3 ({{convertSizeInKb(L3._cache_size)}}KB)
+                                                        </td>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <table class="table secondCache">
+                                            <tbody>
+                                                <tr ng-repeat="cache2 in cacheL2[$parent.$index] track by $index">
+                                                    <td ng-repeat="L2 in cache2 track by $index">
+                                                        L2 ({{convertSizeInKb(L2)}}KB) 
+                                                    </td>       
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <table class="table cacheL1">
+                                            <tbody>
+                                                <tr ng-repeat="cache1 in cachesL1[$parent.$index] track by $index">
+                                                    <td ng-repeat="L1 in cache1 track by $index">
+                                                        L1D ({{convertSizeInKb(L1)}}KB) 
+                                                    </td>       
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <table class="table cacheL1">
+                                            <tbody>
+                                                <tr ng-repeat="cache1Bis in cacheL1Bis[$parent.$index] track by $index">
+                                                    <td ng-repeat="L1Bis in cache1Bis track by $index">
+                                                        L1I ({{convertSizeInKb(L1Bis)}}KB) 
+                                                    </td>       
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <table class="table cores">
+                                            <tbody>
+                                                <tr ng-repeat="cores in entities[$parent.$parent.$index]">
+                                                    <td ng-repeat="core in cores track by $index">
+                                                        <p>{{core._type}} P#{{core._os_index}}</p>
+                                                        <table class="table pus"  ng-if="CheckCore(core)">
+                                                          
+                                                                <tr ng-repeat="pu in core.object">
+                                                                    <td>
+                                                                        <p>{{pu._type}} P#{{pu._os_index}}</p>
+                                                                    </td>
+                                                                </tr>
+                                                        </table>
+
+                                                        <table class="table pus"  ng-if="!CheckCore(core)">
+                                                           
+                                                                <tr>
+                                                                    <td>
+                                                                        <p>{{core.object._type}} P#{{core.object._os_index}}</p>
+                                                                    </td>
+                                                                </tr>
+                                                        </table>
+
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td id="pcis">
+                                        <p>Emplacement des PCIs</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </div>
+                </tr>
+            </tbody>
+        </table>
+    </div> 
+

@@ -7,9 +7,12 @@ angular.module('myApp')
         $scope.mb = Math.floor((parseInt($scope.jsonObj.topology.object._local_memory)/1024)/1024); //Mémoire totale (en MB)
 
         $scope.infoSocket = $scope.jsonObj.topology.object.object[0]._type+ " P#"+$scope.jsonObj.topology.object.object[0]._os_index; //Information sur le socket
+         var indexPack = 0;
 
         //Cores
         $scope.entities = [];
+
+        $scope.group = [];
         $scope.packages = [];
         $scope.machines = [];
         $scope.cacheL3 = [];
@@ -23,18 +26,24 @@ angular.module('myApp')
             return parseInt(size)/1024;
         }
 
-        function machine(search, packages){
-            var indexPack = 0;
+
+        /*
+        * We use it to search packages, machines, entities in xml.
+        * If there is no packages in an xml we create them.
+        */
+        function machine(search, packages){           
             var tmp = [];
             var entities_tmp = [];
             if (search instanceof Array){
+
                 search.forEach(function(node,index){
                     if (packages != undefined){
                         $scope.packages.push({ _os_index : indexPack.toString()});
                         indexPack++;
                     }
+                    
                     if (node._type != "Bridge"){
-                        
+
                         tmp.push({_type : node._type, _local_memory : node._local_memory});
                         //to find L3 in machines
                         if (node.object instanceof Array){
@@ -65,38 +74,61 @@ angular.module('myApp')
                         }
                     }
             }
-            $scope.entities.push(entities_tmp);
-            $scope.machines.push(tmp);
+            var return_machines = [entities_tmp, tmp];
+            return return_machines;
         }
 
-        // we extract all L3cache
+        /*
+        * We extract all packages in the xml file
+        * Then we extract in the same time all machines in packages extract
+        * Finally we put in entities all L3 cache because it's our next extract
+        */
         $scope.extractPackagesMachines = function(){
             while(true){
-                 if((eval(search)) instanceof Array){
+                if((eval(search)) instanceof Array){
 
+                    // xml like jolly ... 
                     if (eval(search)[0]._type == "Package"){
                         (eval(search)).forEach(function(packages,index){
                             $scope.packages.push({ _os_index : packages._os_index });
-                            machine(packages.object);
+                            $scope.machines.push(machine(packages.object)[1]);
+                            $scope.entities.push(machine(packages.object)[0]);
                         });
                     }
+
+                    // xml like manumanu ...
                     if(eval(search)[0]._type == "Group"){
-                        eval(search).forEach(function(packages,index){
-                            packages.object.forEach(function(packages_tmp,index){
-                                $scope.packages.push({ _os_index : packages_tmp._os_index });
-                                machine(packages_tmp);
+                        eval(search).forEach(function(groups,index){
+                            $scope.group.push(groups._depth);
+                            var packages_in_group = [];
+                            groups.object.forEach(function(packages,index){
+                                var machines_in_package = [];
+                                packages_in_group.push({ _os_index : packages._os_index });
+                                machines_in_package.push(machine(packages)[1]);
+                                $scope.entities.push(machine(packages)[0]);
+                                $scope.machines.push(machines_in_package);
                             });
+                             $scope.packages.push(packages_in_group);
                         });
                     }
+
+                    //if it's a xml like alaric etc ...
                     if (eval(search)[0]._type != "Package" && eval(search)[0]._type != "Group" ){
-                        machine(eval(search),"package");
+                        if (eval(search) instanceof Array){
+                            eval(search).forEach(function(packages,index){
+                                $scope.machines.push(machine(packages, "package")[1]);
+                                $scope.entities.push(machine(packages)[0]);
+                            });
+                        }
                     }
         
                     break;
-                 }   
-                 else{
+                }
+
+                // if in our search it's not the start of the description we browse the file   
+                else{
                     search += ".object";
-                 }
+                }
             }
         }
 
@@ -108,6 +140,7 @@ angular.module('myApp')
                 var tmp_cacheL3 = [];
                 var tmp_cacheL2 = [];
                 if (cacheL3 instanceof Array){
+                    var cacheL3_machines = []
                     var deep = "cache_entity"
                     cacheL3.forEach(function(cache_entity,index){
                         while(true){
@@ -166,7 +199,7 @@ angular.module('myApp')
                     var cache_in_packages = [];
                     var cache_in_packagesL1 = [];
                     machines.forEach(function(cacheL2,index){
-                        
+
                         cache_in_packages.push(cacheL2._cache_size);
                         cache_in_packagesL1.push(cacheL2.object)
                     });
@@ -279,13 +312,29 @@ angular.module('myApp')
                 $scope.entities = tmp_entities;
             }
 
+            $scope.cacheL1Bis = L1Bis;
+
+           /* console.log($scope.group);
             console.log($scope.packages);
-            console.log($scope.machines);
-            console.log($scope.cacheL3);
-            console.log($scope.cacheL2);
+            console.log($scope.machines);*/
+            //console.log($scope.cacheL3);
+            /*console.log($scope.cacheL2);
             console.log($scope.cachesL1);
-            console.log(L1Bis);
-            console.log($scope.entities);
+            console.log($scope.cacheL1Bis);*/
+            //console.log($scope.entities);
+        }
+
+        $scope.extractCore = function(){
+
+            $scope.entities.forEach(function(packages,index){
+                var core_packages = [];
+                packages.forEach(function(machine,index){
+                    var machines = [];
+                    machine.forEach(function(array_core,index){
+                        console.log(array_core);
+                    });
+                });
+            });
         }
 
 
@@ -293,12 +342,31 @@ angular.module('myApp')
             return parseInt(size)/(1024*1024);
         }
 
-        
-       // $scope.extractEntities();
+        $scope.CheckCore = function(Core){
+            return (Core.object instanceof Array);
+        }
+
+         $scope.CheckCoreAndArray = function(Core){
+            return (Core instanceof Array && Core != undefined);
+        }
+
+         $scope.CheckL3 = function(L3){
+            return (L3 instanceof Array);
+        }
+
+        $scope.CheckPackage = function(Package){
+            return (Package instanceof Array);
+        }
+
+        $scope.CheckGroup = function(group){
+            return (group[0] == undefined);
+        }
+
         $scope.extractPackagesMachines();
         $scope.extractCachesL3()
         $scope.extractCachesL2();
         $scope.extractCachesL1();
         $scope.extractCachesL1Bis();
+        $scope.extractCore();
     }
     );
