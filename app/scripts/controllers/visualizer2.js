@@ -60,28 +60,26 @@ angular.module('myApp')
             this.entities = [];
         }
 
-        //PCI
         function entityBridge(type, depth){
             this.type = type;
             this.depth = depth;
             this.entitiesBridge = [];
-            this.entitiesPci = [];
+            this.entitiesPciDev = [];
         }
 
-        //PCI
-        function entityPci(type, os_index){
+        function entityPciDev(type, infos){
             this.type = type;
-            this.os_index = os_index;
-            this.entitiesEth = [];
+            this.infos = infos;
+            this.entitiesOsDev = [];
         }
 
-        //PCI
-        function entityEth(type, name){
+        function entityOsDev(type, name, infos){
             this.type = type;
             this.name = name;
+            this.infos = infos;
         }
 
-        //PCI
+        //Extraction des entités de type Bridge parent
         $scope.extractBridges = function(datas, entity){
             var bridge = new entityBridge(datas._type, datas._depth);
 
@@ -90,48 +88,73 @@ angular.module('myApp')
             entity.entitiesBridge.push(bridge);
         }
 
-        //PCI
+        //Extraction des entités de type Bridge enfant
         $scope.extractBridgesChild = function(datas, bridge){
             if(datas instanceof Array){
                 for(var i=0; i<datas.length; i++){
                     if(datas[i]._type == "Bridge"){
-                        var bridgeChild = new entityBridge(datas[i]._type);
+                        var bridgeChild = new entityBridge(datas[i]._type, datas[i]._depth);
 
                         $scope.extractBridgesChild(datas[i].object, bridgeChild);
                         
                         bridge.entitiesBridge.push(bridgeChild);
                     } 
                     else if(datas[i]._type == "PCIDev"){
-                        $scope.extractPci(datas[i], bridge);
+                        $scope.extractPciDev(datas[i], bridge);
                     }
                 }
             }
             else if(datas._type == "Bridge"){
-                var bridgeChild = new entityBridge(datas._type);
+                var bridgeChild = new entityBridge(datas._type, datas._depth);
 
                 $scope.extractBridgesChild(datas.object, bridgeChild);
 
                 bridge.entitiesBridge.push(bridgeChild);
             }
             else if(datas._type == "PCIDev"){
-                $scope.extractPci(datas, bridge);
+                $scope.extractPciDev(datas, bridge);
             }
         }
 
-        //PCI
-        $scope.extractPci = function(datas, bridge){
+        //Extraction des entités de type PCIDev
+        $scope.extractPciDev = function(datas, bridge){
 
             if(datas instanceof Array){
                 for(var i=0; i<datas.length; i++){
-                    var pci = new entityPci(datas[i]._type, datas[i]._os_index);
+                    var pci = new entityPciDev(datas[i]._type, datas[i].info);
 
-                    bridge.entitiesPci.push(pci);
+                    if(datas[i].object){
+                        $scope.extractOsDev(datas[i].object, pci);
+                    }
+
+                    bridge.entitiesPciDev.push(pci);
                 }
             }
             else{
-                var pci = new entityPci(datas._type, datas._os_index);
+                var pci = new entityPciDev(datas._type, datas.info);
 
-                bridge.entitiesPci.push(pci);
+                if(datas.object){
+                    $scope.extractOsDev(datas.object, pci);
+                }
+
+                bridge.entitiesPciDev.push(pci);
+            }
+        }
+
+        //Extraction des entités de type OSDev
+        $scope.extractOsDev = function(datas, pci){
+            if(datas instanceof Array){
+                for(var i=0; i<datas.length; i++){
+                    var os = new entityOsDev(datas[i]._type, datas[i]._name, datas[i].info);
+
+                    pci.entitiesOsDev.push(os);
+                }
+
+            }
+            else{
+                var os = new entityOsDev(datas._type, datas._name, datas.info);
+
+                pci.entitiesOsDev.push(os);
             }
         }
 
