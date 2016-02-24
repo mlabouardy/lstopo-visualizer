@@ -13,7 +13,7 @@
                     <div class="insidePackage">
                         <p>{{entity.packageOfCacheAndCores.type}} P#{{entity.packageOfCacheAndCores.os_index}}</p>
 
-                        <div ng-show="ShowL3()" class="caches">
+                        <div class="caches">
                             <span ng-repeat="cache3 in entity.packageOfCacheAndCores.caches | filter:{ type: 'L3Cache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L3Cache')}">
                                 <p>L{{cache3.depth}} ({{convertMemory(cache3.cache_size, "mb")}}MB)</p>
                             </span>
@@ -58,7 +58,9 @@
                                 <p>{{bridge.type}} {{bridge.depth}}</p>
 
                                 <ul>
-                                    <li ng-repeat="bridge in bridge.entitiesBridge" ng-include="'bridgeTree'"></li>
+                                    <li ng-repeat="bridge in bridge.entitiesBridge" ng-include="'bridgeTree'">
+                                    
+                                    </li>
                                 </ul> 
                             
                             </li>
@@ -183,7 +185,51 @@
 
         </div>
 
+        <div ng-if="isSocket(entity)">
 
+            <div class="socket">
+                {{entity.type}} P#{{entity.os_index}}
+
+                <div class="caches">
+                    <span ng-repeat="cache3 in entity.caches | filter:{ depth: '3', cache_type: '0'}" ng-style="{'width': sizeCacheWithDepthAndType(entity.caches, '3', '0')}">
+                        <p>L{{cache3.depth}} ({{convertMemory(cache3.cache_size, "kb")}}KB)</p>
+                    </span>
+                </div>
+
+                <div class="caches">
+                    <span ng-repeat="cache2 in entity.caches | filter:{ depth: '2', cache_type: '0' }" ng-style="{'width': sizeCacheWithDepthAndType(entity.caches, '2', '0')}">
+                        <p>L{{cache2.depth}} ({{convertMemory(cache2.cache_size, "kb")}}KB)</p>
+                    </span>
+                </div>
+
+                <div class="caches">
+                    <span ng-repeat="cache1 in entity.caches | filter:{ depth: '1', cache_type: '1'}" ng-style="{'width': sizeCacheWithDepthAndType(entity.caches, '1', '1')}">
+                        <p>L{{cache1.depth}}d ({{convertMemory(cache1.cache_size, "kb")}}KB)</p>
+                    </span>
+                </div>
+
+                <div class="caches">
+                    <span ng-repeat="cache1bis in entity.caches | filter:{ depth: '1', cache_type: '2'}" ng-style="{'width': sizeCacheWithDepthAndType(entity.caches, '1', '2')}">
+                        <p>L{{cache1bis.depth}}i ({{convertMemory(cache1bis.cache_size, "kb")}}KB)</p>
+                    </span>
+                </div>
+
+                <div class="cores">
+                    <span ng-repeat="core in entity.cores" ng-style="{'width': sizeCache(entity.cores, 'Core')}">
+                        <p>{{core.type}} P#{{core.os_index}}</p>
+
+                        <div class="pus">
+                            <div class="pu" ng-repeat="pu in core.pus">
+                                <p>{{pu.type}} P#{{pu.os_index}}</p>
+                            </div>
+                        </div>
+
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
 
 
     </div>
@@ -192,6 +238,9 @@
 <!-- template récursif pour l'affichage des bridges -->
 <script type="text/ng-template" id="bridgeTree">
     <p>{{bridge.type}} {{bridge.depth}}</p>
+    <div class="pci" ng-repeat="pci in bridge.entitiesPciDev">
+        <p>{{pci.type}}<p>
+    </div>
     <ul ng-if="bridge.entitiesBridge">
         <li ng-repeat="bridge in bridge.entitiesBridge" ng-include="'bridgeTree'">
         </li>
