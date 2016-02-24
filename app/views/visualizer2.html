@@ -1,0 +1,199 @@
+<h2>lstopo</h2>
+
+<div>
+    <div ng-repeat="entity in entities">
+        <div ng-if="isNode(entity)">
+            
+            <div class="node">
+                <div class="numanode">
+                    <p>{{entity.numanode.type}} P#{{entity.numanode.os_index}} ({{convertMemory(entity.numanode.local_memory, "gb")}}GB)</p>
+                </div>
+
+                <div>
+                    <div class="insidePackage">
+                        <p>{{entity.packageOfCacheAndCores.type}} P#{{entity.packageOfCacheAndCores.os_index}}</p>
+
+                        <div ng-show="ShowL3()" class="caches">
+                            <span ng-repeat="cache3 in entity.packageOfCacheAndCores.caches | filter:{ type: 'L3Cache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L3Cache')}">
+                                <p>L{{cache3.depth}} ({{convertMemory(cache3.cache_size, "mb")}}MB)</p>
+                            </span>
+                        </div>
+
+                        <div class="caches">
+                            <span ng-repeat="cache2 in entity.packageOfCacheAndCores.caches | filter:{ type: 'L2Cache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L2Cache')}">
+                                <p>L{{cache2.depth}} ({{convertMemory(cache2.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div class="caches">
+                            <span ng-repeat="cache1 in entity.packageOfCacheAndCores.caches | filter:{ type: 'L1Cache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L1Cache')}">
+                                <p>L{{cache1.depth}} ({{convertMemory(cache1.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div class="caches">
+                            <span ng-repeat="cache1bis in entity.packageOfCacheAndCores.caches | filter:{ type: 'L1iCache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L1iCache')}">
+                                <p>L{{cache1bis.depth}}i ({{convertMemory(cache1bis.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div class="cores">
+                            <span ng-repeat="core in entity.packageOfCacheAndCores.cores" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.cores, 'Core')}">
+                                <p>{{core.type}} P#{{core.os_index}}</p>
+
+                                <div class="pus">
+                                    <div class="pu" ng-repeat="pu in core.pus">
+                                        <p>{{pu.type}} P#{{pu.os_index}}</p>
+                                    </div>
+                                </div>
+
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="pcis">
+                        <ul>
+                            <li ng-repeat="bridge in entity.entitiesBridge">
+                                <p>{{bridge.type}} {{bridge.depth}}</p>
+
+                                <ul>
+                                    <li ng-repeat="bridge in bridge.entitiesBridge" ng-include="'bridgeTree'"></li>
+                                </ul> 
+                            
+                            </li>
+                        </ul> 
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div ng-if="isPackage(entity)">
+
+            <div class="package">
+                {{entity.type}} P#{{entity.depth}}
+
+                <div ng-repeat="node in entity.entities" class="node">
+                    <div class="numanode">
+                        <p>{{node.numanode.type}} P#{{node.numanode.os_index}} ({{convertMemory(node.numanode.local_memory, "gb")}}GB)</p>
+                    </div>
+
+                    <div class="insideNode">
+                        <div class="caches">
+                            <span ng-repeat="cache3 in node.caches | filter:{ type: 'L3Cache' }" ng-style="{'width': sizeCache(node.caches, 'L3Cache')}">
+                                <p>L{{cache3.depth}} ({{convertMemory(cache3.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div class="caches">
+                            <span ng-repeat="cache2 in node.caches | filter:{ type: 'L2Cache' }" ng-style="{'width': sizeCache(node.caches, 'L2Cache')}">
+                                <p>L{{cache2.depth}} ({{convertMemory(cache2.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div class="caches">
+                            <span ng-repeat="cache1 in node.caches | filter:{ type: 'L1Cache' }" ng-style="{'width': sizeCache(node.caches, 'L1Cache')}">
+                                <p>L{{cache1.depth}} ({{convertMemory(cache1.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div class="caches">
+                            <span ng-repeat="cache1bis in node.caches | filter:{ type: 'L1iCache' }" ng-style="{'width': sizeCache(node.caches, 'L1iCache')}">
+                                <p>L{{cache1bis.depth}} ({{convertMemory(cache1bis.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div class="coresInNode">
+                            <span ng-repeat="core in node.cores" ng-style="{'width': sizeCache(node.cores, 'Core')}">
+                                <p>{{core.type}} P#{{core.os_index}}</p>
+
+                                <div class="pus">
+                                    <div class="pu" ng-repeat="pu in core.pus">
+                                        <p>{{pu.type}} P#{{pu.os_index}}</p>
+                                    </div>
+                                </div>
+
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+         <div ng-if="isGroup(entity)">
+
+            <div class="package">
+                {{entity.type}} P#{{entity.depth}}
+
+                <div ng-repeat="node in entity.entities" class="node">
+                    <div class="numanode">
+                        <p>
+                            {{node.numanode.type}} P#{{node.numanode.os_index}} ({{convertMemory(node.numanode.local_memory, "gb")}}GB)</p>
+                    </div>
+
+                    <div class="insideNode">
+                        <div class="caches">
+                            <span ng-repeat="cache3 in node.packageOfCacheAndCores.caches | filter:{ type: 'L3Cache' }" ng-style="{'width': sizeCache(node.caches, 'L3Cache')}">
+
+                                <p>
+                                    L{{cache3.depth}} ({{convertMemory(cache3.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div class="caches">
+                            <span ng-repeat="cache2 in node.packageOfCacheAndCores.caches | filter:{ type: 'L2Cache' }" ng-style="{'width': sizeCache(node.caches, 'L2Cache')}">
+                                <p>L{{cache2.depth}} ({{convertMemory(cache2.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div class="caches">
+                            <span ng-repeat="cache1 in node.packageOfCacheAndCores.caches | filter:{ type: 'L1Cache' }" ng-style="{'width': sizeCache(node.caches, 'L1Cache')}">
+                                <p>L{{cache1.depth}} ({{convertMemory(cache1.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div class="caches">
+                            <span ng-repeat="cache1bis in node.packageOfCacheAndCores.caches | filter:{ type: 'L1iCache' }" ng-style="{'width': sizeCache(node.caches, 'L1iCache')}">
+                                <p>L{{cache1bis.depth}} ({{convertMemory(cache1bis.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div class="coresInNode">
+                            <span ng-repeat="core in node.packageOfCacheAndCores.cores" ng-style="{'width': sizeCache(node.cores, 'Core')}">
+                                <p>{{core.type}} P#{{core.os_index}}</p>
+
+                                <div class="pus">
+                                    <div class="pu" ng-repeat="pu in core.pus">
+                                        <p>{{pu.type}} P#{{pu.os_index}}</p>
+                                    </div>
+                                </div>
+
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+</div>
+
+<!-- template récursif pour l'affichage des bridges -->
+<script type="text/ng-template" id="bridgeTree">
+    <p>{{bridge.type}} {{bridge.depth}}</p>
+    <ul ng-if="bridge.entitiesBridge">
+        <li ng-repeat="bridge in bridge.entitiesBridge" ng-include="'bridgeTree'">
+        </li>
+    </ul>
+</script>
