@@ -12,6 +12,41 @@
 	<script src="graph_PCI.js"></script>
 	<script type="text/javascript">
 		// Collapse.png
+		
+		/* 
+		 * On construit la partie supérieure de collapse
+		 * niveau par niveau.
+		 *
+		 * Chaque noeud permet d'accéder à une branche fille, vide par défaut.
+		 * Chaque branche contient une liste de noeuds.
+		 *
+		 * Les noeuds sont soit des bridges (carrés blancs), soit des PCI. toutes
+		 * ces fonctions renvoient le noeud ajouté.
+		 *
+		 * Les fonctions à utiliser :
+		 * 
+		 * branch createBranch()
+		 * node pushBridge( branch )
+		 * node pushPCI( branch, name, nbCollapses, listEthNames )
+		 * drawTree( branch )
+		 * debugBranch( branch )
+		 *
+		 * Les propriétés des structures (éviter de les modifier manuellement) :
+		 *
+		 * Branch :
+		 *		xLvl, yLvl: 0,
+		 *		x: 0, y: MARGIN_TOP, 
+		 *		w: 0, h: 0,
+		 *		nbChildBranches: 0,
+		 *		parentNode: null,
+		 *		nodes : []
+		 *
+		 * Node :
+		 *		nodeParams: null,
+		 *	 	branch: null,
+		 *	 	childBranch: null,
+		 *	 	rect: null
+		 */
 
 		var root = createBranch();
 		var level0 = root;
