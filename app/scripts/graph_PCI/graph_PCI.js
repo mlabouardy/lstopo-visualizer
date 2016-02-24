@@ -269,7 +269,7 @@ var getTotalHeightFrom = function(branch, source){
 
 var createBranch = function() {
 	var res = {	xLvl: 0, yLvl: 0,
-				x: 0, y: MARGIN_TOP, 
+				x: MARGIN_TOP, y: MARGIN_TOP, 
 				w: 0, h: 0,
 				nbChildBranches: 0,
 				parentNode: null,
@@ -330,7 +330,7 @@ var pushNode = function(branch, nodeParams) {
 	}
 	childBranch.xLvl = branch.nodes.length;
 	childBranch.yLvl = branch.yLvl + branch.nbChildBranches + 1;
-	childBranch.x = branch.x + (childBranch.xLvl) * SIZE_LINK;
+	childBranch.x = branch.x + (childBranch.xLvl - 1) * SIZE_LINK;
 	var treehgt = getTotalTreeHeightFromRoot(branch);
 	childBranch.y = treehgt + branch.h + BRANCH_Y_SPACING;
 	
@@ -342,5 +342,9 @@ var pushBridge = function(branch) {
 }
 
 var pushPCI = function(branch, name, nbCollapses, ethNames){
+	if ( branch.nodes.length == 0 ) {
+		pushNode(branch, {type: TY_JOINT});
+	}
+
 	return pushNode(branch, {type: TY_PCI, name: name, nbCollapses: nbCollapses, ethNames: ethNames} );
 }
