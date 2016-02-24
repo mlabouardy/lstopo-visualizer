@@ -1,5 +1,5 @@
 angular.module('myApp')
-.controller('VisualizerCtrl', function($scope, $location, jsonObj){
+.controller('VisualizerCtrl', function($scope, $location,$http, jsonObj) {
 
         $scope.jsonObj = jsonObj.getJson(); //Variable avec toutes les informations du JSON
         $scope.cores = []; //Tableau qui contient les informations sur les cores
@@ -118,5 +118,18 @@ angular.module('myApp')
         $scope.extractCachesL1Bis();
         $scope.extractCores();
         //$scope.extractCores($scope.jsonObj.topology.object.object[0].object.object);
+
+    /*--------------------------show PCIs------------------------------*/
+/*
+    $http.get('data.json').then(function(data){
+        $('#jstree_demo').jstree(data.data);
+    });
+*/
+        $http.get('data.json').then(function(data){
+            $('#jstree_demo').jstree(data.data);
+        });
+
+
+
     }
 );
