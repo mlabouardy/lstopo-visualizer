@@ -17,6 +17,22 @@ var ETH_SPACING = 5;
 var ETH_COLOR = "#dedede";
 var preDrawBuffer = [];
 
+// UTILITAIRES :
+
+var calcTextBoxWidth = function(text) {
+	var textSplits = text.split("\n");
+	var res = textSplits[0].length;
+	
+	for ( var i = 0; i < textSplits.length; ++i )
+		res = textSplits[i].length > res ? textSplits[i].length : res;
+	
+	return res * 10;
+}
+
+var calcTextBoxHeight = function(text) {
+	return text.split("\n").length * 30;
+}
+
 // Les petits carrés blancs...
 var preDrawBridge = function(x, y) {
 	var rect = new joint.shapes.basic.Rect({
@@ -31,8 +47,8 @@ var preDrawBridge = function(x, y) {
 
 // Les eth
 var preDrawEth = function(x, y, name) {
-	var rWdt = name.length * 10;
-	var rHgt = 30;
+	var rWdt = calcTextBoxWidth(name);
+	var rHgt = calcTextBoxHeight(name);
 	
 	var rect = new joint.shapes.basic.Rect({
         position: { x: x, y: y},
@@ -48,8 +64,8 @@ var preDrawEth = function(x, y, name) {
 var preDrawPCI = function(x, y, name, nbCollapses, ethNames) {
 	var collRects = [];
 	var ethRects = []
-	var rWdt = name.length * 10;
-	var rHgt = 30;
+	var rWdt = calcTextBoxWidth(name);
+	var rHgt = calcTextBoxHeight(name);
 	var lstEthY = y + rHgt + ETH_SPACING;
 	
 	var rect = new joint.shapes.basic.Rect({
@@ -81,7 +97,7 @@ var preDrawPCI = function(x, y, name, nbCollapses, ethNames) {
 			lstEthY += ethRects[i].get("size").height + ETH_SPACING;
 		}
 		rHgt = (lstEthY - y) > rHgt ? lstEthY - y : rHgt;
-		rect.resize(rWdt, rHgt);
+		rect.resize(rWdt + ETH_SPACING * 2, rHgt);
 		for ( var i = 0; i < collRects.length; ++i ) collRects[i].resize(rWdt, rHgt);
 	}
 	
@@ -275,8 +291,6 @@ var createBranch = function() {
 				parentNode: null,
 				nodes : []};
 	
-	//pushNode(res, {type: TY_JOINT});
-	
 	return res;
 }
 
@@ -335,6 +349,10 @@ var pushNode = function(branch, nodeParams) {
 	childBranch.y = treehgt + branch.h + BRANCH_Y_SPACING;
 	
 	return newNode;
+}
+
+var pushJoint = function(branch) {
+	return pushNode(branch, {type: TY_JOINT} );
 }
 
 var pushBridge = function(branch) {
