@@ -315,7 +315,7 @@ angular.module('myApp')
                         datas[y]._cache_type);
                     entity.caches.push(cacheL1);
 
-                    $scope.extractLastLevelOfCacheAndCores(datas.object, entity);
+                    $scope.extractLastLevelOfCacheAndCores(datas[y].object, entity);
                 }
             }
             else{
@@ -446,7 +446,44 @@ angular.module('myApp')
             return (100-(cpt))/cpt+"%";
         }
 
+        $scope.test = function(){
+            console.log("coucou");
+        }
+
         $scope.extractEntities();
         console.log($scope.entities);
+
+        /*$scope.drawPCI = function(array){
+            console.log("draw pci");
+            var root = createBranch();
+            pushBridge(root);
+            pushPCI(root, "test", 0, ["eth0"]);
+
+            $scope.drawBridge(root, array[0].entitiesBridge);
+       
+            drawTree(root);
+        }
+
+        $scope.drawBridge = function(root, array){
+            console.log("draw bridge");
+            for(var i=0; i<array.length; i++){
+                if(i==0){
+                    var level = root.nodes[0].childBranch;
+                    pushJoint(level);
+                    pushBridge(level);
+                    pushPCI(level, "test", 0, ["eth"+i]);
+                }
+                else{
+                    var level = $scope.addBranch(level);
+                    pushJoint(level);
+                    pushBridge(level);
+                    pushPCI(level, "test", 0, ["eth"+1]);
+                }
+            }
+        }
+
+        $scope.addBranch = function(origin){
+            return origin.nodes[0].childBranch;
+        }*/
     }
 );

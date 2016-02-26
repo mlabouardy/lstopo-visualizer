@@ -1,5 +1,5 @@
 <h2>lstopo</h2>
-
+{{test()}}
 <div>
     <div ng-repeat="entity in entities">
         <div ng-if="isNode(entity)">
@@ -52,8 +52,9 @@
 
                     </div>
 
-                    <div class="pcis">
-                        <ul>
+                    <div class="pcis"> <!--id="myholder">-->
+
+                        <!--<ul>
                             <li ng-repeat="bridge in entity.entitiesBridge">
                                 <p>{{bridge.type}} {{bridge.depth}}</p>
 
@@ -64,7 +65,13 @@
                                 </ul> 
                             
                             </li>
-                        </ul> 
+                        </ul> -->
+                        <script src="scripts/graph_PCI/libs/jquery.min.js"></script>
+                        <script src="scripts/graph_PCI/libs/lodash.min.js"></script>
+                        <script src="scripts/graph_PCI/libs/backbone-min.js"></script>
+                        <script src="scripts/graph_PCI/libs/joint.js"></script>
+                        <script src="scripts/graph_PCI/graph_PCI.js"></script>
+                        
                     </div>
 
                 </div>
