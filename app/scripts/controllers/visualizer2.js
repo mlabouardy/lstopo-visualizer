@@ -69,7 +69,6 @@ angular.module('myApp')
                 }
 
                 else if ($scope.jsonObj.object[i]._type == "Group"){
-                    console.log("groupe numero : "+i);
                     $scope.entities.push($scope.fillGroupOfEntityWithNodeAndPackage($scope.jsonObj.object[i]));
                 }
             }
@@ -81,7 +80,6 @@ angular.module('myApp')
             if(datas.object instanceof Array){
                 for(var i=0; i<datas.object.length; i++){
                     if(datas.object[i]._type == "NUMANode"){
-                        console.log("numero du numanode dans le groupe : "+i);
                         group.entities.push($scope.fillEntityWithNodeAndPackage(datas.object[i]));
                     }
                 }
@@ -294,6 +292,7 @@ angular.module('myApp')
             }
         }
 
+        //petite modification à faire : rendre dynamique le rendu selon la taille
         $scope.convertMemory = function(value, unity){
             if(unity == "gb"){
                 return Math.round(value/Math.pow(1024, 3));
@@ -316,7 +315,105 @@ angular.module('myApp')
             return (100-(cpt))/cpt+"%";
         }
 
+        // variables for display or not elements
+        $scope.showL1 = true;
+        $scope.showL2 = true;
+        $scope.showL3 = true;
+        $scope.cores = true;
+        $scope.Pu = true;
+        $scope.arrayPackages = [];
+        $scope.arrayGroups = [];
+
+        //variable for color
+        $scope.arrayColors= [{name : "basic_red" , value : "#EFDFDE"}, {name : "basic_green" , value : "#D2E7A4"},
+         { name : "basic_grey_light", value :"#DEDEDE"} , { name : "white", value :"#FFFFFF"}, { name : "basic_grey", value :"#BEBEBE"}];
+        $scope.items = [{object : "Cores", value : "#BEBEBE" } , {object : "Pu", value : "#FFFFFF" },
+        {object : "L3", value : "#FFFFFF" },{object : "L2", value : "#FFFFFF" },{object : "L1", value : "#FFFFFF" },
+        {object : "Package", value : "#DEDEDE" }, {object : "NUMANode", value : "#EFDFDE" }, {object : "Node", value : "#D2E7A4" }];
+        $scope.currentItem = ["Cores","white"];
+        $scope.AddColor = ["",""];
+        $scope.zoom = 1;
+
+       $scope.checkPackage = function(Package){
+            var tmp;
+            $scope.arrayPackages.forEach(function(packages,index){
+                if (packages.os_index == Package){
+                    tmp = packages.value;
+                }
+            });
+            return tmp;
+        }
+
+        $scope.checkGroups = function(){
+            return ($scope.arrayGroups[0] != undefined);
+        }
+
+        $scope.ShowGroup = function(entity){
+            var check;
+            $scope.arrayGroups.forEach(function(group,index){
+                if(group.index == $scope.entities.indexOf(entity)){
+                    check = group.value;
+                }
+            });
+            return check;
+        }
+
+       var i = 0;
+        $scope.extractPackage = function(){
+            $scope.entities.forEach(function(entity,index){
+                if (entity.type == "Package"){
+                    $scope.arrayPackages.push({os_index : entity.os_index , value : true});
+                }
+                if (entity.type == "Group"){
+                    $scope.arrayGroups.push({index : i, os_index : entity.depth , value : true});
+                    i++;
+                    entity.entities.forEach(function(packages){
+                        $scope.arrayPackages.push({os_index : packages.packageOfCacheAndCores.os_index , value : true});
+                    });
+                }
+                if (entity.type != "Group" && entity.type != "Package" ){
+                    $scope.arrayPackages.push({os_index : entity.packageOfCacheAndCores.os_index , value : true});
+                }
+            });
+        }
+
+        $scope.ChangeColor = function(){
+            var tmp;
+
+             $scope.arrayColors.forEach(function(Color,index){
+                if(Color.name == $scope.currentItem[1]){
+                    tmp = Color.value;
+                }
+            });
+            $scope.items.forEach(function(item,index){
+                if(item.object == $scope.currentItem[0]){
+                    item.value = tmp;
+                }
+            });
+        }
+
+        $scope.AddColor = function(){
+            $scope.arrayColors.push({name : $scope.AddColor[0] , value : $scope.AddColor[1]});
+        }
+
+        $scope.AsImg = function(){
+            html2canvas(document.getElementById('left'), {
+                onrendered: function(canvas) {
+                    window.location=canvas.toDataURL('png');
+                 }
+            });
+        }
+
+        $scope.Zoom = function(fonction){
+            if(fonction == 'zoomIn'){
+                $scope.zoom += 0.2;
+            }
+            else{
+                $scope.zoom -= 0.2;
+            }
+        }
+
         $scope.extractEntities();
-        console.log($scope.entities);
+        $scope.extractPackage();
     }
 );

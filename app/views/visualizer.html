@@ -1,208 +1,225 @@
 <h2>lstopo</h2>
-<div ng-if="CheckGroup(group)">
-    <table class="table bc">
-        <tbody>
-            <tr ng-repeat="package in packages track by $index">
-                <div>
-                    <div ng-if="CheckPackage(package)">
-                        <td ng-repeat="pack in package track by $index">
-                            {{$parent.$index}}
-                    </div>
-                        Package P#{{package._os_index}}
-                        <table class="table bc">
 
-                            <tr ng-repeat="machines in machines[$parent.$index] track by $index">
-                                <td id="cachesAndCores">
-                                    <p>{{machines._type}} ({{convertSizeInMb(machines._local_memory)}}MB)</p>
-                                    <table class="table biggestCache">
-                                        <tbody>
-
-                                            <tr ng-repeat="cachesL3 in cacheL3[$parent.$index][$index] track by $index">
-                                                    <td ng-if="!CheckL3(cachesL3)">
-                                                        L3 ({{convertSizeInKb(cachesL3)}}KB)</td>
-                                                    <td ng-repeat="L3 in cachesL3" ng-if="CheckL3(cachesL3)">
-                                                    L3 ({{convertSizeInKb(L3._cache_size)}}KB)
-                                                    </td>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <table class="table secondCache">
-                                        <tbody>
-                                            <tr ng-repeat="cache2 in cacheL2[$parent.$index] track by $index">
-                                                <td ng-repeat="L2 in cache2 track by $index">
-                                                    L2 ({{convertSizeInKb(L2)}}KB) 
-                                                </td>       
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <table class="table cacheL1">
-                                        <tbody>
-                                            <tr ng-repeat="cache1 in cachesL1[$parent.$index] track by $index">
-                                                <td ng-repeat="L1 in cache1 track by $index">
-                                                    L1D ({{convertSizeInKb(L1)}}KB) 
-                                                </td>       
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <table class="table cacheL1">
-                                        <tbody>
-                                            <tr ng-repeat="cache1Bis in cacheL1Bis[$parent.$index] track by $index">
-                                                <td ng-repeat="L1Bis in cache1Bis track by $index">
-                                                    L1I ({{convertSizeInKb(L1Bis)}}KB) 
-                                                </td>       
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <table class="table cores">
-                                        <tbody>
-                                            <tr ng-repeat="cores in entities[$parent.$parent.$index]">
-                                                
-                                                <td ng-repeat="core in cores">
-                                                    <p>{{cores._type}} P#{{core._os_index}}</p>
-                                                   <table class="table pus"  ng-if="CheckCore(core)">
-                                                            <tr ng-repeat="pu in core.object">
-                                                                <td>
-
-                                                                    <p>
-                                                                        {{pu._type}} P#{{pu._os_index}}</p>
-                                                                </td>
-                                                            </tr>
-                                                    </table>
-
-
-                                                    <table class="table pus"  ng-if="!CheckCore(core)">
-                                                            <tr ng-if="!CheckCoreAndArray(core)">
-                                                                <td>
-                                                                    <p>{{core.object._type}} P#{{core.object._os_index}}</p>
-                                                                </td>
-                                                            </tr>
-
-                                                            <tr ng-if="CheckCoreAndArray(core)">
-                                                                <td ng-repeat="co in core">
-                                                                    <p>{{co.object._type}} P#{{co.object._os_index}}</p>
-                                                                </td>
-                                                            </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                                <td id="pcis">
-                                    <p>Emplacement des PCIs</p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
+<div id="left">
+    <div ng-repeat="entity in entities">
+        <div ng-show="checkPackage(entity.packageOfCacheAndCores.os_index)" ng-if="isNode(entity)">
+            
+            <div ng-style="{'background-color':items[7].value}" class="node">
+                <div ng-style="{'background-color':items[6].value}" class="numanode">
+                    <p>{{entity.numanode.type}} P#{{entity.numanode.os_index}} ({{convertMemory(entity.numanode.local_memory, "gb")}}GB)</p>
                 </div>
-            </tr>
-        </tbody>
-    </table>
-</div>
+                <div ng-style="{'background-color':items[5].value}" class="insidePackage">
+                    <p>{{entity.packageOfCacheAndCores.type}} P#{{entity.packageOfCacheAndCores.os_index}}</p>
 
-
-
-     <div ng-if="!CheckGroup(group)" ng-repeat="groups in group track by $index">
-        Groups {{groups}}
-        <table class="table bc">
-            <tbody>
-                <tr ng-repeat="package in packages[$index]">
-                    <div>
-                        <div ng-if="!CheckPackage(package)">
-                            <td>
-                                  
-                        </div>
-                        <div ng-if="CheckPackage(package)">
-                            <td ng-repeat="pack in package track by $index">
-                        </div>
-                            Package P#{{package._os_index}}
-                            <table class="table bc">
-                                <tr ng-repeat="machine in machines[$parent.$index] track by $index">
-                                    <td id="cachesAndCores">
-                                        <p>{{machine._type}} ({{convertSizeInMb(machine._local_memory)}}MB)</p>
-                                        <table class="table biggestCache">
-                                            <tbody>
-                                                <tr ng-repeat="cachesL3 in cacheL3[$parent.$index] track by $index">
-                                                        <td ng-if="!CheckL3(cachesL3)"> L3 ({{convertSizeInKb(cachesL3._cache_size)}}KB)</td>
-                                                        <td ng-repeat="L3 in cachesL3" ng-if="CheckL3(cachesL3)">
-                                                        L3 ({{convertSizeInKb(L3._cache_size)}}KB)
-                                                        </td>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-
-                                        <table class="table secondCache">
-                                            <tbody>
-                                                <tr ng-repeat="cache2 in cacheL2[$parent.$index] track by $index">
-                                                    <td ng-repeat="L2 in cache2 track by $index">
-                                                        L2 ({{convertSizeInKb(L2)}}KB) 
-                                                    </td>       
-                                                </tr>
-                                            </tbody>
-                                        </table>
-
-                                        <table class="table cacheL1">
-                                            <tbody>
-                                                <tr ng-repeat="cache1 in cachesL1[$parent.$index] track by $index">
-                                                    <td ng-repeat="L1 in cache1 track by $index">
-                                                        L1D ({{convertSizeInKb(L1)}}KB) 
-                                                    </td>       
-                                                </tr>
-                                            </tbody>
-                                        </table>
-
-                                        <table class="table cacheL1">
-                                            <tbody>
-                                                <tr ng-repeat="cache1Bis in cacheL1Bis[$parent.$index] track by $index">
-                                                    <td ng-repeat="L1Bis in cache1Bis track by $index">
-                                                        L1I ({{convertSizeInKb(L1Bis)}}KB) 
-                                                    </td>       
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <table class="table cores">
-                                            <tbody>
-                                                <tr ng-repeat="cores in entities[$parent.$parent.$index]">
-                                                    <td ng-repeat="core in cores track by $index">
-                                                        <p>{{core._type}} P#{{core._os_index}}</p>
-                                                        <table class="table pus"  ng-if="CheckCore(core)">
-                                                          
-                                                                <tr ng-repeat="pu in core.object">
-                                                                    <td>
-                                                                        <p>{{pu._type}} P#{{pu._os_index}}</p>
-                                                                    </td>
-                                                                </tr>
-                                                        </table>
-
-                                                        <table class="table pus"  ng-if="!CheckCore(core)">
-                                                           
-                                                                <tr>
-                                                                    <td>
-                                                                        <p>{{core.object._type}} P#{{core.object._os_index}}</p>
-                                                                    </td>
-                                                                </tr>
-                                                        </table>
-
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                    <td id="pcis">
-                                        <p>Emplacement des PCIs</p>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
+                    <div ng-show="showL3 == true" class="caches">
+                        <span ng-style="{'background-color':items[2].value}" ng-repeat="cache3 in entity.packageOfCacheAndCores.caches | filter:{ type: 'L3Cache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L3Cache')}">
+                            <p>L{{cache3.depth}} ({{convertMemory(cache3.cache_size, "mb")}}MB)</p>
+                        </span>
                     </div>
-                </tr>
-            </tbody>
-        </table>
-    </div> 
 
+                    <div ng-show="showL2 == true" class="caches">
+                        <span ng-style="{'background-color':items[3].value}" ng-repeat="cache2 in entity.packageOfCacheAndCores.caches | filter:{ type: 'L2Cache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L2Cache')}">
+                            <p>L{{cache2.depth}} ({{convertMemory(cache2.cache_size, "kb")}}KB)</p>
+                        </span>
+                    </div>
+
+                    <div ng-show="showL1 == true"class="caches">
+                        <span ng-style="{'background-color':items[4].value}" ng-repeat="cache1 in entity.packageOfCacheAndCores.caches | filter:{ type: 'L1Cache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L1Cache')}">
+                            <p>L{{cache1.depth}} ({{convertMemory(cache1.cache_size, "kb")}}KB)</p>
+                        </span>
+                    </div>
+
+                    <div ng-show="showL1 == true" class="caches">
+                        <span ng-style="{'background-color':items[4].value}" ng-repeat="cache1bis in entity.packageOfCacheAndCores.caches | filter:{ type: 'L1iCache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L1iCache')}">
+                            <p>L{{cache1bis.depth}}i ({{convertMemory(cache1bis.cache_size, "kb")}}KB)</p>
+                        </span>
+                    </div>
+
+                    <div ng-show="cores == true" class="cores">
+                        <span ng-style="{'background-color':items[0].value}" ng-repeat="core in entity.packageOfCacheAndCores.cores" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.cores, 'Core')}">
+                            <p>{{core.type}} P#{{core.os_index}}</p>
+
+                            <div ng-show="Pu == true" class="pus">
+                                <div ng-style="{'background-color':items[1].value}" class="pu" ng-repeat="pu in core.pus">
+                                    <p>{{pu.type}} P#{{pu.os_index}}</p>
+                                </div>
+                            </div>
+
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div ng-show="checkPackage(entity.os_index)" ng-if="isPackage(entity)">
+
+            <div ng-style="{'background-color':items[5].value}" class="package">
+                {{entity.type}} P#{{entity.os_index}}
+
+                <div ng-style="{'background-color':items[7].value}" ng-repeat="node in entity.entities" class="node">
+                    <div ng-style="{'background-color':items[6].value}" class="numanode">
+                        <p>{{node.numanode.type}} P#{{node.numanode.os_index}} ({{convertMemory(node.numanode.local_memory, "gb")}}GB)</p>
+                    </div>
+
+                    <div class="insideNode">
+                        <div ng-show ="showL3 == true" class="caches">
+                            <span ng-style="{'background-color':items[2].value}" ng-repeat="cache3 in node.caches | filter:{ type: 'L3Cache' }" ng-style="{'width': sizeCache(node.caches, 'L3Cache')}">
+                                <p>L{{cache3.depth}} ({{convertMemory(cache3.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div ng-show="showL2 == true" class="caches">
+                            <span ng-style="{'background-color':items[3].value}" ng-repeat="cache2 in node.caches | filter:{ type: 'L2Cache' }" ng-style="{'width': sizeCache(node.caches, 'L2Cache')}">
+                                <p>L{{cache2.depth}} ({{convertMemory(cache2.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div ng-show="showL1 == true" class="caches">
+                            <span ng-style="{'background-color':items[4].value}" ng-repeat="cache1 in node.caches | filter:{ type: 'L1Cache' }" ng-style="{'width': sizeCache(node.caches, 'L1Cache')}">
+                                <p>L{{cache1.depth}} ({{convertMemory(cache1.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div ng-show="showL1 == true" class="caches">
+                            <span ng-style="{'background-color':items[4].value}" ng-repeat="cache1bis in node.caches | filter:{ type: 'L1iCache' }" ng-style="{'width': sizeCache(node.caches, 'L1iCache')}">
+                                <p>L{{cache1bis.depth}} ({{convertMemory(cache1bis.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div ng-show="cores == true" class="coresInNode">
+                            <span ng-style="{'background-color':items[0].value}" ng-repeat="core in node.cores" ng-style="{'width': sizeCache(node.cores, 'Core')}">
+                                <p>{{core.type}} P#{{core.os_index}}</p>
+
+                                <div ng-show="Pu == true" class="pus">
+                                    <div ng-style="{'background-color':items[1].value}" class="pu" ng-repeat="pu in core.pus">
+                                        <p>{{pu.type}} P#{{pu.os_index}}</p>
+                                    </div>
+                                </div>
+
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+         <div ng-show="ShowGroup(entity)" ng-if="isGroup(entity)">  
+                {{entity.type}} P#{{entity.depth}}
+
+                <div ng-style="{'background-color':items[7].value}" ng-show="checkPackage(node.packageOfCacheAndCores.os_index)" ng-repeat="node in entity.entities" class="node">
+
+                   
+                    <div ng-style="{'background-color':items[6].value}" class="numanode">
+                        <p>
+                            {{node.numanode.type}} P#{{node.numanode.os_index}} ({{convertMemory(node.numanode.local_memory, "gb")}}GB)</p>
+                    </div>  
+                    <div ng-style="{'background-color':items[5].value}" class="package">
+                         Package#{{node.packageOfCacheAndCores.os_index}}
+                    <div class="insideNode">
+                        <div ng-show ="showL3 == true" class="caches">
+                            <span ng-style="{'background-color':items[2].value}" ng-repeat="cache3 in node.packageOfCacheAndCores.caches | filter:{ type: 'L3Cache' }" ng-style="{'width': sizeCache(node.caches, 'L3Cache')}">
+
+                                <p>
+                                    L{{cache3.depth}} ({{convertMemory(cache3.cache_size, "mb")}}MB)</p>
+                            </span>
+                        </div>
+
+                        <div  ng-show="showL2 == true" class="caches">
+                            <span ng-style="{'background-color':items[3].value}" ng-repeat="cache2 in node.packageOfCacheAndCores.caches | filter:{ type: 'L2Cache' }" ng-style="{'width': sizeCache(node.caches, 'L2Cache')">
+                                <p>L{{cache2.depth}} ({{convertMemory(cache2.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div ng-show="showL1 == true" class="caches">
+                            <span ng-style="{'background-color':items[4].value}" ng-repeat="cache1 in node.packageOfCacheAndCores.caches | filter:{ type: 'L1Cache' }" ng-style="{'width': sizeCache(node.caches, 'L1Cache')}">
+                                <p>L{{cache1.depth}} ({{convertMemory(cache1.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div ng-show="showL1 == true" class="caches">
+                            <span ng-style="{'background-color':items[4].value}" ng-repeat="cache1bis in node.packageOfCacheAndCores.caches | filter:{ type: 'L1iCache' }" ng-style="{'width': sizeCache(node.caches, 'L1iCache')}">
+                                <p>L{{cache1bis.depth}} ({{convertMemory(cache1bis.cache_size, "kb")}}KB)</p>
+                            </span>
+                        </div>
+
+                        <div ng-class="Core" ng-show="cores == true" class="coresInNode">
+                            <span ng-style="{'background-color':items[0].value}" ng-repeat="core in node.packageOfCacheAndCores.cores" ng-style="{'width': sizeCache(node.cores, 'Core')}">
+                                <p>{{core.type}} P#{{core.os_index}}</p>
+
+                                <div ng-show="Pu == true" class="pus">
+                                    <div ng-style="{'background-color':items[1].value}" class="pu" ng-repeat="pu in core.pus">
+                                        <p>{{pu.type}} P#{{pu.os_index}}</p>
+                                    </div>
+                                </div>
+
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+</div>
+<div id="rigth">
+    <div> Choose want you want
+    </div>
+     <div>
+        <div>
+              <input type="checkbox" ng-model="showL3"/> L3
+        </div>
+        <div>
+             <input type="checkbox" ng-model="showL2"/> L2
+        </div>
+        <div>
+             <input type="checkbox" ng-model="showL1"/> L1
+        </div>
+         <div>
+             <input type="checkbox" ng-model="cores"/> Cores
+        </div>
+         <div>
+             <input type="checkbox" ng-model="Pu"/> Pu
+        </div>
+    </div>
+
+    <div>
+        Choose packages
+        <div ng-repeat="package in arrayPackages track by $index">
+                <input type="checkbox" ng-model="package.value"/> {{package.os_index}}
+        </div>
+    </div>
+    <div ng-if="checkGroups()">
+        Choose Groups
+        <div ng-repeat="group in arrayGroups track by $index">
+                <input type="checkbox" ng-model="group.value"/> {{group.os_index}}
+        </div>
+    </div>
+    <div>
+        Choose colors
+        <div>
+        <select ng-model="currentItem[0]">
+            <option ng-repeat="item in items">{{item.object}}</option>
+        </select>
+
+        <select ng-model="currentItem[1]" ng-change="ChangeColor()">
+            <option ng-repeat="color in arrayColors">{{color.name}}</option>
+        </select>
+    </div>
+
+    <div> Add a color </br>
+        Name <input type="text" ng-model="AddColor[0]"> </input> </br>
+        Value <input type="text" ng-model="AddColor[1]"> </input>
+        <button ng-click="AddColor()"> Add </button>
+    </div>
+    </div>
+</div>
