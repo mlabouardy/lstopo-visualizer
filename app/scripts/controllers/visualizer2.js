@@ -442,7 +442,6 @@ angular.module('myApp')
                     cpt++;
                 }
             }
-            console.log(cpt);
             return (100-(cpt))/cpt+"%";
         }
 
@@ -450,22 +449,34 @@ angular.module('myApp')
             console.log("coucou");
         }
 
-        $scope.extractEntities();
-        console.log($scope.entities);
+        $scope.treePCI = [];
 
-        /*$scope.drawPCI = function(array){
-            console.log("draw pci");
-            var root = createBranch();
-            pushBridge(root);
-            pushPCI(root, "test", 0, ["eth0"]);
+        $scope.drawPci = function(array, index){
 
-            $scope.drawBridge(root, array[0].entitiesBridge);
-       
-            drawTree(root);
+            if($scope.treePCI[index] != true){
+                paper = new joint.dia.Paper({
+                    el: $('#object-'+index),
+                    model: graph,
+                    gridSize: 1
+                });
+
+                var e = document.getElementById("object-"+index);
+                e.style.width = "100%";
+                e.style.height = "100%";
+
+                var root = createBranch();
+                pushBridge(root);
+                pushPCI(root, "test", 0, ["eth0"]);
+
+
+                $scope.drawBridge(root, array[0].entitiesBridge);
+           
+                drawTree(root);
+                $scope.treePCI[index] = true;
+            }
         }
 
         $scope.drawBridge = function(root, array){
-            console.log("draw bridge");
             for(var i=0; i<array.length; i++){
                 if(i==0){
                     var level = root.nodes[0].childBranch;
@@ -484,6 +495,9 @@ angular.module('myApp')
 
         $scope.addBranch = function(origin){
             return origin.nodes[0].childBranch;
-        }*/
+        }
+
+        $scope.extractEntities();
+        console.log($scope.entities);
     }
 );

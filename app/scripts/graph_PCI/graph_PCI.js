@@ -3,19 +3,18 @@
  **************/
 
 var graph = new joint.dia.Graph;
-var paper = new joint.dia.Paper({
-	el: $('#myholder'),
-	width: 1280,
-	height: 2024,
-	model: this.graph,
-	gridSize: 1
-});
+var paper;
+
 var BRIDGE_SIZE = 10;
 var PCI_COLLAPSE_OFFSET = 5;
 var PCI_COLOR = "#bed295";
 var ETH_SPACING = 5;
 var ETH_COLOR = "#dedede";
 var preDrawBuffer = [];
+
+var setPaper = function(id) {
+	paper.el = $('#myholder');
+}
 
 // UTILITAIRES :
 
