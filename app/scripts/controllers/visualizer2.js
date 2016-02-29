@@ -75,8 +75,9 @@ angular.module('myApp')
             this.entitiesPciDev = [];
         }
 
-        function entityPciDev(type, infos){
+        function entityPciDev(type, pci_busid, infos){
             this.type = type;
+            this.pci_busid = pci_busid;
             this.infos = infos;
             this.entitiesOsDev = [];
         }
@@ -129,7 +130,7 @@ angular.module('myApp')
 
             if(datas instanceof Array){
                 for(var i=0; i<datas.length; i++){
-                    var pci = new entityPciDev(datas[i]._type, datas[i].info);
+                    var pci = new entityPciDev(datas[i]._type, datas[i]._pci_busid, datas[i].info);
 
                     if(datas[i].object){
                         $scope.extractOsDev(datas[i].object, pci);
@@ -139,7 +140,7 @@ angular.module('myApp')
                 }
             }
             else{
-                var pci = new entityPciDev(datas._type, datas.info);
+                var pci = new entityPciDev(datas._type, datas._pci_busid,  datas.info);
 
                 if(datas.object){
                     $scope.extractOsDev(datas.object, pci);
@@ -543,7 +544,7 @@ angular.module('myApp')
             }
             return (100-(cpt))/cpt+"%";
         }
-        
+
         $scope.treePCI = [];
 
         $scope.drawPci = function(array, index){
@@ -559,32 +560,46 @@ angular.module('myApp')
                 e.style.width = "100%";
                 e.style.height = "100%";
 
-                var root = createBranch();
-                pushBridge(root);
-                pushPCI(root, "test", 0, ["eth0"]);
-
-
-                $scope.drawBridge(root, array[0].entitiesBridge);
+                if(array[0].entitiesBridge.length>0){
+                    var root = createBranch();
+                    pushBridge(root);
+                    pushBridge(root);
+                    pushPCI(root, "test", 0, ["eth0"]);
+                }
+                $scope.drawBridgesAndPciDev(root, array[0].entitiesBridge, array[0].entitiesPciDev);
            
                 drawTree(root);
                 $scope.treePCI[index] = true;
             }
         }
 
-        $scope.drawBridge = function(root, array){
-            for(var i=0; i<array.length; i++){
-                if(i==0){
-                    var level = root.nodes[0].childBranch;
+        $scope.drawBridgesAndPciDev = function(root, arrayBridge, arrayPciDev){
+            var level;
+
+            console.log("test1");
+            for(var i=1; i<arrayBridge.length; i++){
+                if(i==1){
+                    level = root.nodes[0].childBranch;
                     pushJoint(level);
                     pushBridge(level);
                     pushPCI(level, "test", 0, ["eth"+i]);
                 }
                 else{
-                    var level = $scope.addBranch(level);
+                    level = $scope.addBranch(level);
                     pushJoint(level);
                     pushBridge(level);
-                    pushPCI(level, "test", 0, ["eth"+1]);
+                    pushPCI(level, "test", 0, ["eth"+i]);
                 }
+            }
+            $scope.drawPciDev(level, arrayPciDev);        
+        }
+
+        $scope.drawPciDev = function(origin, arrayPciDev){
+            console.log("origin :"+origin);
+            for(var j=0; j<arrayPciDev; j++){
+                level = $scope.addBranch(origin);
+                pushJoint(level);
+                pushPCI(level, "test", 0, ["pci"]);
             }
         }
 
@@ -594,5 +609,78 @@ angular.module('myApp')
 
         $scope.extractEntities();
         $scope.extractPackage();
+
     }
-);
+)
+
+
+.controller('TestCtrl',function($scope,$timeout){    
+    $scope.test=function(array, index){
+            if($scope.treePCI[index] != true){
+                paper = new joint.dia.Paper({
+                    el: $('#'+index),
+                    model: graph,
+                    gridSize: 1
+                });
+
+                var e = document.getElementById(""+index);
+                console.log("div:"+e);
+                
+
+                if(array[0].entitiesBridge.length>0){
+                    var root = createBranch();
+                    pushBridge(root);
+                    pushBridge(root);
+                    pushPCI(root, "test", 0, ["eth0"]);
+                }
+                $scope.drawBridgesAndPciDev(root, array[0].entitiesBridge, array[0].entitiesPciDev);
+           
+                drawTree(root);
+                $scope.treePCI[index] = true;
+            }
+        }
+
+        $scope.drawBridgesAndPciDev = function(root, arrayBridge, arrayPciDev){
+            var level;
+
+            console.log("test1");
+            for(var i=1; i<arrayBridge.length; i++){
+                if(i==1){
+                    level = root.nodes[0].childBranch;
+                    pushJoint(level);
+                    pushBridge(level);
+                    pushPCI(level, "test", 0, ["eth"+i]);
+                }
+                else{
+                    level = $scope.addBranch(level);
+                    pushJoint(level);
+                    pushBridge(level);
+                    pushPCI(level, "test", 0, ["eth"+i]);
+                }
+            }
+            $scope.drawPciDev(level, arrayPciDev);        
+        }
+
+        $scope.drawPciDev = function(origin, arrayPciDev){
+            console.log("origin :"+origin);
+            for(var j=0; j<arrayPciDev; j++){
+                level = $scope.addBranch(origin);
+                pushJoint(level);
+                pushPCI(level, "test", 0, ["pci"]);
+            }
+        }
+
+        $scope.addBranch = function(origin){
+            return origin.nodes[0].childBranch;
+        }
+    
+    $scope.begin=function(array, index, $event){
+        console.log("init "+index);
+        console.log("event "+$event);
+        console.log(array);
+        var e = document.getElementById("div"+index);
+        console.log("div init:"+e);
+        $scope.test(array,index);
+    }
+    
+});
