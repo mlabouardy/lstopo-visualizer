@@ -49,23 +49,8 @@
                 </div>
 
                     <div class="pcis">
-                        <div id="div{{$index}}" ng-controller="TestCtrl" ng-init="begin(entity.entitiesBridge, $index, $event)" >
-
-                            
+                        <div id="{{ 'object-' + $index }}" ng-controller="TestCtrl" ng-init="begin(entity.entitiesBridge, $index)" >
                         </div>
-                        <!--<ul>
-                            <li ng-repeat="bridge in entity.entitiesBridge">
-                                <p>{{bridge.type}} {{bridge.depth}}</p>
-
-                                <ul>
-                                    <li ng-repeat="bridge in bridge.entitiesBridge" ng-include="'bridgeTree'">
-                                    
-                                    </li>
-                                </ul> 
-                            
-                            </li>
-                        </ul> -->
-                        {{drawPci(entity.entitiesBridge, $index)}}
                     </div>
 
                 </div>
@@ -125,15 +110,15 @@
 
 
 
-         <div ng-show="ShowGroup(entity)" ng-if="isGroup(entity)">  
+         <div ng-show="ShowGroup(entity)" ng-if="isGroup(entity)">
                 {{entity.type}} P#{{entity.depth}}
 
                 <div ng-style="{'background-color':items[7].value}" ng-show="checkPackage(node.packageOfCacheAndCores.os_index)" ng-repeat="node in entity.entities" class="node">
-                   
+
                     <div ng-style="{'background-color':items[6].value}" class="numanode">
                         <p>
                             {{node.numanode.type}} P#{{node.numanode.os_index}} ({{convertMemory(node.numanode.local_memory, "gb")}}GB)</p>
-                    </div>  
+                    </div>
                     <div ng-style="{'background-color':items[5].value}" class="package">
                          Package#{{node.packageOfCacheAndCores.os_index}}
                     <div class="insideNode">

@@ -3,6 +3,10 @@
 
   ![Alt text](preview/app.png "")
 
+# Current results
+
+  ![Alt text](preview/current.png "")
+
 # Continous Integration
   - How it works:
     ![Alt text](preview/howitworks.png "")
