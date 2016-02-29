@@ -15,10 +15,11 @@ angular.module('myApp')
             this.pus = [];
         }
 
-        function cache(type, cache_size, depth) {
+        function cache(type, cache_size, depth, cache_type) {
             this.type = type;
             this.cache_size = cache_size;
             this.depth = depth;
+            this.cache_type = cache_type;
         }
 
         function numanode(type, os_index, local_memory) {
@@ -43,6 +44,9 @@ angular.module('myApp')
         function entityWithNodeAndPackage() {
             this.numanode = {};
             this.packageOfCacheAndCores = {};
+
+            //PCI
+            this.entitiesBridge = [];
         }
 
         function packageOfEntityWithNodeAndCaches(type, os_index) {
@@ -55,6 +59,111 @@ angular.module('myApp')
             this.type = type;
             this.depth = depth;
             this.entities = [];
+        }
+
+        function entitySocket(type, os_index){
+            this.type = type;
+            this.os_index = os_index;
+            this.caches = [];
+            this.cores = [];
+        }
+
+        function entityBridge(type, depth){
+            this.type = type;
+            this.depth = depth;
+            this.entitiesBridge = [];
+            this.entitiesPciDev = [];
+        }
+
+        function entityPciDev(type, infos){
+            this.type = type;
+            this.infos = infos;
+            this.entitiesOsDev = [];
+        }
+
+        function entityOsDev(type, name, infos){
+            this.type = type;
+            this.name = name;
+            this.infos = infos;
+        }
+
+        //Extraction des entités de type Bridge parent
+        $scope.extractBridges = function(datas, entity){
+            var bridge = new entityBridge(datas._type, datas._depth);
+
+            $scope.extractBridgesChild(datas.object, bridge);
+
+            entity.entitiesBridge.push(bridge);
+        }
+
+        //Extraction des entités de type Bridge enfant
+        $scope.extractBridgesChild = function(datas, bridge){
+            if(datas instanceof Array){
+                for(var i=0; i<datas.length; i++){
+                    if(datas[i]._type == "Bridge"){
+                        var bridgeChild = new entityBridge(datas[i]._type, datas[i]._depth);
+
+                        $scope.extractBridgesChild(datas[i].object, bridgeChild);
+                        
+                        bridge.entitiesBridge.push(bridgeChild);
+                    } 
+                    else if(datas[i]._type == "PCIDev"){
+                        $scope.extractPciDev(datas[i], bridge);
+                    }
+                }
+            }
+            else if(datas._type == "Bridge"){
+                var bridgeChild = new entityBridge(datas._type, datas._depth);
+
+                $scope.extractBridgesChild(datas.object, bridgeChild);
+
+                bridge.entitiesBridge.push(bridgeChild);
+            }
+            else if(datas._type == "PCIDev"){
+                $scope.extractPciDev(datas, bridge);
+            }
+        }
+
+        //Extraction des entités de type PCIDev
+        $scope.extractPciDev = function(datas, bridge){
+
+            if(datas instanceof Array){
+                for(var i=0; i<datas.length; i++){
+                    var pci = new entityPciDev(datas[i]._type, datas[i].info);
+
+                    if(datas[i].object){
+                        $scope.extractOsDev(datas[i].object, pci);
+                    }
+
+                    bridge.entitiesPciDev.push(pci);
+                }
+            }
+            else{
+                var pci = new entityPciDev(datas._type, datas.info);
+
+                if(datas.object){
+                    $scope.extractOsDev(datas.object, pci);
+                }
+
+                bridge.entitiesPciDev.push(pci);
+            }
+        }
+
+        //Extraction des entités de type OSDev
+        $scope.extractOsDev = function(datas, pci){
+            if(datas instanceof Array){
+                for(var i=0; i<datas.length; i++){
+                    var os = new entityOsDev(datas[i]._type, datas[i]._name, datas[i].info);
+
+                    pci.entitiesOsDev.push(os);
+                }
+
+            }
+            else{
+                var os = new entityOsDev(datas._type, datas._name, datas.info);
+
+                pci.entitiesOsDev.push(os);
+            }
         }
 
         $scope.extractEntities = function(){
@@ -71,7 +180,19 @@ angular.module('myApp')
                 else if ($scope.jsonObj.object[i]._type == "Group"){
                     $scope.entities.push($scope.fillGroupOfEntityWithNodeAndPackage($scope.jsonObj.object[i]));
                 }
+
+                else if ($scope.jsonObj.object[i]._type == "Socket"){
+                    $scope.entities.push($scope.fillSocket($scope.jsonObj.object[i]));
+                }
             }
+        }
+
+        $scope.fillSocket = function(datas){
+            var socket = new entitySocket(datas._type, datas._os_index);
+
+            $scope.extractCachesAndCores(datas.object, socket);
+
+            return socket;
         }
 
         $scope.fillGroupOfEntityWithNodeAndPackage = function(datas){
@@ -92,7 +213,9 @@ angular.module('myApp')
             var node = new entityWithNodeAndPackage();
             node.numanode = new numanode(datas._type, datas._os_index, datas._local_memory);
 
+
             if(datas.object instanceof Array){
+                $scope.extractBridges(datas.object[1], node);
                 var package = new packageOfCacheAndCores(datas.object[0]._type, datas.object[0]._os_index);
 
                 $scope.extractCachesAndCores(datas.object[0].object, package);
@@ -140,14 +263,14 @@ angular.module('myApp')
 
             if(datas instanceof Array){
                 for(var i=0; i<datas.length; i++){
-                    var cacheL3 = new cache(datas[i]._type, datas[i]._cache_size, datas[i]._depth);
+                    var cacheL3 = new cache(datas[i]._type, datas[i]._cache_size, datas[i]._depth, datas[i]._cache_type);
                     entity.caches.push(cacheL3);
 
                     $scope.extractSecondLevelOfCache(datas[i].object, entity);
                 }
             }
             else{
-                var cacheL3 = new cache(datas._type, datas._cache_size, datas._depth);
+                var cacheL3 = new cache(datas._type, datas._cache_size, datas._depth, datas._cache_type);
                 entity.caches.push(cacheL3);
                 
                 $scope.extractSecondLevelOfCache(datas.object, entity)
@@ -162,72 +285,61 @@ angular.module('myApp')
                     var cacheL2 = new cache(
                         datas[j]._type,
                         datas[j]._cache_size, 
-                        datas[j]._depth);
+                        datas[j]._depth,
+                        datas[j]._cache_type);
                     entity.caches.push(cacheL2);
 
-                    //Extraction des caches L1
-                    if(datas[j].object instanceof Array){
-                        for(var y=0; y<datas[j].object.length; y++){
-                            var cacheL1 = new cache(
-                                datas[j].object[y]._type,
-                                datas[j].object[y]._cache_size,
-                                datas[j].object[y]._depth);
-                            entity.caches.push(cacheL1);
-
-                            $scope.extractLastLevelOfCacheAndCores(datas[j].object[y].object, entity);
-                        }
-                    }
-                    else{
-                        var cacheL1 = new cache(
-                                datas[j].object._type,
-                                datas[j].object._cache_size,
-                                datas[j].object._depth);
-                        entity.caches.push(cacheL1);
-
-                        $scope.extractLastLevelOfCacheAndCores(datas[j].object.object, entity);
-                    }
+                    $scope.extractThirdLevelOfCache(datas[j].object, entity);
                 }
             }
             else{
                 var cacheL2 = new cache(
                         datas._type,
                         datas._cache_size, 
-                        datas._depth);
+                        datas._depth,
+                        datas._cache_type);
                 entity.caches.push(cacheL2);
 
-                //Extraction des caches L1
-                if(datas.object instanceof Array){
-                    for(var y=0; y<datas[j].object.length; y++){
-                        var cacheL1 = new cache(
-                            datas[j].object[y]._type,
-                            datas[j].object[y]._cache_size,
-                            datas[j].object[y]._depth);
-                        entity.caches.push(cacheL1);
+                $scope.extractThirdLevelOfCache(datas.object, entity);
+            }
+        }
 
-                        $scope.extractLastLevelOfCacheAndCores(data[j].object[y].object, entity);
-                    }
-                }
-                else{
+        $scope.extractThirdLevelOfCache = function(datas, entity){
+            //Extraction des caches L1
+            if(datas instanceof Array){
+                for(var y=0; y<datas.length; y++){
                     var cacheL1 = new cache(
-                            datas.object._type,
-                            datas.object._cache_size,
-                            datas.object._depth);
+                        datas[y]._type,
+                        datas[y]._cache_size,
+                        datas[y]._depth,
+                        datas[y]._cache_type);
                     entity.caches.push(cacheL1);
 
-                    $scope.extractLastLevelOfCacheAndCores(datas.object.object, entity);
+                    $scope.extractLastLevelOfCacheAndCores(datas[y].object, entity);
                 }
+            }
+            else{
+                var cacheL1 = new cache(
+                        datas._type,
+                        datas._cache_size,
+                        datas._depth,
+                        datas._cache_type);
+                entity.caches.push(cacheL1);
+
+                $scope.extractLastLevelOfCacheAndCores(datas.object, entity);
             }
         }
 
         //Fonction d'extraction du dernier niveau de cache L1 et des cores
         $scope.extractLastLevelOfCacheAndCores = function(datas, entity){
-            if(datas._type == "L1iCache"){
+            if(datas._type == "L1iCache" || datas._type == "Cache"){
 
                 //Extraction du second cache L1
                 var cacheL1 = new cache(
                     datas._type,
                     datas._cache_size,
-                    datas._depth);
+                    datas._depth,
+                    datas._cache_type);
                     entity.caches.push(cacheL1);
 
                 //Extraction des cores
@@ -292,7 +404,15 @@ angular.module('myApp')
             }
         }
 
-        //petite modification à faire : rendre dynamique le rendu selon la taille
+        $scope.isSocket = function(entity){
+             if(entity.type == "Socket"){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
         $scope.convertMemory = function(value, unity){
             if(unity == "gb"){
                 return Math.round(value/Math.pow(1024, 3));
@@ -332,6 +452,7 @@ angular.module('myApp')
         {object : "Package", value : "#DEDEDE" }, {object : "NUMANode", value : "#EFDFDE" }, {object : "Node", value : "#D2E7A4" }];
         $scope.currentItem = ["Cores","white"];
         $scope.AddColor = ["",""];
+        $scope.alignement = true;
         $scope.zoom = 1;
 
        $scope.checkPackage = function(Package){
@@ -344,8 +465,8 @@ angular.module('myApp')
             return tmp;
         }
 
-        $scope.checkGroups = function(){
-            return ($scope.arrayGroups[0] != undefined);
+        $scope.checkGroups = function(group){
+            return (group[0] != undefined);
         }
 
         $scope.ShowGroup = function(entity){
@@ -371,7 +492,7 @@ angular.module('myApp')
                         $scope.arrayPackages.push({os_index : packages.packageOfCacheAndCores.os_index , value : true});
                     });
                 }
-                if (entity.type != "Group" && entity.type != "Package" ){
+                if (entity.type != "Group" && entity.type != "Package" && entity.type != "Socket"){
                     $scope.arrayPackages.push({os_index : entity.packageOfCacheAndCores.os_index , value : true});
                 }
             });
@@ -411,6 +532,64 @@ angular.module('myApp')
             else{
                 $scope.zoom -= 0.2;
             }
+        }
+
+        $scope.sizeCacheWithDepthAndType = function(array, depth, type){
+            var cpt = 0;
+            for(var i=0; i<array.length; i++){
+                if(array[i].depth == depth && array[i].cache_type == type){
+                    cpt++;
+                }
+            }
+            return (100-(cpt))/cpt+"%";
+        }
+        
+        $scope.treePCI = [];
+
+        $scope.drawPci = function(array, index){
+
+            if($scope.treePCI[index] != true){
+                paper = new joint.dia.Paper({
+                    el: $('#object-'+index),
+                    model: graph,
+                    gridSize: 1
+                });
+
+                var e = document.getElementById("object-"+index);
+                e.style.width = "100%";
+                e.style.height = "100%";
+
+                var root = createBranch();
+                pushBridge(root);
+                pushPCI(root, "test", 0, ["eth0"]);
+
+
+                $scope.drawBridge(root, array[0].entitiesBridge);
+           
+                drawTree(root);
+                $scope.treePCI[index] = true;
+            }
+        }
+
+        $scope.drawBridge = function(root, array){
+            for(var i=0; i<array.length; i++){
+                if(i==0){
+                    var level = root.nodes[0].childBranch;
+                    pushJoint(level);
+                    pushBridge(level);
+                    pushPCI(level, "test", 0, ["eth"+i]);
+                }
+                else{
+                    var level = $scope.addBranch(level);
+                    pushJoint(level);
+                    pushBridge(level);
+                    pushPCI(level, "test", 0, ["eth"+1]);
+                }
+            }
+        }
+
+        $scope.addBranch = function(origin){
+            return origin.nodes[0].childBranch;
         }
 
         $scope.extractEntities();

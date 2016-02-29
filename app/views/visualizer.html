@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <h2>lstopo</h2>
 
 <div id="left">
@@ -223,3 +224,81 @@
     </div>
     </div>
 </div>
+=======
+    <h2>lstopo</h2>
+    <table class="table bc">
+        <tbody>
+            <tr ng-repeat="entity in entities">
+                <td>
+                    <table class="table bc">
+                        <tr>
+                            <td id="cachesAndCores">
+                                <p>{{entity._type}} ({{convertSizeInMb(entity._local_memory)}}MB)</p>
+                                {{infoSocket}}
+                                <table class="table biggestCache">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <p>L{{entity.object[0].object._depth}} ({{convertSizeInKb(entity.object[0].object._cache_size)}}KB)</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <table class="table secondCache">
+                                    <tbody>
+                                        <tr>
+                                            <td ng-repeat="cache2 in entity.object[0].object.object">
+                                                <p>L{{cache2._depth}} ({{convertSizeInKb(cache2._cache_size)}}KB)</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <table class="table cacheL1">
+                                    <tbody>
+                                        <tr>
+                                            <td ng-repeat="cache1 in entity.object[0].object.object">
+                                                <p>L{{cache1.object._depth}} ({{convertSizeInKb(cache1.object._cache_size)}}KB)</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <table class="table cacheL1">
+                                    <tbody>
+                                        <tr>
+                                            <td ng-repeat="cache1bis in entity.object[0].object.object">
+                                                <p>L{{cache1bis.object._depth}} ({{convertSizeInKb(cache1bis.object._cache_size)}}KB)</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <table class="table cores">
+                                    <tbody>
+                                        <tr>
+                                            <td ng-repeat="core in cores">
+                                                <p>{{core._type}} P#{{core._os_index}}</p>
+                                                <table class="table pus">
+                                                    <tr ng-repeat="pu in core.object">
+                                                        <td>
+                                                            <p>{{pu._type}} P#{{pu._os_index}}</p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td id="pcis">
+                                <p>Emplacement des PCIs</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+>>>>>>> e95e6fc7b0945962fc1cdab38b20f612544a0015

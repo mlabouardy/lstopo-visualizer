@@ -375,7 +375,7 @@
             {
                "object":[
                   {
-                     "object":{
+                     "object":{//pci1  begin
                         "object":[
                            {
                               "_type":"OSDev",
@@ -393,7 +393,7 @@
                         "_pci_busid":"0000:01:00.0",
                         "_pci_type":"0302 [10de:1292] [103c:1963] a1",
                         "_pci_link_speed":"0.000000"
-                     },
+                     },//pci1  end
                      "_type":"Bridge",
                      "_os_index":"16",
                      "_bridge_type":"1-1",
@@ -404,7 +404,7 @@
                      "_pci_link_speed":"0.000000"
                   },
                   {
-                     "object":[
+                     "object":[//pci2  begin
                         {
                            "_type":"OSDev",
                            "_name":"card0",
@@ -421,9 +421,9 @@
                      "_pci_busid":"0000:00:02.0",
                      "_pci_type":"0300 [8086:0416] [103c:1963] 06",
                      "_pci_link_speed":"0.000000"
-                  },
+                  }, //pci2  end
                   {
-                     "object":{
+                     "object":{//pci3  begin
                         "object":{
                            "info":{
                               "_name":"Address",
@@ -438,7 +438,7 @@
                         "_pci_busid":"0000:07:00.0",
                         "_pci_type":"0280 [1814:3290] [103c:18ec] 00",
                         "_pci_link_speed":"0.000000"
-                     },
+                     },//pci3  end
                      "_type":"Bridge",
                      "_os_index":"448",
                      "_bridge_type":"1-1",
@@ -449,7 +449,7 @@
                      "_pci_link_speed":"0.000000"
                   },
                   {
-                     "object":{
+                     "object":{//pci4  begin
                         "object":{
                            "info":{
                               "_name":"Address",
@@ -464,7 +464,7 @@
                         "_pci_busid":"0000:0f:00.0",
                         "_pci_type":"0200 [10ec:8168] [103c:1963] 0c",
                         "_pci_link_speed":"0.000000"
-                     },
+                     },//pci4  end
                      "_type":"Bridge",
                      "_os_index":"454",
                      "_bridge_type":"1-1",
@@ -474,7 +474,7 @@
                      "_pci_type":"0604 [8086:8c1c] [103c:1963] d5",
                      "_pci_link_speed":"0.000000"
                   },
-                  {
+                  {//pci5  begin
                      "object":{
                         "_type":"OSDev",
                         "_name":"sda",
@@ -486,7 +486,7 @@
                      "_pci_type":"0106 [8086:8c03] [103c:1963] 05",
                      "_pci_link_speed":"0.000000"
                   }
-               ],
+               ],//pci5  end
                "_type":"Bridge",
                "_os_index":"0",
                "_bridge_type":"0-1",
