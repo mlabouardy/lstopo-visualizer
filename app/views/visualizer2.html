@@ -47,16 +47,15 @@
                     </div>
 
                 </div>
-
-                    <div class="pcis">
-                        <div id="{{ 'object-' + $index }}" ng-controller="TestCtrl" ng-init="begin(entity.entitiesBridge, $index)" >
-                        </div>
+                <!--
+                <div class="pcis">
+                    <div id="{{ 'object-' + $index }}" ng-controller="TestCtrl" ng-init="begin(entity.entitiesBridge, $index)" >
                     </div>
-
                 </div>
+                -->
+
             </div>
-
-
+        </div>
 
         <div ng-show="checkPackage(entity.os_index)" ng-if="isPackage(entity)">
             <div ng-style="{'background-color':items[5].value}" class="package">
@@ -108,25 +107,20 @@
             </div>
         </div>
 
-
-
          <div ng-show="ShowGroup(entity)" ng-if="isGroup(entity)">
-                {{entity.type}} P#{{entity.depth}}
+                <p> {{entity.type}}{{entity.depth}}<p>
 
                 <div ng-style="{'background-color':items[7].value}" ng-show="checkPackage(node.packageOfCacheAndCores.os_index)" ng-repeat="node in entity.entities" class="node">
 
                     <div ng-style="{'background-color':items[6].value}" class="numanode">
-                        <p>
-                            {{node.numanode.type}} P#{{node.numanode.os_index}} ({{convertMemory(node.numanode.local_memory, "gb")}}GB)</p>
+                        <p>{{node.numanode.type}} P#{{node.numanode.os_index}} ({{convertMemory(node.numanode.local_memory, "gb")}}GB)</p>
                     </div>
-                    <div ng-style="{'background-color':items[5].value}" class="package">
-                         Package#{{node.packageOfCacheAndCores.os_index}}
-                    <div class="insideNode">
+
+                    <div ng-style="{'background-color':items[5].value}" class="insidePackage">
+                        <p>Package#{{node.packageOfCacheAndCores.os_index}}</p>
                         <div ng-show ="showL3 == true" class="caches">
                             <span ng-style="{'background-color':items[2].value, 'width': sizeCache(node.packageOfCacheAndCores.caches, 'L3Cache')}" ng-repeat="cache3 in node.packageOfCacheAndCores.caches | filter:{ type: 'L3Cache' }">
-
-                                <p>
-                                    L{{cache3.depth}} ({{convertMemory(cache3.cache_size, "mb")}}MB)</p>
+                                <p>L{{cache3.depth}} ({{convertMemory(cache3.cache_size, "mb")}}MB)</p>
                             </span>
                         </div>
 
@@ -162,7 +156,7 @@
                                         <tr>
                                             <td ng-repeat="pu in core.pus">
                                                 <div ng-style="{'background-color':items[1].value}" class="pu" >
-                                        <p>{{pu.type}} P#{{pu.os_index}}</p>
+                                                    <p>{{pu.type}} P#{{pu.os_index}}</p>
                                                 </div>
                                             </td>
                                         </tr>
@@ -171,11 +165,9 @@
 
                             </span>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>
-
 
          <div ng-if="isSocket(entity)">
             <div class="socket">

@@ -246,9 +246,7 @@ angular.module('myApp')
             node.numanode = new numanode(datas._type, datas._os_index, datas._local_memory);
 
             if(datas.object instanceof Array){
-                //$scope.extractBridges(datas.object[1], node);
                 $scope.extractEntitiesBridge(datas.object[1], node.entitiesBridge);
-                //console.log(datas.object[1]);
                 var package = new packageOfCacheAndCores(datas.object[0]._type, datas.object[0]._os_index);
 
                 $scope.extractCachesAndCores(datas.object[0].object, package);
@@ -579,7 +577,6 @@ angular.module('myApp')
 
         $scope.extractEntities();
         $scope.extractPackage();
-        console.log($scope.entities);
     }
 )
 
