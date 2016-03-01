@@ -116,3 +116,10 @@
 	float:right;
 	width : 24%;
 }
+
+.osdev {
+	border: 2px solid #7F7F7F;
+	background-color: #DEDEDE;
+	display: inline-block;
+	padding: 1%;
+}

@@ -47,12 +47,18 @@
                     </div>
 
                 </div>
-                <!--
+
                 <div class="pcis">
-                    <div id="{{ 'object-' + $index }}" ng-controller="TestCtrl" ng-init="begin(entity.entitiesBridge, $index)" >
-                    </div>
+                    <!--<div id="{{ 'object-' + $index }}" ng-controller="TestCtrl" ng-init="begin(entity.entitiesBridge, $index)" >
+                    </div>-->
+                    <ul>
+                        <li ng-repeat="bridge in entity.entitiesBridge" ng-include="'bridgeTree'"></li>
+                    </ul>
+
+                    <!--<table>
+                        <tr ng-repeat="bridge in entity.entitiesBridge" ng-include="'bridgeTreeBis'"></tr>
+                    </table>-->
                 </div>
-                -->
 
             </div>
         </div>
@@ -293,12 +299,29 @@
 <script src="scripts/graph_PCI/graph_PCI.js"></script>
 <!-- template récursif pour l'affichage des bridges -->
 <script type="text/ng-template" id="bridgeTree">
-    <p>{{bridge.type}} {{bridge.depth}}</p>
-    <div class="pci" ng-repeat="pci in bridge.entitiesPciDev">
-        <p>{{pci.type}}<p>
-    </div>
-    <ul ng-if="bridge.entitiesBridge">
-        <li ng-repeat="bridge in bridge.entitiesBridge" ng-include="'bridgeTree'">
+    <p ng-if="bridge.type=='Bridge'">{{bridge.type}} {{bridge.depth}}</p>
+    <p ng-if="bridge.type=='PCIDev'">PCI {{convertBusid(bridge.pci_busid)}}</p>
+    <ul ng-if="bridge.child">
+        <li ng-repeat="bridge in bridge.child" ng-include="'bridgeTree'">
+
         </li>
     </ul>
+    <div ng-if="bridge.entitiesOsDev">
+        <div class="osdev" ng-repeat="os in bridge.entitiesOsDev">
+            <p> {{os.name}} </p>
+        </div>
+    </div>
 </script>
+
+<!--<script type="text/ng-template" id="bridgeTreeBis">
+    <td>
+        <p>
+            {bridge.type}} {{bridge.depth}}
+        </p>
+    </td>
+
+    <tr ng-if="bridge.child">
+        <td ng-repeat="bridge in bridge.child">
+        </td>
+    </tr>
+</script>-->

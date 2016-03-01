@@ -575,8 +575,13 @@ angular.module('myApp')
             return (100-(cpt))/cpt+"%";
         }
 
+        $scope.convertBusid = function(value){
+            return value.substr(5, 7);
+        }
+
         $scope.extractEntities();
         $scope.extractPackage();
+        console.log($scope.entities);
     }
 )
 
