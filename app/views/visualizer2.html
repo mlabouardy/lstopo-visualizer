@@ -299,18 +299,21 @@
 <script src="scripts/graph_PCI/graph_PCI.js"></script>
 <!-- template récursif pour l'affichage des bridges -->
 <script type="text/ng-template" id="bridgeTree">
-    <p ng-if="bridge.type=='Bridge'">{{bridge.type}} {{bridge.depth}}</p>
-    <p ng-if="bridge.type=='PCIDev'">PCI {{convertBusid(bridge.pci_busid)}}</p>
+    <div ng-if="bridge.type=='Bridge'" class="bridge"></div> 
+    <!--<p ng-if="bridge.type=='Bridge'">{{bridge.type}} {{bridge.depth}}</p>-->
+    <!--<p ng-if="bridge.type=='PCIDev'">PCI {{convertBusid(bridge.pci_busid)}}</p>-->
+    <div ng-if="bridge.type=='PCIDev'" class="pcidev"><p>PCI {{convertBusid(bridge.pci_busid)}}</p>
+        <div ng-if="bridge.entitiesOsDev">
+            <div class="osdev" ng-repeat="os in bridge.entitiesOsDev">
+                <p> {{os.name}} </p>
+            </div>
+        </div>
+    </div>
     <ul ng-if="bridge.child">
         <li ng-repeat="bridge in bridge.child" ng-include="'bridgeTree'">
 
         </li>
     </ul>
-    <div ng-if="bridge.entitiesOsDev">
-        <div class="osdev" ng-repeat="os in bridge.entitiesOsDev">
-            <p> {{os.name}} </p>
-        </div>
-    </div>
 </script>
 
 <!--<script type="text/ng-template" id="bridgeTreeBis">
