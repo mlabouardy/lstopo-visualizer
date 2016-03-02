@@ -1,4 +1,4 @@
-angular.module('myApp', ['ngRoute','cb.x2js'])
+angular.module('myApp', ['ngRoute','cb.x2js', 'LocalStorageModule', 'isteven-multi-select','colorpicker.module'])
   .config(function($routeProvider) {
     $routeProvider
     .when('/', {

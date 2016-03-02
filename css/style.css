@@ -1,94 +1,89 @@
-h2{
-	width: 100%;
-	text-align: center;
-	margin-bottom: 75px;
-}
-
-#main{
-	width: 100%;
-	height: 100%;
-}
-
 #cachesAndCores{
 	background-color: #DEDEDE;
 	border: 3px #6F6F6F solid;
 	width: 60%;
-	height: 100%;
-	padding: 1%;
 }
 
-#cache3{
-	border: 0px black solid;
+.biggestCache {
 	background-color: #DEDEDE;
-	width: 100%;
-	border-collapse:separate;
-	border-spacing: 20px;
+	border-collapse: separate;
+	border-spacing: 1em 0;
 }
 
-#cache3 tr{
+.biggestCache tr {
 	background-color: #DEDEDE;
-	width: 100%;
 }
 
-#cache3 td{
-	background-color: #FFFFFF;
+.biggestCache tbody > tr > td {
+	background-color: #DEDEDE;
 	border: 3px #6F6F6F solid;
-	padding: 0.5%;
 }
 
-#cache2{
-	border: 0px black solid;
+.secondCache {
+	border-collapse: separate;
 	background-color: #DEDEDE;
-	width: 100%;
-	border-collapse:separate;
-	border-spacing: 20px;
+	border-spacing: 1em 0;
 }
 
-#cache2 tr{
+.secondCache tbody{
 	background-color: #DEDEDE;
-	width: 100%;
 }
 
-#cache2 td{
-	background-color: #FFFFFF;
+.secondCache tr {
+	background-color: #DEDEDE;
+}
+
+.secondCache tbody > tr > td {
+	background-color: #DEDEDE;
 	border: 3px #6F6F6F solid;
-	padding: 0.5%;
 }
 
-#cores{
-	border: 0px black solid;
+.cacheL1 {
+	border-collapse: separate;
 	background-color: #DEDEDE;
-	width: 100%;
-	border-collapse:separate;
-	border-spacing: 20px;
+	border-spacing: 1em 0;
 }
 
-#cores tr{
+.cacheL1 tbody{
 	background-color: #DEDEDE;
-	width: 100%;
 }
 
-#cores td{
+.cacheL1 tr {
+	background-color: #DEDEDE;
+}
+
+.cacheL1 tbody > tr > td {
+	background-color: #DEDEDE;
+	border: 3px #6F6F6F solid;
+}
+
+.cores {
+	border-collapse: separate;
+	border-spacing: 1em 0;
+	background-color: #DEDEDE;
+}
+
+.cores tbody {
+	background-color: #DEDEDE;
+}
+
+.cores tr {
+	background-color: #DEDEDE;
+}
+
+.cores tbody > tr > td {
 	background-color: #BEBEBE;
 	border: 3px #6F6F6F solid;
-	text-align: center;
-	padding: 0.5%;
 }
 
-#pus{
-	background-color: #FFFFFF;
-	border: 0px black solid;
-	width: 50%;
-	height: 60%;
-	border-collapse: collapse;
-	margin: 0 auto;
+.pus {
+	background-color: #DEDEDE;
 }
 
-#pus tr{
-	background-color: #FFFFFF;
+.pus tr{
+	background-color: #DEDEDE;
 }
 
-#pus td{
+.pus tbody > tr > td{
 	background-color: #FFFFFF;
-	padding: 0.5%;
 }
