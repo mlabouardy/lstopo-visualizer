@@ -2,16 +2,17 @@
 <html lang="fr" ng-app="myApp">
 <head>
   <meta charset="utf-8" />
-  <title>ltopo</title>
+  <title>LSTopo Visualizer</title>
   <link rel="stylesheet" href="bower_components/bootstrap-css/css/bootstrap.min.css">
   <link rel="stylesheet" href="css/style.css">
-
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <!-- provisoir -->
   <link rel="stylesheet" href="css/style2.css">
   <link rel="stylesheet" href="scripts/graph_PCI/libs/joint.css" />
 
+
 </head>
-<body  style="background: url('img/content.png')">
+<body  class="container-fluid" style="background: url('img/content.png');margin-top:20px;">
   <div ng-view=""></div>
 </body>
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
@@ -27,7 +28,6 @@
 <script src="scripts/controllers/visualizer.js" charset="utf-8"></script>
 
 <!-- provisoir -->
-<script src="scripts/controllers/visualizer2.js" charset="utf-8"></script>
 <script src="scripts/services/html2canvas.js" charset="utf-8"></script>
 <script src="scripts/services/html2canvas.svg.js" charset="utf-8"></script>
 <script src="scripts/services/jsonfactory.js" charset="utf-8"></script>
