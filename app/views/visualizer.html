@@ -9,13 +9,7 @@
         <div class="row">
           <div class="form-group col-md-3">
             <label>Show</label>
-            <select class="form-control">
-              <option>L1</option>
-              <option>L2</option>
-              <option>L3</option>
-              <option>Cores</option>
-              <option>PU</option>
-            </select>
+            <div isteven-multi-select input-model="config.show" style="min-width:100%" output-model="serviceLinks" button-label="name" item-label="name maker" tick-property="ticked"></div>
           </div>
           <div class="form-group col-md-3">
             <label>Packages</label>
@@ -26,14 +20,17 @@
           </div>
           <div class="form-group col-md-3">
             <label>Colors</label>
-            <select class="form-control">
-              <option>1</option>
-              <option>2</option>
-            </select><br/>
-            <select class="form-control">
-              <option>1</option>
-              <option>2</option>
-            </select>
+            <div class="row">
+              <div ng-repeat="d in userConfig.colors" class="form-group col-md-12">
+                <div class="col-md-3">
+                  <label>{{d.name}}</label>
+                </div>
+                <div class="col-md-9">
+                  <input colorpicker type="text" class="form-control" ng-model="d.color" ng-change="changeColor(d)"/>
+                </div>
+              </div>
+            </div>
+
           </div>
           <div class="form-group col-md-3">
             <label>Save Image</label>
@@ -65,36 +62,36 @@
                 <div ng-style="{'background-color':items[5].value}" class="insidePackage">
                   <p>{{entity.packageOfCacheAndCores.type}} P#{{entity.packageOfCacheAndCores.os_index}}</p>
 
-                  <div ng-show="showL3 == true" class="caches">
-                    <span ng-repeat="cache3 in entity.packageOfCacheAndCores.caches | filter:{ type: 'L3Cache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L3Cache'),'background-color':items[2].value}">
+                  <div ng-show="config.show[0].ticked" class="caches">
+                    <span ng-repeat="cache3 in entity.packageOfCacheAndCores.caches | filter:{ type: 'L3Cache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L3Cache'),'background-color':userConfig.colors[0].color}">
                       <p>L{{cache3.depth}} ({{convertMemory(cache3.cache_size, "mb")}}MB)</p>
                     </span>
                   </div>
 
-                  <div ng-show="showL2 == true" class="caches">
-                    <span ng-repeat="cache2 in entity.packageOfCacheAndCores.caches | filter:{ type: 'L2Cache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L2Cache'),'background-color':items[3].value}">
+                  <div ng-show="config.show[1].ticked" class="caches">
+                    <span ng-repeat="cache2 in entity.packageOfCacheAndCores.caches | filter:{ type: 'L2Cache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L2Cache'),'background-color':userConfig.colors[1].color}">
                       <p>L{{cache2.depth}} ({{convertMemory(cache2.cache_size, "kb")}}KB)</p>
                     </span>
                   </div>
 
-                  <div ng-show="showL1 == true"class="caches">
-                    <span ng-repeat="cache1 in entity.packageOfCacheAndCores.caches | filter:{ type: 'L1Cache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L1Cache') ,'background-color':items[4].value}">
+                  <div ng-show="config.show[2].ticked"class="caches">
+                    <span ng-repeat="cache1 in entity.packageOfCacheAndCores.caches | filter:{ type: 'L1Cache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L1Cache') ,'background-color':userConfig.colors[2].color}">
                       <p>L{{cache1.depth}} ({{convertMemory(cache1.cache_size, "kb")}}KB)</p>
                     </span>
                   </div>
 
-                  <div ng-show="showL1 == true" class="caches">
-                    <span ng-repeat="cache1bis in entity.packageOfCacheAndCores.caches | filter:{ type: 'L1iCache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L1iCache'),'background-color':items[4].value}">
+                  <div ng-show="config.show[2].ticked" class="caches">
+                    <span ng-repeat="cache1bis in entity.packageOfCacheAndCores.caches | filter:{ type: 'L1iCache' }" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.caches, 'L1iCache'),'background-color':userConfig.colors[2].color}">
                       <p>L{{cache1bis.depth}}i ({{convertMemory(cache1bis.cache_size, "kb")}}KB)</p>
                     </span>
                   </div>
 
-                  <div ng-show="cores == true" class="cores">
-                    <span ng-repeat="core in entity.packageOfCacheAndCores.cores" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.cores, 'Core'),'background-color':items[0].value}">
+                  <div ng-show="config.show[3].ticked" class="cores">
+                    <span ng-repeat="core in entity.packageOfCacheAndCores.cores" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.cores, 'Core'),'background-color':userConfig.colors[3].color}">
                       <p>{{core.type}} P#{{core.os_index}}</p>
 
-                      <div ng-show="Pu == true" class="pus">
-                        <div ng-style="{'background-color':items[1].value}" class="pu" ng-repeat="pu in core.pus">
+                      <div ng-show="config.show[4].ticked" class="pus">
+                        <div ng-style="{'background-color':userConfig.colors[4].color}" class="pu" ng-repeat="pu in core.pus">
                           <p>{{pu.type}} P#{{pu.os_index}}</p>
                         </div>
                       </div>
@@ -127,36 +124,36 @@
               </div>
 
               <div class="insideNode">
-                <div ng-show ="showL3 == true" class="caches">
-                  <span ng-repeat="cache3 in node.caches | filter:{ type: 'L3Cache' }" ng-style="{'width': sizeCache(node.caches, 'L3Cache'),'background-color':items[2].value}">
+                <div ng-show ="config.show[0].ticked" class="caches">
+                  <span ng-repeat="cache3 in node.caches | filter:{ type: 'L3Cache' }" ng-style="{'width': sizeCache(node.caches, 'L3Cache'),'background-color':userConfig.colors[0].color}">
                     <p>L{{cache3.depth}} ({{convertMemory(cache3.cache_size, "kb")}}KB)</p>
                   </span>
                 </div>
 
-                <div ng-show="showL2 == true" class="caches">
-                  <span ng-repeat="cache2 in node.caches | filter:{ type: 'L2Cache' }" ng-style="{'width': sizeCache(node.caches, 'L2Cache'),'background-color':items[3].value}">
+                <div ng-show="config.show[1].ticked" class="caches">
+                  <span ng-repeat="cache2 in node.caches | filter:{ type: 'L2Cache' }" ng-style="{'width': sizeCache(node.caches, 'L2Cache'),'background-color':userConfig.colors[1].color}">
                     <p>L{{cache2.depth}} ({{convertMemory(cache2.cache_size, "kb")}}KB)</p>
                   </span>
                 </div>
 
-                <div ng-show="showL1 == true" class="caches">
-                  <span ng-repeat="cache1 in node.caches | filter:{ type: 'L1Cache' }" ng-style="{'width': sizeCache(node.caches, 'L1Cache'),'background-color':items[4].value}">
+                <div ng-show="config.show[2].ticked" class="caches">
+                  <span ng-repeat="cache1 in node.caches | filter:{ type: 'L1Cache' }" ng-style="{'width': sizeCache(node.caches, 'L1Cache'),'background-color':userConfig.colors[2].color}">
                     <p>L{{cache1.depth}} ({{convertMemory(cache1.cache_size, "kb")}}KB)</p>
                   </span>
                 </div>
 
-                <div ng-show="showL1 == true" class="caches">
-                  <span ng-repeat="cache1bis in node.caches | filter:{ type: 'L1iCache' }" ng-style="{'width': sizeCache(node.caches, 'L1iCache'),'background-color':items[4].value}">
+                <div ng-show="config.show[2].ticked" class="caches">
+                  <span ng-repeat="cache1bis in node.caches | filter:{ type: 'L1iCache' }" ng-style="{'width': sizeCache(node.caches, 'L1iCache'),'background-color':userConfig.colors[2].color}">
                     <p>L{{cache1bis.depth}} ({{convertMemory(cache1bis.cache_size, "kb")}}KB)</p>
                   </span>
                 </div>
 
-                <div ng-show="cores == true" class="coresInNode">
-                  <span ng-repeat="core in node.cores" ng-style="{'width': sizeCache(node.cores, 'Core'),'background-color':items[0].value}">
+                <div ng-show="config.show[3].ticked" class="coresInNode">
+                  <span ng-repeat="core in node.cores" ng-style="{'width': sizeCache(node.cores, 'Core'),'background-color':userConfig.colors[3].color}">
                     <p>{{core.type}} P#{{core.os_index}}</p>
 
-                    <div ng-show="Pu == true" class="pus">
-                      <div ng-style="{'background-color':items[1].value}" class="pu" ng-repeat="pu in core.pus">
+                    <div ng-show="config.show[4].ticked" class="pus">
+                      <div ng-style="{'background-color':userConfig.colors[4].color}" class="pu" ng-repeat="pu in core.pus">
                         <p>{{pu.type}} P#{{pu.os_index}}</p>
                       </div>
                     </div>
@@ -179,44 +176,44 @@
 
               <div ng-style="{'background-color':items[5].value}" class="insidePackage">
                 <p>Package#{{node.packageOfCacheAndCores.os_index}}</p>
-                <div ng-show ="showL3 == true" class="caches">
-                  <span ng-style="{'background-color':items[2].value, 'width': sizeCache(node.packageOfCacheAndCores.caches, 'L3Cache')}" ng-repeat="cache3 in node.packageOfCacheAndCores.caches | filter:{ type: 'L3Cache' }">
+                <div ng-show ="config.show[0].ticked" class="caches">
+                  <span ng-style="{'background-color':userConfig.colors[0].color, 'width': sizeCache(node.packageOfCacheAndCores.caches, 'L3Cache')}" ng-repeat="cache3 in node.packageOfCacheAndCores.caches | filter:{ type: 'L3Cache' }">
                     <p>L{{cache3.depth}} ({{convertMemory(cache3.cache_size, "mb")}}MB)</p>
                   </span>
                 </div>
 
-                <div ng-show="showL2 == true" class="caches">
-                  <span ng-style="{'background-color':items[3].value , 'width': sizeCache(node.packageOfCacheAndCores.caches, 'L2Cache')}" ng-repeat="cache2 in node.packageOfCacheAndCores.caches | filter:{ type: 'L2Cache' }">
+                <div ng-show="config.show[1].ticked" class="caches">
+                  <span ng-style="{'background-color':userConfig.colors[1].color , 'width': sizeCache(node.packageOfCacheAndCores.caches, 'L2Cache')}" ng-repeat="cache2 in node.packageOfCacheAndCores.caches | filter:{ type: 'L2Cache' }">
                     <p>L{{cache2.depth}} ({{convertMemory(cache2.cache_size, "kb")}}KB)</p>
                   </span>
                 </div>
 
-                <div ng-show="showL1 == true" class="caches">
-                  <span ng-style="{'background-color':items[4].value , 'width': sizeCache(node.packageOfCacheAndCores.caches, 'L1Cache')}" ng-repeat="cache1 in node.packageOfCacheAndCores.caches | filter:{ type: 'L1Cache' }">
+                <div ng-show="config.show[2].ticked" class="caches">
+                  <span ng-style="{'background-color':userConfig.colors[2].color , 'width': sizeCache(node.packageOfCacheAndCores.caches, 'L1Cache')}" ng-repeat="cache1 in node.packageOfCacheAndCores.caches | filter:{ type: 'L1Cache' }">
                     <p>L{{cache1.depth}} ({{convertMemory(cache1.cache_size, "kb")}}KB)</p>
                   </span>
                 </div>
 
-                <div ng-show="showL1 == true" class="caches">
-                  <span ng-style="{'background-color':items[4].value, 'width': sizeCache(node.packageOfCacheAndCores.caches, 'L1iCache')}" ng-repeat="cache1bis in node.packageOfCacheAndCores.caches | filter:{ type: 'L1iCache' }">
+                <div ng-show="config.show[2].ticked" class="caches">
+                  <span ng-style="{'background-color':userConfig.colors[2].color, 'width': sizeCache(node.packageOfCacheAndCores.caches, 'L1iCache')}" ng-repeat="cache1bis in node.packageOfCacheAndCores.caches | filter:{ type: 'L1iCache' }">
                     <p>L{{cache1bis.depth}} ({{convertMemory(cache1bis.cache_size, "kb")}}KB)</p>
                   </span>
                 </div>
 
-                <div ng-class="Core" ng-show="cores == true" class="coresInNode">
+                <div ng-class="config.show[3].ticked" ng-show="cores == true" class="coresInNode">
                   <span ng-style="{'background-color':items[0].value, 'width': sizeCache(node.packageOfCacheAndCores.cores, 'Core')}" ng-repeat="core in node.packageOfCacheAndCores.cores">
                     <p>{{core.type}} P#{{core.os_index}}</p>
 
-                    <div ng-show="Pu == true" class="pus">
+                    <div ng-show="config.show[4].ticked" class="pus">
 
-                      <div ng-show="alignement" ng-style="{'background-color':items[1].value}" class="pu" ng-repeat="pu in core.pus">
+                      <div ng-show="alignement" ng-style="{'background-color':userConfig.colors[3].color}" class="pu" ng-repeat="pu in core.pus">
                         <p>{{pu.type}} P#{{pu.os_index}}</p>
                       </div>
 
                       <table  ng-hide="alignement">
                         <tr>
                           <td ng-repeat="pu in core.pus">
-                            <div ng-style="{'background-color':items[1].value}" class="pu" >
+                            <div ng-style="{'background-color':userConfig.colors[4].color}" class="pu" >
                               <p>{{pu.type}} P#{{pu.os_index}}</p>
                             </div>
                           </td>
@@ -235,35 +232,35 @@
               {{entity.type}} P#{{entity.os_index}}
 
               <div class="caches">
-                <span ng-show ="showL3 == true" ng-repeat="cache3 in entity.caches | filter:{ depth: '3', cache_type: '0'}" ng-style="{'width': sizeCacheWithDepthAndType(entity.caches, '3', '0'),'background-color':items[2].value}">
+                <span ng-show ="config.show[0].ticked" ng-repeat="cache3 in entity.caches | filter:{ depth: '3', cache_type: '0'}" ng-style="{'width': sizeCacheWithDepthAndType(entity.caches, '3', '0'),'background-color':userConfig.colors[0].color}">
                   <p>L{{cache3.depth}} ({{convertMemory(cache3.cache_size, "kb")}}KB)</p>
                 </span>
               </div>
 
               <div class="caches">
-                <span ng-show="showL2 == true" ng-repeat="cache2 in entity.caches | filter:{ depth: '2', cache_type: '0' }" ng-style="{'width': sizeCacheWithDepthAndType(entity.caches, '2', '0'),'background-color':items[3].value}">
+                <span ng-show="config.show[1].ticked" ng-repeat="cache2 in entity.caches | filter:{ depth: '2', cache_type: '0' }" ng-style="{'width': sizeCacheWithDepthAndType(entity.caches, '2', '0'),'background-color':userConfig.colors[1].color}">
                   <p>L{{cache2.depth}} ({{convertMemory(cache2.cache_size, "kb")}}KB)</p>
                 </span>
               </div>
 
               <div class="caches">
-                <span ng-show="showL1 == true" ng-repeat="cache1 in entity.caches | filter:{ depth: '1', cache_type: '1'}" ng-style="{'width': sizeCacheWithDepthAndType(entity.caches, '1', '1'),'background-color':items[4].value}">
+                <span ng-show="config.show[2].ticked" ng-repeat="cache1 in entity.caches | filter:{ depth: '1', cache_type: '1'}" ng-style="{'width': sizeCacheWithDepthAndType(entity.caches, '1', '1'),'background-color':userConfig.colors[2].color}">
                   <p>L{{cache1.depth}}d ({{convertMemory(cache1.cache_size, "kb")}}KB)</p>
                 </span>
               </div>
 
               <div class="caches">
-                <span ng-show="showL1 == true" ng-repeat="cache1bis in entity.caches | filter:{ depth: '1', cache_type: '2'}" ng-style="{'width': sizeCacheWithDepthAndType(entity.caches, '1', '2'),'background-color':items[4].value}">
+                <span ng-show="config.show[2].ticked" ng-repeat="cache1bis in entity.caches | filter:{ depth: '1', cache_type: '2'}" ng-style="{'width': sizeCacheWithDepthAndType(entity.caches, '1', '2'),'background-color':userConfig.colors[2].color}">
                   <p>L{{cache1bis.depth}}i ({{convertMemory(cache1bis.cache_size, "kb")}}KB)</p>
                 </span>
               </div>
 
-              <div ng-show="cores == true" class="cores">
-                <span ng-repeat="core in entity.cores" ng-style="{'width': sizeCache(entity.cores, 'Core'),'background-color':items[0].value}">
+              <div ng-show="config.show[3].ticked" class="cores">
+                <span ng-repeat="core in entity.cores" ng-style="{'width': sizeCache(entity.cores, 'Core'),'background-color':userConfig.colors[3].color}">
                   <p>{{core.type}} P#{{core.os_index}}</p>
 
                   <div class="pus">
-                    <div ng-show="Pu == true" ng-style="{'background-color':items[1].value}" class="pu" ng-repeat="pu in core.pus">
+                    <div ng-show="config.show[4].ticked" ng-style="{'background-color':userConfig.colors[4].color}" class="pu" ng-repeat="pu in core.pus">
                       <p>{{pu.type}} P#{{pu.os_index}}</p>
                     </div>
                   </div>

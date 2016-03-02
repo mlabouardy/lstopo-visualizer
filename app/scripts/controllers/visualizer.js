@@ -466,6 +466,61 @@ angular.module('myApp')
             return (100-(cpt))/cpt+"%";
         }
 
+
+        // Config part
+
+        $scope.config={
+          show:[
+            {
+              name:"L3",
+              ticked:true
+            },
+            {
+              name:"L2",
+              ticked:true
+            },
+            {
+              name:"L1",
+              ticked:true
+            },
+            {
+              name:"Cores",
+              ticked:true
+            },
+            {
+              name:"PU",
+              ticked:true
+            }
+          ]
+        }
+
+        $scope.userConfig={
+          show:[],
+          colors:[
+            {
+              "name":"L3",
+              "color":"#DEDEDE"
+            },
+            {
+              "name":"L2",
+              "color":"#DEDEDE"
+            },
+            {
+              "name":"L1",
+              "color":"#DEDEDE"
+            },
+            {
+              "name":"Cores",
+              "color":"#DEDEDE"
+            },
+            {
+              "name":"PU",
+              "color":"#DEDEDE"
+            }
+          ]
+        };
+
+
         // variables for display or not elements
         $scope.showL1 = true;
         $scope.showL2 = true;
