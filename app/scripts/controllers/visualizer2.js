@@ -437,24 +437,169 @@ angular.module('myApp')
         }
 
         // variables for display or not elements
-        $scope.showL1 = true;
-        $scope.showL2 = true;
-        $scope.showL3 = true;
-        $scope.cores = true;
-        $scope.Pu = true;
-        $scope.arrayPackages = [];
-        $scope.arrayGroups = [];
+        function resetVariables(){
+            $scope.showL1 = true;
+            $scope.showL2 = true;
+            $scope.showL3 = true;
+            $scope.cores = true;
+            $scope.Pu = true;
+            $scope.arrayPackages = [];
+            $scope.arrayGroups = [];
+            $scope.conf = [];
 
-        //variable for color
-        $scope.arrayColors= [{name : "basic_red" , value : "#EFDFDE"}, {name : "basic_green" , value : "#D2E7A4"},
-         { name : "basic_grey_light", value :"#DEDEDE"} , { name : "white", value :"#FFFFFF"}, { name : "basic_grey", value :"#BEBEBE"}];
-        $scope.items = [{object : "Cores", value : "#BEBEBE" } , {object : "Pu", value : "#FFFFFF" },
-        {object : "L3", value : "#FFFFFF" },{object : "L2", value : "#FFFFFF" },{object : "L1", value : "#FFFFFF" },
-        {object : "Package", value : "#DEDEDE" }, {object : "NUMANode", value : "#EFDFDE" }, {object : "Node", value : "#D2E7A4" }];
-        $scope.currentItem = ["Cores","white"];
-        $scope.AddColor = ["",""];
-        $scope.alignement = true;
-        $scope.zoom = 1;
+            //variable for color
+            $scope.arrayColors= [{name : "basic_red" , value : "#EFDFDE"}, {name : "basic_green" , value : "#D2E7A4"},
+             { name : "basic_grey_light", value :"#DEDEDE"} , { name : "white", value :"#FFFFFF"}, { name : "basic_grey", value :"#BEBEBE"}];
+            $scope.items = [{object : "Cores", value : "#BEBEBE" } , {object : "Pu", value : "#FFFFFF" },
+            {object : "L3", value : "#FFFFFF" },{object : "L2", value : "#FFFFFF" },{object : "L1", value : "#FFFFFF" },
+            {object : "Package", value : "#DEDEDE" }, {object : "NUMANode", value : "#EFDFDE" }, {object : "Node", value : "#D2E7A4" }];
+            $scope.currentItem = ["Cores","white"];
+            $scope.AddColor = ["",""];
+            $scope.alignement = true;
+            $scope.zoom = 1;
+
+            check = true;
+            var k = 0;
+
+            if (localStorage.getItem("configuration0") != null){
+                    while(check){
+                        var tmp_object = JSON.parse(localStorage.getItem("configuration" + k.toString()));
+                        if (tmp_object != null){
+                            $scope.conf.push(tmp_object)
+                            k++;
+                        }
+                        else{
+                            break;
+                    }
+                }
+            }
+        }
+
+        function initVariable(){
+            resetVariables();
+        }
+
+        $scope.deleteConf = function(nameConf){
+            var index = $scope.conf.indexOf(nameConf);
+            $scope.conf.splice(index,1);
+
+            var ls = localStorage.getItem("ls.json");
+
+            localStorage.removeItem(nameConf + "showL1");
+            localStorage.removeItem(nameConf + "showL2");
+            localStorage.removeItem(nameConf + "showL3");
+            localStorage.removeItem(nameConf + "cores");
+            localStorage.removeItem(nameConf + "pu");
+            localStorage.removeItem(nameConf + "alignement");
+            localStorage.removeItem(nameConf + "zoom");
+
+            check = true;
+            var i = 0;
+            var j = 0;
+            var k = 0;
+
+            while(check){
+                if (localStorage.getItem(nameConf + "color" + i.toString()) != null){
+                    localStorage.removeItem(nameConf + "color" + i.toString());
+                    i++;
+                }
+                else{
+                    break;
+                }
+            }
+
+            while(check){
+                if (localStorage.getItem(nameConf + "item" + j.toString()) != null){
+                    localStorage.removeItem(nameConf + "item" + j.toString());
+                    j++;
+                }
+                else{
+                    break;
+                }
+            }
+
+            while(check){
+                if (localStorage.getItem("configuration" + k.toString()) != null){
+                    if (eval(localStorage.getItem("configuration" + k.toString())) == nameConf){
+                        localStorage.removeItem("configuration" + k.toString());
+                        break;
+                    }
+                    k++;
+                }
+                else{
+                    break;
+                }
+            }
+        }
+
+        $scope.loadConf = function(nameConf){
+                $scope.showL1 = eval(localStorage.getItem(nameConf + "showL1"));
+                $scope.showL2 = eval(localStorage.getItem(nameConf + "showL2"));
+                $scope.showL3 = eval(localStorage.getItem(nameConf + "showL3"));
+                $scope.cores = eval(localStorage.getItem(nameConf + "cores"));
+                $scope.Pu = eval(localStorage.getItem(nameConf + "pu"));
+                $scope.alignement = eval(localStorage.getItem(nameConf + "alignement"));
+                $scope.zoom = eval(localStorage.getItem(nameConf + "zoom"));
+                $scope.arrayColors = [];
+                $scope.items = [];
+                /*$scope.arrayGroups = [];
+                $scope.arrayPackages = [];*/
+
+                check = true;
+                var i = 0;
+                var j = 0;
+                var k = 0;
+
+                while(check){
+                    var tmp_object = JSON.parse(localStorage.getItem(nameConf + "color" + i.toString()));
+                    if (tmp_object != null){
+                        $scope.arrayColors.push(tmp_object)
+                        i++;
+                    }
+                    else{
+                        break;
+                    }
+                }
+
+                while(check){
+                    var tmp_object = JSON.parse(localStorage.getItem(nameConf + "item" + j.toString()));
+                    if (tmp_object != null){
+                        $scope.items.push(tmp_object)
+                        j++;
+                    }
+                    else{
+                        break;
+                    }
+                }
+        }
+       
+
+        $scope.SaveConf = function(nameConf){
+
+            if (nameConf != undefined){
+                $scope.conf.push(nameConf);
+
+               /* var ls = localStorage.getItem("ls.json");
+                localStorage.clear();
+                localStorage.setItem("ls.json" , ls);*/
+                localStorage.setItem(nameConf + "alignement" , $scope.alignement.toString());
+                localStorage.setItem(nameConf + "showL1" , $scope.showL1.toString());
+                localStorage.setItem(nameConf + "showL2" , $scope.showL2.toString());
+                localStorage.setItem(nameConf + "showL3" , $scope.showL3.toString());
+                localStorage.setItem(nameConf + "cores" , $scope.cores.toString());
+                localStorage.setItem(nameConf + "pu" , $scope.Pu.toString());
+                localStorage.setItem(nameConf + "zoom" , $scope.zoom.toString());
+                $scope.arrayColors.forEach(function(color,index){
+                    localStorage.setItem(nameConf + "color"+index.toString(), JSON.stringify(color));
+                });
+                $scope.items.forEach(function(color,index){
+                    localStorage.setItem(nameConf + "item"+index.toString(), JSON.stringify(color));
+                });
+                $scope.conf.forEach(function(config,index){
+                    localStorage.setItem("configuration"+index.toString(), JSON.stringify(config));
+                });
+            }    
+        }
 
        $scope.checkPackage = function(Package){
             var tmp;
@@ -514,7 +659,7 @@ angular.module('myApp')
             });
         }
 
-        $scope.AddColor = function(){
+        $scope.AddColors = function(){
             $scope.arrayColors.push({name : $scope.AddColor[0] , value : $scope.AddColor[1]});
         }
 
@@ -526,6 +671,8 @@ angular.module('myApp')
             });
         }
 
+        //we need to reload page with new information but for the moment we don't have 
+        // information in file so don't work
         $scope.Zoom = function(fonction){
             if(fonction == 'zoomIn'){
                 $scope.zoom += 0.2;
@@ -533,6 +680,8 @@ angular.module('myApp')
             else{
                 $scope.zoom -= 0.2;
             }
+            $scope.SaveConf();
+            window.location.reload();
         }
 
         $scope.sizeCacheWithDepthAndType = function(array, depth, type){
@@ -576,7 +725,7 @@ angular.module('myApp')
         $scope.drawBridgesAndPciDev = function(root, arrayBridge, arrayPciDev){
             var level;
 
-            console.log("test1");
+            //console.log("test1");
             for(var i=1; i<arrayBridge.length; i++){
                 if(i==1){
                     level = root.nodes[0].childBranch;
@@ -595,7 +744,7 @@ angular.module('myApp')
         }
 
         $scope.drawPciDev = function(origin, arrayPciDev){
-            console.log("origin :"+origin);
+            //console.log("origin :"+origin);
             for(var j=0; j<arrayPciDev; j++){
                 level = $scope.addBranch(origin);
                 pushJoint(level);
@@ -607,9 +756,9 @@ angular.module('myApp')
             return origin.nodes[0].childBranch;
         }
 
+        initVariable();
         $scope.extractEntities();
         $scope.extractPackage();
-
     }
 )
 
@@ -624,7 +773,7 @@ angular.module('myApp')
                 });
 
                 var e = document.getElementById(""+index);
-                console.log("div:"+e);
+                //console.log("div:"+e);
                 
 
                 if(array[0].entitiesBridge.length>0){
@@ -643,7 +792,7 @@ angular.module('myApp')
         $scope.drawBridgesAndPciDev = function(root, arrayBridge, arrayPciDev){
             var level;
 
-            console.log("test1");
+            //console.log("test1");
             for(var i=1; i<arrayBridge.length; i++){
                 if(i==1){
                     level = root.nodes[0].childBranch;
@@ -662,7 +811,7 @@ angular.module('myApp')
         }
 
         $scope.drawPciDev = function(origin, arrayPciDev){
-            console.log("origin :"+origin);
+            //console.log("origin :"+origin);
             for(var j=0; j<arrayPciDev; j++){
                 level = $scope.addBranch(origin);
                 pushJoint(level);
@@ -675,11 +824,11 @@ angular.module('myApp')
         }
     
     $scope.begin=function(array, index, $event){
-        console.log("init "+index);
-        console.log("event "+$event);
-        console.log(array);
+        //console.log("init "+index);
+        //console.log("event "+$event);
+        //console.log(array);
         var e = document.getElementById("div"+index);
-        console.log("div init:"+e);
+        //console.log("div init:"+e);
         $scope.test(array,index);
     }
     

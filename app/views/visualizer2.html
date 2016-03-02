@@ -176,7 +176,7 @@
                                     <table  ng-hide="alignement">
                                         <tr>
                                             <td ng-repeat="pu in core.pus">
-                                                <div ng-style="{'background-color':items[1].value}" class="pu" >
+                                                <div ng-style="{'width': sizeCache(node.packageOfCacheAndCores.cores[$parent.$index].pus, 'pu'),'background-color':items[1].value}" class="pu" >
                                         <p>{{pu.type}} P#{{pu.os_index}}</p>
                                                 </div>
                                             </td>
@@ -290,7 +290,7 @@
     <div> Add a color </br>
         Name <input type="text" ng-model="AddColor[0]"> </input> </br>
         Value (form : #XXXXXX) <input type="text" ng-model="AddColor[1]"> </input>
-        <button ng-click="AddColor()"> Add </button>
+        <button ng-click="AddColors()"> Add </button>
     </div>
     <div>
          <button ng-click="AsImg()"> Download image </button>
@@ -305,6 +305,15 @@
          <div>
               <input type="checkbox" ng-model="alignement"/> Alignement
         </div>
+    </div>
+    <div>
+         Name configuration : 
+        <input type="text" ng-model="confName">
+        <button  ng-click="SaveConf(confName)"> Save configuration </button>
+        <select ng-show="conf[0] != null" ng-model="confi" ng-change="loadConf(confi)">
+            <option ng-repeat="confi in conf">{{confi}}</option>
+        </select>
+         <button ng-show="conf[0] != null" ng-click="deleteConf(confi)"> delete configuration </button>
     </div>
 </div>
 
