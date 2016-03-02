@@ -491,7 +491,8 @@ angular.module('myApp')
               name:"PU",
               ticked:true
             }
-          ]
+          ],
+          export:"PDF"
         }
 
         $scope.userConfig={
@@ -519,6 +520,28 @@ angular.module('myApp')
             }
           ]
         };
+
+
+        $scope.download = function(){
+          if($scope.config.export=="PDF"){
+            html2canvas($("#components"), {
+            onrendered: function(canvas) {
+              var imgData = canvas.toDataURL('image/png');
+              var doc = new jsPDF('p', 'mm');
+              doc.addImage(imgData, 'PNG', 10, 10);
+              doc.save('components.pdf');
+            }
+            });
+          }else{
+            html2canvas($("#components"), {
+            onrendered: function(canvas) {
+              canvas.toBlob(function(blob) {
+                    saveAs(blob, "components.png");
+              });
+            }
+            });
+          }
+        }
 
 
         // variables for display or not elements
@@ -603,13 +626,6 @@ angular.module('myApp')
             $scope.arrayColors.push({name : $scope.AddColor[0] , value : $scope.AddColor[1]});
         }
 
-        $scope.AsImg = function(){
-            html2canvas(document.getElementById('left'), {
-                onrendered: function(canvas) {
-                    window.location=canvas.toDataURL('png');
-                 }
-            });
-        }
 
         $scope.Zoom = function(fonction){
             if(fonction == 'zoomIn'){

@@ -1,57 +1,11 @@
-
-<div class="row">
-  <div class="col-md-12">
-    <div class="panel panel-primary">
-      <div class="panel-heading">
-        <i class="fa fa-cog"></i> Config
-      </div>
-      <div class="panel-body">
-        <div class="row">
-          <div class="form-group col-md-3">
-            <label>Show</label>
-            <div isteven-multi-select input-model="config.show" style="min-width:100%" output-model="serviceLinks" button-label="name" item-label="name maker" tick-property="ticked"></div>
-          </div>
-          <div class="form-group col-md-3">
-            <label>Packages</label>
-            <select class="form-control">
-              <option>1</option>
-              <option>2</option>
-            </select>
-          </div>
-          <div class="form-group col-md-3">
-            <label>Colors</label>
-            <div class="row">
-              <div ng-repeat="d in userConfig.colors" class="form-group col-md-12">
-                <div class="col-md-3">
-                  <label>{{d.name}}</label>
-                </div>
-                <div class="col-md-9">
-                  <input colorpicker type="text" class="form-control" ng-model="d.color" ng-change="changeColor(d)"/>
-                </div>
-              </div>
-            </div>
-
-          </div>
-          <div class="form-group col-md-3">
-            <label>Save Image</label>
-            <select class="form-control">
-              <option>PNG</option>
-              <option>PDF</option>
-            </select><br/>
-            <a class="btn btn-success btn-block"><i class="fa fa-download"></i> Download</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<div ng-include="'views/filter.html'"></div>
 
 <div class="row">
   <div class="col-md-12">
     <div class="panel panel-primary">
       <div class="panel-heading"><i class="fa fa-eye"></i> Visualizer</div>
       <div class="panel-body">
-        <div ng-style="{'-moz-transform': 'scale({{zoom}})'}">
+        <div ng-style="{'-moz-transform': 'scale({{zoom}})'}"  id="components">
           <div ng-repeat="entity in entities">
             <div ng-show="checkPackage(entity.packageOfCacheAndCores.os_index)" ng-if="isNode(entity)">
               <div ng-style="{'background-color':items[7].value}" class="node">

@@ -8,6 +8,7 @@
     "angular-x2js": "~0.2.0",
     "jstree": "~3.2.1",
     "bootstrap-css": "~3.3.6",
-    "angular-bootstrap-colorpicker": "~3.0.24"
+    "angular-bootstrap-colorpicker": "~3.0.24",
+    "jspdf": "~1.2.61"
   }
 }
