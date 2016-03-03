@@ -3,6 +3,7 @@ angular.module('myApp')
 
         $scope.jsonObj = jsonObj.getJson().topology.object;
         $scope.entities = [];
+        $scope.entitiesbis = [];
 
         function pu(type, os_index) {
             this.type = type;
@@ -44,8 +45,6 @@ angular.module('myApp')
         function entityWithNodeAndPackage() {
             this.numanode = {};
             this.packageOfCacheAndCores = {};
-
-            //PCI
             this.entitiesBridge = [];
         }
 
@@ -139,6 +138,58 @@ angular.module('myApp')
                 }
             }
         }
+
+        $scope.extractDatas = function(datas, entities){
+            if(datas instanceof Array){
+                for(var i=0; i<datas.length; i++){
+                    $scope.sortDatas(datas[i], entities);
+                }
+            }
+            else{
+                $scope.sortDatas(datas, entities);
+            }
+        }
+
+        $scope.sortDatas = function(data, array){
+            if(data._type == "Group"){
+                array.push({type: data._type, children: []});
+                if(data.object){
+                    $scope.extractDatas(data.object, array[array.length-1].children);
+                }
+            }
+            else if(data._type == "Package"){
+                array.push({type: data._type, os_index: data._os_index, children: []});
+                if(data.object){
+                    $scope.extractDatas(data.object, array[array.length-1].children);
+                }
+            }
+            else if(data._type == "NUMANode"){
+                array.push({type: data._type, os_index: data._os_index, memory: data._local_memory, children: []});
+                if(data.object){
+                    $scope.extractDatas(data.object, array[array.length-1].children);
+                }
+            }
+            else if(/^L\d{1}.*/.test(data._type)){
+                array.push({type: data._type, size: data._cache_size, children: []});
+                if(data.object){
+                    $scope.extractDatas(data.object, array[array.length-1].children);
+                }
+            }
+            else if(data._type == "Core"){
+                array.push({type: data._type, os_index: data._os_index, children: []});
+                if(data.object){
+                    $scope.extractDatas(data.object, array[array.length-1].children);
+                }
+            }
+            else if(data._type == "PU"){
+                array.push({type: data._type, os_index: data._os_index});
+                if(data.object){
+                    $scope.extractDatas(data.object, array[array.length-1].children);
+                }
+            }
+        }
+
+        $scope.extractDatas($scope.jsonObj.object, $scope.entitiesbis);
 
         $scope.fillSocket = function(datas){
             var socket = new entitySocket(datas._type, datas._os_index);
@@ -421,23 +472,23 @@ angular.module('myApp')
           colors:[
             {
               "name":"L3",
-              "color":"#DEDEDE"
+              "color":"#FFFFFF"
             },
             {
               "name":"L2",
-              "color":"#DEDEDE"
+              "color":"#FFFFFF"
             },
             {
               "name":"L1",
-              "color":"#DEDEDE"
+              "color":"#FFFFFF"
             },
             {
               "name":"Cores",
-              "color":"#DEDEDE"
+              "color":"#BEBEBE"
             },
             {
               "name":"PU",
-              "color":"#DEDEDE"
+              "color":"#FFFFFF"
             }
           ]
         };
@@ -578,7 +629,7 @@ angular.module('myApp')
 
         $scope.extractEntities();
         $scope.extractPackage();
-        console.log($scope.entities);
+        console.log($scope.entitiesbis);
     }
 )
 
