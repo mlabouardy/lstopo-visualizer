@@ -429,6 +429,7 @@ angular.module('myApp')
         }
 
         $scope.sizeCache = function(array, type){
+            console.log(array.length);
             var cpt = 0;
             for(var i=0; i<array.length; i++){
                 if(array[i].type == type){
@@ -436,6 +437,17 @@ angular.module('myApp')
                 }
             }
             return (100-(cpt))/cpt+"%";
+        }
+
+        $scope.sizePu = function(array, type){
+            console.log(array.length);
+            var cpt = 0;
+            for(var i=0; i<array.length; i++){
+                if(array[i].type == type){
+                    cpt++;
+                }
+            }
+            return (100-(cpt))/cpt * 3+"%";
         }
 
 
@@ -538,7 +550,7 @@ angular.module('myApp')
         {object : "Package", value : "#DEDEDE" }, {object : "NUMANode", value : "#EFDFDE" }, {object : "Node", value : "#D2E7A4" }];
         $scope.currentItem = ["Cores","white"];
         $scope.AddColor = ["",""];
-        $scope.alignement = true;
+        $scope.alignement = [{alignement : "vertical", value :true}, {alignement : "horizontal" , value : false}];
         $scope.zoom = 1;
 
        $scope.checkPackage = function(Package){
@@ -603,13 +615,20 @@ angular.module('myApp')
             $scope.arrayColors.push({name : $scope.AddColor[0] , value : $scope.AddColor[1]});
         }
 
+        $scope.change = function(choice){
+            $scope.alignement.forEach(function(entity){
+                if (entity.alignement != choice.alignement){
+                    entity.value = false;
+                }
+            });
+        }
 
         $scope.Zoom = function(fonction){
             if(fonction == 'zoomIn'){
-                $scope.zoom += 0.2;
+                $scope.zoom += 0.1;
             }
             else{
-                $scope.zoom -= 0.2;
+                $scope.zoom -= 0.1;
             }
         }
 

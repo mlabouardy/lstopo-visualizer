@@ -5,7 +5,7 @@
     <div class="panel panel-primary">
       <div class="panel-heading"><i class="fa fa-eye"></i> Visualizer</div>
       <div class="panel-body">
-        <div ng-style="{'-moz-transform': 'scale({{zoom}})'}"  id="components">
+        <div ng-style="{'-moz-transform': 'scale({{zoom}})'}" id="components">
           <div ng-repeat="entity in entities">
             <div ng-show="checkPackage(entity.packageOfCacheAndCores.os_index)" ng-if="isNode(entity)">
               <div ng-style="{'background-color':items[7].value}" class="node">
@@ -160,14 +160,14 @@
 
                     <div ng-show="config.show[4].ticked" class="pus">
 
-                      <div ng-show="alignement" ng-style="{'background-color':userConfig.colors[3].color}" class="pu" ng-repeat="pu in core.pus">
+                      <div ng-show="alignement[0].value" ng-style="{'background-color':userConfig.colors[3].color}" class="pu" ng-repeat="pu in core.pus">
                         <p>{{pu.type}} P#{{pu.os_index}}</p>
                       </div>
 
-                      <table  ng-hide="alignement">
+                      <table ng-hide="alignement[0].value">
                         <tr>
                           <td ng-repeat="pu in core.pus">
-                            <div ng-style="{'background-color':userConfig.colors[4].color}" class="pu" >
+                            <div ng-style="{'background-color':userConfig.colors[4].color, 'font-size': sizePu(node.packageOfCacheAndCores.cores[$parent.$index].pus, 'PU'), 'border': '1px solid #7F7F7F' }" >
                               <p>{{pu.type}} P#{{pu.os_index}}</p>
                             </div>
                           </td>
