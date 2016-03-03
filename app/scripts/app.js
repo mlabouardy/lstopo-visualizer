@@ -1,4 +1,4 @@
-angular.module('myApp', ['ngRoute','cb.x2js', 'LocalStorageModule'])
+angular.module('myApp', ['ngRoute','cb.x2js', 'LocalStorageModule', 'isteven-multi-select','colorpicker.module'])
   .config(function($routeProvider) {
     $routeProvider
     .when('/', {
@@ -6,8 +6,8 @@ angular.module('myApp', ['ngRoute','cb.x2js', 'LocalStorageModule'])
       controller: 'MainCtrl'
     })
     .when('/visualizer', {
-      templateUrl: 'views/visualizer2.html',
-      controller: 'Visualizer2Ctrl'
+      templateUrl: 'views/visualizer.html',
+      controller: 'VisualizerCtrl'
     })
     .otherwise({
       redirectTo: '/'

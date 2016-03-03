@@ -1,7 +1,7 @@
 # Demo
   http://vps204912.ovh.net:3006/ped/#/
 
-  ![Alt text](preview/app.png "")
+  ![Alt text](preview/current.png "")
 
 # Continous Integration
   - How it works:

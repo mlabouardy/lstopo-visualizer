@@ -50,6 +50,7 @@
 	display:inline-block;
 	border: 2px solid #7F7F7F;
 	padding: 1%;
+	width: 60%;
 }
 
 .insideNode {
@@ -100,7 +101,7 @@
 }
 
 .pu{
-	border: 2px solid #7F7F7F;
+	border: 1px solid #7F7F7F;
 	padding-left: 1%;
 }
 
@@ -113,4 +114,33 @@
 #rigth{
 	float:right;
 	width : 24%;
+}
+
+.pcidev {
+	border: 2px solid #7F7F7F;
+	background-color: #BED295;
+	padding-left: 1%;
+	width: 30%;
+	margin: 1%;
+	padding-bottom: 1%;
+	text-align: center;
+}
+
+.pcidev .osdev {
+	border: 2px solid #7F7F7F;
+	background-color: #DEDEDE;
+	padding: 5%;
+    display:inline-block;
+}
+
+ul
+{
+    list-style-type: none;
+}
+
+.bridge {
+	border: 2px solid #7F7F7F;
+	background-color: white;
+	width : 10px;
+	height: 10px;
 }

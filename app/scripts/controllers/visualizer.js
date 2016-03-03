@@ -1,122 +1,653 @@
 angular.module('myApp')
 .controller('VisualizerCtrl', function($scope, $location, jsonObj){
 
-        $scope.jsonObj = jsonObj.getJson(); //Variable avec toutes les informations du JSON
-        $scope.cores = []; //Tableau qui contient les informations sur les cores
-        $scope.cacheL2 = [];
-
-        $scope.infoSocket = $scope.jsonObj.topology.object.object[0]._type+ " P#"+$scope.jsonObj.topology.object.object[0]._os_index; //Information sur le socket
-
-        $scope.cacheL3 = null //$scope.jsonObj.topology.object.object[0].object; //Attention! La variable contient encore le tableau avec tout les autres caches et les cores
+        $scope.jsonObj = jsonObj.getJson().topology.object;
         $scope.entities = [];
-        $scope.cachesL1 = [];
-        $scope.deep_core = "";
 
-        var search = "$scope.jsonObj.topology.object";
+        function pu(type, os_index) {
+            this.type = type;
+            this.os_index = os_index;
+        }
 
-        $scope.extractEntities = function(){
-            var entities = (eval(search));
+        function core(type, os_index) {
+            this.type = type;
+            this.os_index = os_index;
+            this.pus = [];
+        }
 
-            if(entities instanceof Array){
-                for(var i=0; i<entities.length; i++){
-                    $scope.entities.push(entities[i]);
+        function cache(type, cache_size, depth, cache_type) {
+            this.type = type;
+            this.cache_size = cache_size;
+            this.depth = depth;
+            this.cache_type = cache_type;
+        }
+
+        function numanode(type, os_index, local_memory) {
+            this.type = type;
+            this.os_index = os_index;
+            this.local_memory = local_memory;
+        }
+
+        function packageOfCacheAndCores(type, os_index) {
+            this.type = type;
+            this.os_index = os_index;
+            this.caches = [];
+            this.cores = [];
+        }
+
+        function entityWithNodeAndCaches() {
+            this.numanode = {};
+            this.caches = [];
+            this.cores = [];
+        }
+
+        function entityWithNodeAndPackage() {
+            this.numanode = {};
+            this.packageOfCacheAndCores = {};
+
+            //PCI
+            this.entitiesBridge = [];
+        }
+
+        function packageOfEntityWithNodeAndCaches(type, os_index) {
+            this.type = type;
+            this.os_index = os_index;
+            this.entities = [];
+        }
+
+        function groupOfEntityWithNodeAndPackage(type, depth){
+            this.type = type;
+            this.depth = depth;
+            this.entities = [];
+        }
+
+        function entitySocket(type, os_index){
+            this.type = type;
+            this.os_index = os_index;
+            this.caches = [];
+            this.cores = [];
+        }
+
+        function entityBridge(type, depth){
+            this.type = type;
+            this.depth = depth;
+            this.child = [];
+            /*this.entitiesBridge = [];
+            this.entitiesPciDev = [];*/
+        }
+
+        function entityPciDev(type, pci_busid, infos){
+            this.type = type;
+            this.pci_busid = pci_busid;
+            this.infos = infos;
+            this.entitiesOsDev = [];
+        }
+
+        function entityOsDev(type, name, infos){
+            this.type = type;
+            this.name = name;
+            this.infos = infos;
+        }
+
+        $scope.extractEntitiesBridge = function(datas, container){
+            if(datas instanceof Array){
+                for(var i=0; i<datas.length; i++){
+                    $scope.sortByType(datas[i], container);
                 }
             }
             else{
-                $scope.entities.push(entities);
+                $scope.sortByType(datas, container);
             }
         }
 
-        $scope.extractCacheL3 = function(){
-            while(true){
-                if((eval(search)) instanceof Array){
-                    search += "[0]";
+        $scope.sortByType = function(datas, container){
+            if(datas._type == "Bridge"){
+                    var bridge = new entityBridge(datas._type, datas._depth);
+                    container.push(bridge);
+                    if(datas.object)
+                        $scope.extractEntitiesBridge(datas.object, bridge.child);
+            }
+            else if(datas._type == "PCIDev"){
+                var pci = new entityPciDev(datas._type, datas._pci_busid, datas.info);
+                container.push(pci);
+                if(datas.object)
+                    $scope.extractEntitiesBridge(datas.object, pci.entitiesOsDev);
+            }
+            else if(datas._type == "OSDev"){
+                var os = new entityOsDev(datas._type, datas._name, datas.info);
+                container.push(os);
+            }
+        }
+
+        $scope.extractEntities = function(){
+            for(var i=0; i < $scope.jsonObj.object.length; i++){
+
+                if($scope.jsonObj.object[i]._type == "NUMANode"){
+                    $scope.entities.push($scope.fillEntityWithNodeAndPackage($scope.jsonObj.object[i]));
                 }
-                else{
-                    if ((eval(search))._depth == 3 && (eval(search)) != null){
-                        $scope.cacheL3 = (eval(search));
-                        break;
+
+                else if ($scope.jsonObj.object[i]._type == "Package"){
+                    $scope.entities.push($scope.fillPackageOfEntityWithNodeAndCaches($scope.jsonObj.object[i]));
+                }
+
+                else if ($scope.jsonObj.object[i]._type == "Group"){
+                    $scope.entities.push($scope.fillGroupOfEntityWithNodeAndPackage($scope.jsonObj.object[i]));
+                }
+
+                else if ($scope.jsonObj.object[i]._type == "Socket"){
+                    $scope.entities.push($scope.fillSocket($scope.jsonObj.object[i]));
+                }
+            }
+        }
+
+        $scope.fillSocket = function(datas){
+            var socket = new entitySocket(datas._type, datas._os_index);
+
+            $scope.extractCachesAndCores(datas.object, socket);
+
+            return socket;
+        }
+
+        $scope.fillGroupOfEntityWithNodeAndPackage = function(datas){
+            var group = new groupOfEntityWithNodeAndPackage(datas._type, datas._depth);
+
+            if(datas.object instanceof Array){
+                for(var i=0; i<datas.object.length; i++){
+                    if(datas.object[i]._type == "NUMANode"){
+                        group.entities.push($scope.fillEntityWithNodeAndPackage(datas.object[i]));
+                    }
+                }
+            }
+
+            return group;
+        }
+
+        $scope.fillEntityWithNodeAndPackage = function(datas){
+            var node = new entityWithNodeAndPackage();
+            node.numanode = new numanode(datas._type, datas._os_index, datas._local_memory);
+
+            if(datas.object instanceof Array){
+                $scope.extractEntitiesBridge(datas.object[1], node.entitiesBridge);
+                var package = new packageOfCacheAndCores(datas.object[0]._type, datas.object[0]._os_index);
+
+                $scope.extractCachesAndCores(datas.object[0].object, package);
+
+                node.packageOfCacheAndCores = package;
+            }
+            else{
+                var package = new packageOfCacheAndCores(datas.object._type, datas.object._os_index);
+
+                $scope.extractCachesAndCores(datas.object.object, package);
+
+                node.packageOfCacheAndCores = package;
+            }
+
+            return node;
+        }
+
+        $scope.fillPackageOfEntityWithNodeAndCaches = function(datas){
+            var package = new packageOfEntityWithNodeAndCaches(datas._type, datas._os_index);
+
+            if(datas.object instanceof Array){
+                for(var i=0; i<datas.object.length; i++){
+
+                    //Extraction de NUMANode
+                    var entity = new entityWithNodeAndCaches();
+                    entity.numanode = new numanode(datas.object[i]._type, datas.object[i]._os_index, datas.object[i]._local_memory);
+
+                    if(datas.object[i].object instanceof Array){
+                        $scope.extractCachesAndCores(datas.object[i].object[0], entity);
                     }
                     else{
-                        search += ".object";
+                        $scope.extractCachesAndCores(datas.object[i].object, entity);
                     }
+
+                    package.entities.push(entity);
+
                 }
             }
 
-            $scope.deep_core = search + ".object";
+            return package;
         }
 
-        $scope.extractCachesL2 = function(){
-            var array = $scope.cacheL3;
-            var tmp_l2 = "array.object";
-            search += ".object";
-            while(true){
-                if ((eval(tmp_l2)) instanceof Array){
-                        for(var i = 0; i<(eval(tmp_l2)).length; i++){
-                             $scope.cacheL2.push({"_type":(eval(tmp_l2))[i]._type, "_depth":(eval(tmp_l2))[i]._depth, "_cache_size":(eval(tmp_l2))[i]._cache_size});
-                        }
-                    break;
-                }
-                else{
-                     if ((eval(tmp_l2))._depth == 2 && (eval(tmp_l2)) != null){
-                        $scope.cacheL2.push({"_type":(eval(tmp_l2))._type, "_depth":(eval(tmp_l2))._depth, "_cache_size":(eval(tmp_l2))._cache_size});
-                        break;
-                     }
-                     else{
-                        tmp_l2 += ".object";
-                        search += ".object";
-                     }
+        $scope.extractCachesAndCores = function(datas, entity){
+            //Extraction du cache L3
+
+            if(datas instanceof Array){
+                for(var i=0; i<datas.length; i++){
+                    var cacheL3 = new cache(datas[i]._type, datas[i]._cache_size, datas[i]._depth, datas[i]._cache_type);
+                    entity.caches.push(cacheL3);
+
+                    $scope.extractSecondLevelOfCache(datas[i].object, entity);
                 }
             }
-           /* for(var i = 0; i<array.length; i++){
-                $scope.cacheL2.push({"_type":array[i]._type, "_depth":array[i]._depth, "_cache_size":array[i]._cache_size});
-            }*/
+            else{
+                var cacheL3 = new cache(datas._type, datas._cache_size, datas._depth, datas._cache_type);
+                entity.caches.push(cacheL3);
+
+                $scope.extractSecondLevelOfCache(datas.object, entity)
+            }
         }
 
-        $scope.extractCachesL1Bis= function(){
-            var array = [];
-            var check  = true;
+        $scope.extractSecondLevelOfCache = function(datas, entity){
+            //Extraction des caches L2
+            if(datas instanceof Array){
+
+                for(var j=0; j<datas.length; j++){
+                    var cacheL2 = new cache(
+                        datas[j]._type,
+                        datas[j]._cache_size,
+                        datas[j]._depth,
+                        datas[j]._cache_type);
+                    entity.caches.push(cacheL2);
+
+                    $scope.extractThirdLevelOfCache(datas[j].object, entity);
+                }
+            }
+            else{
+                var cacheL2 = new cache(
+                        datas._type,
+                        datas._cache_size,
+                        datas._depth,
+                        datas._cache_type);
+                entity.caches.push(cacheL2);
+
+                $scope.extractThirdLevelOfCache(datas.object, entity);
+            }
+        }
+
+        $scope.extractThirdLevelOfCache = function(datas, entity){
+            //Extraction des caches L1
+            if(datas instanceof Array){
+                for(var y=0; y<datas.length; y++){
+                    var cacheL1 = new cache(
+                        datas[y]._type,
+                        datas[y]._cache_size,
+                        datas[y]._depth,
+                        datas[y]._cache_type);
+                    entity.caches.push(cacheL1);
+
+                    $scope.extractLastLevelOfCacheAndCores(datas[y].object, entity);
+                }
+            }
+            else{
+                var cacheL1 = new cache(
+                        datas._type,
+                        datas._cache_size,
+                        datas._depth,
+                        datas._cache_type);
+                entity.caches.push(cacheL1);
+
+                $scope.extractLastLevelOfCacheAndCores(datas.object, entity);
+            }
+        }
+
+        //Fonction d'extraction du dernier niveau de cache L1 et des cores
+        $scope.extractLastLevelOfCacheAndCores = function(datas, entity){
+            if(datas._type == "L1iCache" || datas._type == "Cache"){
+
+                //Extraction du second cache L1
+                var cacheL1 = new cache(
+                    datas._type,
+                    datas._cache_size,
+                    datas._depth,
+                    datas._cache_type);
+                    entity.caches.push(cacheL1);
+
+                //Extraction des cores
+                $scope.extractCores(datas.object, entity);
+            }
+            else{
+
+                //Extraction des cores
+                $scope.extractCores(datas, entity);
+            }
+        }
+
+        //Fonction d'extraction des cores et des PUs
+        $scope.extractCores = function(datas, entity){
+            var cpu = new core(
+                datas._type,
+                datas._os_index);
+
+            //Plusieurs PU dans le core
+            if(datas.object instanceof Array){
+                for(var i=0; i<datas.object.length; i++){
+                    var unity = new pu(
+                        datas.object[i]._type,
+                        datas.object[i]._os_index);
+                    cpu.pus.push(unity);
+                }
+            }
+            //Un seul PU dans le core
+            else{
+                var unity = new pu(
+                    datas.object._type,
+                    datas.object._os_index);
+                cpu.pus.push(unity);
+            }
+            entity.cores.push(cpu);
+        }
+
+        $scope.isNode = function(entity){
+            if(entity.numanode){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+        $scope.isPackage = function(entity){
+            if(entity.type == "Package"){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+        $scope.isGroup = function(entity){
+             if(entity.type == "Group"){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+        $scope.isSocket = function(entity){
+             if(entity.type == "Socket"){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+        $scope.convertMemory = function(value, unity){
+            if(unity == "gb"){
+                return Math.round(value/Math.pow(1024, 3));
+            }
+            else if(unity == "mb"){
+                return Math.round(value/Math.pow(1024, 2));
+            }
+            else if(unity == "kb"){
+                return Math.round(value/1024);
+            }
+        }
+
+        $scope.sizeCache = function(array, type){
+            console.log(array.length);
+            var cpt = 0;
+            for(var i=0; i<array.length; i++){
+                if(array[i].type == type){
+                    cpt++;
+                }
+            }
+            return (100-(cpt))/cpt+"%";
+        }
+
+        $scope.sizePu = function(array, type){
+            console.log(array.length);
+            var cpt = 0;
+            for(var i=0; i<array.length; i++){
+                if(array[i].type == type){
+                    cpt++;
+                }
+            }
+            return (100-(cpt))/cpt * 3+"%";
+        }
+
+
+        // Config part
+
+        $scope.config={
+          show:[
+            {
+              name:"L3",
+              ticked:true
+            },
+            {
+              name:"L2",
+              ticked:true
+            },
+            {
+              name:"L1",
+              ticked:true
+            },
+            {
+              name:"Cores",
+              ticked:true
+            },
+            {
+              name:"PU",
+              ticked:true
+            }
+          ],
+          export:"PDF"
+        }
+
+        $scope.userConfig={
+          show:[],
+          colors:[
+            {
+              "name":"L3",
+              "color":"#DEDEDE"
+            },
+            {
+              "name":"L2",
+              "color":"#DEDEDE"
+            },
+            {
+              "name":"L1",
+              "color":"#DEDEDE"
+            },
+            {
+              "name":"Cores",
+              "color":"#DEDEDE"
+            },
+            {
+              "name":"PU",
+              "color":"#DEDEDE"
+            }
+          ]
+        };
+
+        $scope.exportConfig=function(){
+          var blob = new Blob([JSON.stringify($scope.userConfig)], {type: "application/json"});
+          saveAs(blob, "config.json");
+        }
+
+
+        $scope.download = function(){
+          if($scope.config.export=="PDF"){
+            html2canvas($("#components"), {
+            onrendered: function(canvas) {
+              var imgData = canvas.toDataURL('image/png');
+              var doc = new jsPDF('p', 'mm');
+              doc.addImage(imgData, 'PNG', 10, 10);
+              doc.save('components.pdf');
+            }
+            });
+          }else{
+            html2canvas($("#components"), {
+            onrendered: function(canvas) {
+              canvas.toBlob(function(blob) {
+                    saveAs(blob, "components.png");
+              });
+            }
+            });
+          }
+        }
+
+
+        // variables for display or not elements
+        $scope.showL1 = true;
+        $scope.showL2 = true;
+        $scope.showL3 = true;
+        $scope.cores = true;
+        $scope.Pu = true;
+        $scope.arrayPackages = [];
+        $scope.arrayGroups = [];
+
+        //variable for color
+        $scope.arrayColors= [{name : "basic_red" , value : "#EFDFDE"}, {name : "basic_green" , value : "#D2E7A4"},
+         { name : "basic_grey_light", value :"#DEDEDE"} , { name : "white", value :"#FFFFFF"}, { name : "basic_grey", value :"#BEBEBE"}];
+        $scope.items = [{object : "Cores", value : "#BEBEBE" } , {object : "Pu", value : "#FFFFFF" },
+        {object : "L3", value : "#FFFFFF" },{object : "L2", value : "#FFFFFF" },{object : "L1", value : "#FFFFFF" },
+        {object : "Package", value : "#DEDEDE" }, {object : "NUMANode", value : "#EFDFDE" }, {object : "Node", value : "#D2E7A4" }];
+        $scope.currentItem = ["Cores","white"];
+        $scope.AddColor = ["",""];
+        $scope.alignement = [{alignement : "vertical", value :true}, {alignement : "horizontal" , value : false}];
+        $scope.zoom = 1;
+
+       $scope.checkPackage = function(Package){
+            var tmp;
+            $scope.arrayPackages.forEach(function(packages,index){
+                if (packages.os_index == Package){
+                    tmp = packages.value;
+                }
+            });
+            return tmp;
+        }
+
+        $scope.checkGroups = function(group){
+            return (group[0] != undefined);
+        }
+
+        $scope.ShowGroup = function(entity){
+            var check;
+            $scope.arrayGroups.forEach(function(group,index){
+                if(group.index == $scope.entities.indexOf(entity)){
+                    check = group.value;
+                }
+            });
+            return check;
+        }
+
+       var i = 0;
+        $scope.extractPackage = function(){
             $scope.entities.forEach(function(entity,index){
-                entity.object[0].object.object.forEach(function(Core,index){
-                var tmpL1 = [];
-                var deep = "Core.object";
-                while(true){
-                    if((eval(deep)) != null && (eval(deep))._depth == 1){
-                        tmpL1.push(Core.object);
-                        deep += ".object";
-                        if (check == true){
-                        }
-                    }
-                    else{
-                        check = false;
-                        break;
-                    }  
+                if (entity.type == "Package"){
+                    $scope.arrayPackages.push({os_index : entity.os_index , value : true});
                 }
-                array.push({l1 : tmpL1});
-                });  
-             });
+                if (entity.type == "Group"){
+                    $scope.arrayGroups.push({index : i, os_index : entity.depth , value : true});
+                    i++;
+                    entity.entities.forEach(function(packages){
+                        $scope.arrayPackages.push({os_index : packages.packageOfCacheAndCores.os_index , value : true});
+                    });
+                }
+                if (entity.type != "Group" && entity.type != "Package" && entity.type != "Socket"){
+                    $scope.arrayPackages.push({os_index : entity.packageOfCacheAndCores.os_index , value : true});
+                }
+            });
         }
-        
-        $scope.extractCores = function(){
-            var array = $scope.deep_core +"[i]";
-            for(var i = 0; i<eval($scope.deep_core).length; i++){
-                $scope.cores.push((eval(array)).object.object.object);
+
+        $scope.ChangeColor = function(){
+            var tmp;
+
+             $scope.arrayColors.forEach(function(Color,index){
+                if(Color.name == $scope.currentItem[1]){
+                    tmp = Color.value;
+                }
+            });
+            $scope.items.forEach(function(item,index){
+                if(item.object == $scope.currentItem[0]){
+                    item.value = tmp;
+                }
+            });
+        }
+
+        $scope.AddColor = function(){
+            $scope.arrayColors.push({name : $scope.AddColor[0] , value : $scope.AddColor[1]});
+        }
+
+        $scope.change = function(choice){
+            $scope.alignement.forEach(function(entity){
+                if (entity.alignement != choice.alignement){
+                    entity.value = false;
+                }
+            });
+        }
+
+        $scope.Zoom = function(fonction){
+            if(fonction == 'zoomIn'){
+                $scope.zoom += 0.1;
+            }
+            else{
+                $scope.zoom -= 0.1;
             }
         }
 
-        $scope.convertSizeInKb = function(size){
-            return Math.floor(parseInt(size)/1024);
+        $scope.sizeCacheWithDepthAndType = function(array, depth, type){
+            var cpt = 0;
+            for(var i=0; i<array.length; i++){
+                if(array[i].depth == depth && array[i].cache_type == type){
+                    cpt++;
+                }
+            }
+            return (100-(cpt))/cpt+"%";
         }
 
-        $scope.convertSizeInMb = function(size){
-            return Math.floor(parseInt(size)/(1024*1024));
+        $scope.convertBusid = function(value){
+            return value.substr(5, 7);
         }
- 
+
         $scope.extractEntities();
-        $scope.extractCacheL3();
-        $scope.extractCachesL2();
-        $scope.extractCachesL1Bis();
-        $scope.extractCores();
-        //$scope.extractCores($scope.jsonObj.topology.object.object[0].object.object);
+        $scope.extractPackage();
+        console.log($scope.entities);
     }
-);
+)
+
+
+.controller('TestCtrl',function($scope,$timeout){
+    $scope.test=function(array, index){
+        paper = new joint.dia.Paper({
+            el: $('#object-'+index),
+            model: graph,
+            gridSize: 1
+        });
+
+        var e = document.getElementById("object-"+index);
+
+        var root = createBranch();
+        pushBridge(root);
+        pushBridge(root);
+        pushPCI(root, "test", 0, ["eth0"]);
+
+        $scope.drawBridgesAndPciDev(root, array[0].child);
+
+        drawTree(root);
+    }
+
+    $scope.drawBridgesAndPciDev = function(root, datas){
+        var level;
+        for(var i=1; i<datas.length; i++){
+            if(i==1){
+                level = root.nodes[0].childBranch;
+                pushJoint(level);
+                pushBridge(level);
+                pushPCI(level, "test", 0, ["eth"+i]);
+            }
+            else{
+                level = $scope.addBranch(level);
+                pushJoint(level);
+                pushBridge(level);
+                pushPCI(level, "test", 0, ["eth"+i]);
+            }
+        }
+    }
+
+    $scope.addBranch = function(origin){
+        return origin.nodes[0].childBranch;
+    }
+
+    $scope.begin=function(array, index){
+        $timeout(function() {
+          $scope.test(array,index);
+        }, 0);
+    }
+
+});
