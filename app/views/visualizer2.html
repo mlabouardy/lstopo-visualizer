@@ -3,35 +3,68 @@
 <div class="test" ng-repeat="entity in entitiesbis" ng-include="'lstopoTree'"></div>
 
 <script type="text/ng-template" id="lstopoTree">
-	<div ng-if="entity.type=='Group'">
-		<div class="test"><p>{{entity.type}} {{entity.depth}}</p>
+	<div class="group" ng-if="entity.type=='Group'">
+		<div class="square"><p>{{entity.type}} {{entity.depth}}</p>
+			<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+			</span>
+		</div>
+	</div>
+
+	<div class="square package" ng-style="{'background-color':items[5].value}" ng-if="entity.type=='Package'">
+		<div><p>{{entity.type}} P#{{entity.os_index}}</p>
+			<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+			</span>
+		</div>
+	</div>
+
+	<div class="numanode" ng-if="entity.type=='NUMANode'">
+		<div ng-style="{'background-color':items[7].value}">
+			<div class="square" ng-style="{'background-color':items[6].value}"><p>{{entity.type}} P#{{entity.os_index}} ({{entity.memory}})</p></div>
+			<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+			</span>
+		</div>
+	</div>
+
+	<div class="cache3" ng-if="cacheType(entity.type, 'L3Cache')">
+		<div class="square" ng-style="{'background-color':items[2].value}"> <p>{{entity.type}} ({{entity.size}})</p> </div>
+		<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+		</span>
+	</div>
+
+	<div class="cache2" ng-if="cacheType(entity.type, 'L2Cache')">
+		<div class="square" ng-style="{'background-color':items[3].value}"> <p>{{entity.type}} ({{entity.size}})</p> </div>
+		<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+		</span>
+	</div>
+
+	<div class="cache2bis" ng-if="cacheType(entity.type, 'L2iCache')">
+		<div class="square" ng-style="{'background-color':items[3].value}"> <p>{{entity.type}} ({{entity.size}})</p> </div>
+		<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+		</span>
+	</div>
+
+	<div class="cache1" ng-if="cacheType(entity.type, 'L1Cache')">
+		<div class="square" ng-style="{'background-color':items[4].value}"> <p>{{entity.type}} ({{entity.size}})</p> </div>
+		<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+		</span>
+	</div>
+
+	<div class="cache1bis" ng-if="cacheType(entity.type, 'L1iCache')">
+		<div class="square" ng-style="{'background-color':items[4].value}"> <p>{{entity.type}} ({{entity.size}})</p> </div>
+		<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+		</span>
+	</div>
+
+	<div class="core square" ng-style="{'background-color':items[0].value}"ng-if="entity.type=='Core'">
+		<div><p>{{entity.type}} P#{{entity.os_index}}</p>
 			<div ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
 			</div>
 		</div>
 	</div>
 
-	<div ng-if="entity.type=='Package'">
-		<div class="test"><p>{{entity.type}} P#{{entity.os_index}}</p>
-			<div ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
-			</div>
-		</div>
-	</div>
-
-	<div ng-if="entity.type=='NUMANode'">
-		<div class="test"><p>{{entity.type}} P#{{entity.os_index}} ({{entity.memory}})</p></div>
-		<div ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
-		</div>
-	</div>
-
-	<div ng-if="entityIsCache(entity.type)">
-		<div class="test"><p>{{entity.type}} ({{entity.size}})</p></div>
-		<div ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
-		</div>
-	</div>
-
-	<div ng-if="entity.type=='Core'">
-		<div><p>{{entity.type}} P#{{entity.os_index}}</p></div>
-		<div ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+	<div class="square" ng-style="{'background-color':items[1].value}" ng-if="entity.type=='PU'">
+		<div>
+			<p>{{entity.type}} P#{{entity.os_index}}</p>
 		</div>
 	</div>
 

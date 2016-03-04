@@ -88,8 +88,76 @@
 	background-color: #FFFFFF;
 }
 
-.test {
+.square {
 	border: 3px #6F6F6F solid;
 	margin: 1%;
 	padding: 1%;
+}
+
+.package {
+	text-align:justify;
+}
+
+.package span {
+	display: inline-block;
+}
+
+.group {
+	text-align:justify;
+}
+
+.group span{
+	display: inline-block;
+}
+
+.numanode {
+	text-align:justify;
+}
+
+.numanode span{
+	display: inline-block;
+}
+
+.cache3 {
+	text-align:justify;
+}
+
+.cache3 span {
+	display: inline-block;
+}
+
+.cache2 {
+	text-align:justify;
+}
+
+.cache2 span {
+	display: inline-block;
+}
+
+.cache2bis {
+	text-align:justify;
+}
+
+.cache2bis span {
+	display: inline-block;
+}
+
+.cache1 {
+	text-align:justify;
+}
+
+.cache1 span {
+	display: inline-block;
+}
+
+.cache1bis {
+	text-align:justify;
+}
+
+.cache1bis span {
+	display: inline-block;
+}
+
+p {
+	font-size: 100%;
 }

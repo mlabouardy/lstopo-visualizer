@@ -191,8 +191,8 @@ angular.module('myApp')
 
         $scope.extractDatas($scope.jsonObj.object, $scope.entitiesbis);
 
-        $scope.entityIsCache = function(entity){
-            if(/^L\d{1}.*/.test(entity)){
+        $scope.cacheType = function(entity,type){
+            if(entity == type){
                 return true;
             }
             else{
