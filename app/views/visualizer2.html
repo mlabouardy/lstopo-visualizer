@@ -1,0 +1,38 @@
+<div ng-include="'views/filter.html'"></div>
+
+<div class="test" ng-repeat="entity in entitiesbis" ng-include="'lstopoTree'"></div>
+
+<script type="text/ng-template" id="lstopoTree">
+	<div ng-if="entity.type=='Group'">
+		<div class="test"><p>{{entity.type}} {{entity.depth}}</p>
+			<div ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+			</div>
+		</div>
+	</div>
+
+	<div ng-if="entity.type=='Package'">
+		<div class="test"><p>{{entity.type}} P#{{entity.os_index}}</p>
+			<div ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+			</div>
+		</div>
+	</div>
+
+	<div ng-if="entity.type=='NUMANode'">
+		<div class="test"><p>{{entity.type}} P#{{entity.os_index}} ({{entity.memory}})</p></div>
+		<div ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+		</div>
+	</div>
+
+	<div ng-if="entityIsCache(entity.type)">
+		<div class="test"><p>{{entity.type}} ({{entity.size}})</p></div>
+		<div ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+		</div>
+	</div>
+
+	<div ng-if="entity.type=='Core'">
+		<div><p>{{entity.type}} P#{{entity.os_index}}</p></div>
+		<div ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+		</div>
+	</div>
+
+</script>

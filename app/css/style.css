@@ -87,3 +87,9 @@
 .pus tbody > tr > td{
 	background-color: #FFFFFF;
 }
+
+.test {
+	border: 3px #6F6F6F solid;
+	margin: 1%;
+	padding: 1%;
+}

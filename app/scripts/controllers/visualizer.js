@@ -152,7 +152,7 @@ angular.module('myApp')
 
         $scope.sortDatas = function(data, array){
             if(data._type == "Group"){
-                array.push({type: data._type, children: []});
+                array.push({type: data._type, depth: data._depth, children: []});
                 if(data.object){
                     $scope.extractDatas(data.object, array[array.length-1].children);
                 }
@@ -190,6 +190,15 @@ angular.module('myApp')
         }
 
         $scope.extractDatas($scope.jsonObj.object, $scope.entitiesbis);
+
+        $scope.entityIsCache = function(entity){
+            if(/^L\d{1}.*/.test(entity)){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
 
         $scope.fillSocket = function(datas){
             var socket = new entitySocket(datas._type, datas._os_index);
