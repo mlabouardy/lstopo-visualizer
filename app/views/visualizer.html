@@ -41,7 +41,7 @@
                   </div>
 
                   <div ng-show="config.show[3].ticked" class="cores">
-                    <span ng-repeat="core in entity.packageOfCacheAndCores.cores" ng-style="{'width': sizeCache(entity.packageOfCacheAndCores.cores, 'Core'),'background-color':userConfig.colors[3].color}">
+                    <span ng-repeat="core in entity.packageOfCacheAndCores.cores">
                       <p>{{core.type}} P#{{core.os_index}}</p>
 
                       <div ng-show="config.show[4].ticked" class="pus">

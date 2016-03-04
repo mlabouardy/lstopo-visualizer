@@ -4,6 +4,15 @@ angular.module('myApp')
         $scope.jsonObj = jsonObj.getJson().topology.object;
         $scope.entities = [];
         $scope.entitiesbis = [];
+        // variables for display or not elements
+        $scope.showL1 = true;
+        $scope.showL2 = true;
+        $scope.showL3 = true;
+        $scope.cores = true;
+        $scope.Pu = true;
+        $scope.arrayPackages = [];
+        $scope.arrayGroups = [];
+        var i = 0;
 
         function pu(type, os_index) {
             this.type = type;
@@ -153,12 +162,15 @@ angular.module('myApp')
         $scope.sortDatas = function(data, array){
             if(data._type == "Group"){
                 array.push({type: data._type, depth: data._depth, children: []});
+                $scope.arrayGroups.push({index : i, os_index : data._depth , value : true});
+                i++;
                 if(data.object){
                     $scope.extractDatas(data.object, array[array.length-1].children);
                 }
             }
             else if(data._type == "Package"){
                 array.push({type: data._type, os_index: data._os_index, children: []});
+                $scope.arrayPackages.push({os_index : data._os_index , value : true});
                 if(data.object){
                     $scope.extractDatas(data.object, array[array.length-1].children);
                 }
@@ -438,7 +450,7 @@ angular.module('myApp')
         }
 
         $scope.sizeCache = function(array, type){
-            console.log(array.length);
+            console.log(array);
             var cpt = 0;
             for(var i=0; i<array.length; i++){
                 if(array[i].type == type){
@@ -542,15 +554,7 @@ angular.module('myApp')
         }
 
 
-        // variables for display or not elements
-        $scope.showL1 = true;
-        $scope.showL2 = true;
-        $scope.showL3 = true;
-        $scope.cores = true;
-        $scope.Pu = true;
-        $scope.arrayPackages = [];
-        $scope.arrayGroups = [];
-
+      
         //variable for color
         $scope.arrayColors= [{name : "basic_red" , value : "#EFDFDE"}, {name : "basic_green" , value : "#D2E7A4"},
          { name : "basic_grey_light", value :"#DEDEDE"} , { name : "white", value :"#FFFFFF"}, { name : "basic_grey", value :"#BEBEBE"}];
@@ -558,7 +562,6 @@ angular.module('myApp')
         {object : "L3", value : "#FFFFFF" },{object : "L2", value : "#FFFFFF" },{object : "L1", value : "#FFFFFF" },
         {object : "Package", value : "#DEDEDE" }, {object : "NUMANode", value : "#EFDFDE" }, {object : "Node", value : "#D2E7A4" }];
         $scope.currentItem = ["Cores","white"];
-        $scope.AddColor = ["",""];
         $scope.alignement = [{alignement : "vertical", value :true}, {alignement : "horizontal" , value : false}];
         $scope.zoom = 1;
 
@@ -586,25 +589,6 @@ angular.module('myApp')
             return check;
         }
 
-       var i = 0;
-        $scope.extractPackage = function(){
-            $scope.entities.forEach(function(entity,index){
-                if (entity.type == "Package"){
-                    $scope.arrayPackages.push({os_index : entity.os_index , value : true});
-                }
-                if (entity.type == "Group"){
-                    $scope.arrayGroups.push({index : i, os_index : entity.depth , value : true});
-                    i++;
-                    entity.entities.forEach(function(packages){
-                        $scope.arrayPackages.push({os_index : packages.packageOfCacheAndCores.os_index , value : true});
-                    });
-                }
-                if (entity.type != "Group" && entity.type != "Package" && entity.type != "Socket"){
-                    $scope.arrayPackages.push({os_index : entity.packageOfCacheAndCores.os_index , value : true});
-                }
-            });
-        }
-
         $scope.ChangeColor = function(){
             var tmp;
 
@@ -618,10 +602,6 @@ angular.module('myApp')
                     item.value = tmp;
                 }
             });
-        }
-
-        $scope.AddColor = function(){
-            $scope.arrayColors.push({name : $scope.AddColor[0] , value : $scope.AddColor[1]});
         }
 
         $scope.change = function(choice){
@@ -656,7 +636,6 @@ angular.module('myApp')
         }
 
         $scope.extractEntities();
-        $scope.extractPackage();
         console.log($scope.entitiesbis);
     }
 )
