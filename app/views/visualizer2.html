@@ -6,7 +6,7 @@
 	      	<div class="panel-heading"><i class="fa fa-eye"></i> Visualizer</div>
 		      	<div class="panel-body">
 		        	<div ng-style="{'-moz-transform': 'scale({{zoom}})'}" id="components">
-						<div class="test" ng-repeat="entity in entitiesbis" ng-include="'lstopoTree'"></div>
+						<div class="test" ng-repeat="entity in entities" ng-include="'lstopoTree'"></div>
 
 							<script type="text/ng-template" id="lstopoTree">
 								<div class="group" ng-if="entity.type=='Group'">
@@ -25,44 +25,44 @@
 
 								<div class="numanode" ng-if="entity.type=='NUMANode'">
 									<div ng-style="{'background-color':items[7].value}">
-										<div class="square" ng-style="{'background-color':items[6].value}"><p>{{entity.type}} P#{{entity.os_index}} ({{entity.memory}})</p></div>
+										<div class="square" ng-style="{'background-color':items[6].value}"><p>{{entity.type}} P#{{entity.os_index}} ({{convertMemory(entity.memory, "gb")}}GB)</p></div>
 										<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
 										</span>
 									</div>
 								</div>
 
 								<div ng-show="config.show[0].ticked" class="cache3" ng-if="cacheType(entity.type, 'L3Cache')">
-									<div class="square" ng-style="{'width': sizeCache(entitiesbis, 'L3Cache'),'background-color':userConfig.colors[0].color}"> <p>{{entity.type}} ({{entity.size}})</p> </div>
+									<div class="square" ng-style="{'background-color':userConfig.colors[0].color}"> <p>{{entity.type}} ({{convertMemory(entity.size, "mb")}}MB)</p> </div>
 									<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
 									</span>
 								</div>
 
 								<div ng-show="config.show[1].ticked" class="cache2" ng-if="cacheType(entity.type, 'L2Cache')">
-									<div ng-style="{'width': sizeCache(entitiesbis, 'L2Cache'),'background-color':userConfig.colors[1].color}" class="square"> <p>{{entity.type}} ({{entity.size}})</p> </div>
+									<div ng-style="{'background-color':userConfig.colors[1].color}" class="square"> <p>{{entity.type}} ({{convertMemory(entity.size, "kb")}}KB)</p> </div>
 									<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
 									</span>
 								</div>
 
 								<div ng-show="config.show[1].ticked" sclass="cache2bis" ng-if="cacheType(entity.type, 'L2iCache')">
-									<div ng-style="{'width': sizeCache(entitiesbis, 'L2Cache'),'background-color':userConfig.colors[1].color}" class="square"> <p>{{entity.type}} ({{entity.size}})</p> </div>
+									<div ng-style="{'width': sizeCache(entitiesbis, 'L2Cache'),'background-color':userConfig.colors[1].color}" class="square"> <p>{{entity.type}} ({{convertMemory(entity.size, "kb")}}KB)</p> </div>
 									<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
 									</span>
 								</div>
 
 								<div ng-show="config.show[2].ticked" class="cache1" ng-if="cacheType(entity.type, 'L1Cache')">
-									<div ng-style="{'width': sizeCache(entitiesbis, 'L1Cache') ,'background-color':userConfig.colors[2].color}" class="square"> <p>{{entity.type}} ({{entity.size}})</p> </div>
+									<div ng-style="{'background-color':userConfig.colors[2].color}" class="square"> <p>{{entity.type}} ({{convertMemory(entity.size, "kb")}}KB)</p> </div>
 									<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
 									</span>
 								</div>
 
 								<div ng-show="config.show[2].ticked" class="cache1bis" ng-if="cacheType(entity.type, 'L1iCache')">
-									<div ng-style="{'width': sizeCache(entitiesbis, 'L1Cache') ,'background-color':userConfig.colors[2].color}" class="square"> <p>{{entity.type}} ({{entity.size}})</p> </div>
+									<div ng-style="{'background-color':userConfig.colors[2].color}" class="square"> <p>{{entity.type}} ({{convertMemory(entity.size, "kb")}}KB)</p> </div>
 									<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
 									</span>
 								</div>
 
 								<div ng-show="config.show[3].ticked" class="core square" ng-if="entity.type=='Core'">
-									<div ng-style="{'width': sizeCache(entity, 'Core'),'background-color':userConfig.colors[3].color}" ><p>{{entity.type}} P#{{entity.os_index}}</p>
+									<div ng-style="{'background-color':userConfig.colors[3].color}" ><p>{{entity.type}} P#{{entity.os_index}}</p>
 
 										<div  ng-show="alignement[0].value" ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
 										</div>
