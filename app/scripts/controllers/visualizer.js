@@ -120,6 +120,18 @@ angular.module('myApp')
             }
         }
 
+        $scope.renameCache = function(entity){
+            if(entity.children[0].type == "L2iCache" || entity.children[0].type == "L1iCache"){
+                return entity.type.substring(0, 2)+"d";
+            }
+            else if(entity.type == "L2iCache" || entity.type == "L1iCache"){
+                return entity.type.substring(0, 2)+"i";
+            }
+            else{
+                return entity.type.substring(0, 2);
+            }
+        }
+
         $scope.sizeCache = function(array, type){
             var cpt = 0;
             for(var i=0; i<array.length; i++){
