@@ -120,6 +120,18 @@ angular.module('myApp')
             }
         }
 
+        $scope.renameCache = function(entity){
+            if(entity.children[0].type == "L2iCache" || entity.children[0].type == "L1iCache"){
+                return entity.type.substring(0, 2)+"d";
+            }
+            else if(entity.type == "L2iCache" || entity.type == "L1iCache"){
+                return entity.type.substring(0, 2)+"i";
+            }
+            else{
+                return entity.type.substring(0, 2);
+            }
+        }
+
         $scope.sizeCache = function(array, type){
             var cpt = 0;
             for(var i=0; i<array.length; i++){
@@ -191,9 +203,32 @@ angular.module('myApp')
             {
               "name":"PU",
               "color":"#FFFFFF"
+            },
+            {
+              "name":"NUMANode",
+              "color":"#EFDFDE"
+            }
+            ,
+            {
+              "name":"Node",
+              "color":"#D2E7A4"
+            }
+            ,
+            {
+              "name":"Package",
+              "color":"#DEDEDE"
+            }
+             ,
+            {
+              "name":"Group",
+              "color":"white"
             }
           ]
         };
+
+
+        $scope.alignement = [{alignement : "vertical", value :true}, {alignement : "horizontal" , value : false}];
+        $scope.zoom = 1;
 
         $scope.exportConfig=function(){
           var blob = new Blob([JSON.stringify($scope.userConfig)], {type: "application/json"});
@@ -221,16 +256,6 @@ angular.module('myApp')
             });
           }
         }
-
-        //variable for color
-        $scope.arrayColors= [{name : "basic_red" , value : "#EFDFDE"}, {name : "basic_green" , value : "#D2E7A4"},
-         { name : "basic_grey_light", value :"#DEDEDE"} , { name : "white", value :"#FFFFFF"}, { name : "basic_grey", value :"#BEBEBE"}];
-        $scope.items = [{object : "Cores", value : "#BEBEBE" } , {object : "Pu", value : "#FFFFFF" },
-        {object : "L3", value : "#FFFFFF" },{object : "L2", value : "#FFFFFF" },{object : "L1", value : "#FFFFFF" },
-        {object : "Package", value : "#DEDEDE" }, {object : "NUMANode", value : "#EFDFDE" }, {object : "Node", value : "#D2E7A4" }];
-        $scope.currentItem = ["Cores","white"];
-        $scope.alignement = [{alignement : "vertical", value :true}, {alignement : "horizontal" , value : false}];
-        $scope.zoom = 1;
 
        $scope.checkPackage = function(Package){
             var tmp;
