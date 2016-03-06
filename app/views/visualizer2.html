@@ -16,11 +16,10 @@
 									</div>
 								</div>
 
-								<div class="frame package" ng-if="entity.type=='Package'">
-									<div ng-style="{'background-color':userConfig.colors[7].color}"><p>{{entity.type}} P#{{entity.os_index}}</p>
+								<div class="frame package" ng-if="entity.type=='Package'" ng-style="{'background-color':userConfig.colors[7].color}">
+									<p>{{entity.type}} P#{{entity.os_index}}</p>
 										<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
 										</span>
-									</div>
 								</div>
 
 								<div class="numanode frame" ng-if="entity.type=='NUMANode'" ng-style="{'background-color':userConfig.colors[6].color}">

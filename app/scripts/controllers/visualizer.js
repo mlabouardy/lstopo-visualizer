@@ -14,36 +14,6 @@ angular.module('myApp')
         $scope.arrayGroups = [];
         var i = 0;
 
-        $scope.extractEntitiesBridge = function(datas, container){
-            if(datas instanceof Array){
-                for(var i=0; i<datas.length; i++){
-                    $scope.sortByType(datas[i], container);
-                }
-            }
-            else{
-                $scope.sortByType(datas, container);
-            }
-        }
-
-        $scope.sortByType = function(datas, container){
-            if(datas._type == "Bridge"){
-                    var bridge = new entityBridge(datas._type, datas._depth);
-                    container.push(bridge);
-                    if(datas.object)
-                        $scope.extractEntitiesBridge(datas.object, bridge.child);
-            }
-            else if(datas._type == "PCIDev"){
-                var pci = new entityPciDev(datas._type, datas._pci_busid, datas.info);
-                container.push(pci);
-                if(datas.object)
-                    $scope.extractEntitiesBridge(datas.object, pci.entitiesOsDev);
-            }
-            else if(datas._type == "OSDev"){
-                var os = new entityOsDev(datas._type, datas._name, datas.info);
-                container.push(os);
-            }
-        }
-
         function extractDatas(datas, entities){
             if(datas instanceof Array){
                 for(var i=0; i<datas.length; i++){
@@ -55,10 +25,21 @@ angular.module('myApp')
             }
         }
 
+        function extractPciDatas(datas, entities){
+            if(datas instanceof Array){
+                for(var i=0; i<datas.length; i++){
+                    sortPciDatas(datas[i], entities);
+                }
+            }
+            else{
+                sortPciDatas(datas, entities);
+            }
+        }
+
         function sortDatas(data, array){
             if(data._type == "Group"){
                 array.push({type: data._type, depth: data._depth, children: []});
-                $scope.arrayGroups.push({index : i, os_index : data._depth , value : true});
+                $scope.arrayGroups.push({index : i, os_index : data._depth , value : true, pciTree: []});
                 i++;
                 if(data.object){
                     extractDatas(data.object, array[array.length-1].children);
@@ -72,9 +53,10 @@ angular.module('myApp')
                 }
             }
             else if(data._type == "NUMANode"){
-                array.push({type: data._type, os_index: data._os_index, memory: data._local_memory, children: []});
+                array.push({type: data._type, os_index: data._os_index, memory: data._local_memory, children: [], pciTree: []});
                 if(data.object){
                     extractDatas(data.object, array[array.length-1].children);
+                    extractPciDatas(data.object, array[array.length-1].pciTree);
                 }
             }
             else if(/^L\d{1}.*/.test(data._type)){
@@ -93,6 +75,27 @@ angular.module('myApp')
                 array.push({type: data._type, os_index: data._os_index});
                 if(data.object){
                     extractDatas(data.object, array[array.length-1].children);
+                }
+            }
+        }
+
+        function sortPciDatas(data, array){
+            if(data._type == "Bridge"){
+                array.push({type: data._type, os_index: data._os_index, depth: data._depth, children: []});
+                if(data.object){
+                    extractPciDatas(data.object, array[array.length-1].children);
+                }
+            }
+            else if(data._type == "PCIDev"){
+                array.push({type: data._type, os_index: data._os_index, pci_busid: data._pci_busid, children: []});
+                if(data.object){
+                    extractPciDatas(data.object, array[array.length-1].children);
+                }
+            }
+            else if(data._type == "OSDev"){
+                array.push({type: data._type, name: data._name});
+                if(data.object){
+                    extractPciDatas(data.object, array[array.length-1].children);
                 }
             }
         }
