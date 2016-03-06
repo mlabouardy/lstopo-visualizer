@@ -329,57 +329,126 @@ angular.module('myApp')
         $scope.convertBusid = function(value){
             return value.substr(5, 7);
         }
-
-        console.log($scope.entities);
     }
 )
 
 
 .controller('TestCtrl',function($scope,$timeout){
-    $scope.test=function(array, index){
-        paper = new joint.dia.Paper({
-            el: $('#object-'+index),
-            model: graph,
-            gridSize: 1
+    function drawTree(array, index){
+        var datasTree = array;
+
+        var margin = {top: 30, right: 20, bottom: 30, left: 20},
+        width = 960 - margin.left - margin.right,
+        barHeight = 20;
+
+        var i = 0;
+
+        var tree = d3.layout.tree().nodeSize([0, 30]);
+
+        //Ensemble des noeuds
+        var nodes = tree.nodes(datasTree);
+
+        //Ensemble des liens
+        var links = tree.links(nodes);
+
+        var height = nodes.length*33;
+
+        var svg = d3.select("#tree-" + index + "-" + datasTree.os_index)
+        .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height)
+        .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        //Calcul de l'espacement entre chaque noeud
+        nodes.forEach(function(n, i) {
+            n.x = i * barHeight;
         });
 
-        var e = document.getElementById("object-"+index);
+        var node = svg.selectAll("g.node")
+            .data(nodes);
 
-        var root = createBranch();
-        pushBridge(root);
-        pushBridge(root);
-        pushPCI(root, "test", 0, ["eth0"]);
+        var nodeEnter = node.enter().append("g")
+          .attr("class", "node");
 
-        $scope.drawBridgesAndPciDev(root, array[0].child);
+        nodeEnter.append("rect")
+          .attr("y", -barHeight / 2)
+          .attr("height", 
+            function (d) {
+                if(d.type == "Bridge")
+                    return 8;
+                else
+                    return barHeight;
+            })
+          .attr("width",
+            function (d) {
+                if(d.type == "Bridge")
+                    return 8;
+                else
+                    return "10%";
+            })
+          .style("fill", 
+            function (d) {
+                if(d.type == "Bridge")
+                    return "white";
+                else if(d.type == "PCIDev")
+                    return "#BED295";
+                else if(d.type == "OSDev")
+                    return "#DEDEDE";
+            });
 
-        drawTree(root);
+        nodeEnter.append("text")
+          .attr("dy", 3.5)
+          .attr("dx", 5.5)
+          .text(
+            function (d) {
+                if(d.type == "Bridge")
+                    return;
+                else if(d.type == "PCIDev")
+                    return "PCI "+ convertBusid(d.pci_busid);
+                else if(d.type == "OSDev")
+                    return d.name;
+            });
+
+        node.transition()
+          .attr("transform", function(d) { return "translate(" + d.y*1.5 + "," + d.x*1.5 + ")"; })
+          .style("opacity", 1)
+        .select("rect")
+          .style("fill", 
+            function (d) {
+                if(d.type == "Bridge")
+                    return "white";
+                else if(d.type == "PCIDev")
+                    return "#BED295";
+                else if(d.type == "OSDev")
+                    return "#DEDEDE";
+            });
+
+        var link= svg.selectAll("path.link")
+            .data(links)
+          .enter().append("path")
+            .attr("class", "link")
+            .attr("d", elbow);  
+
     }
 
-    $scope.drawBridgesAndPciDev = function(root, datas){
-        var level;
-        for(var i=1; i<datas.length; i++){
-            if(i==1){
-                level = root.nodes[0].childBranch;
-                pushJoint(level);
-                pushBridge(level);
-                pushPCI(level, "test", 0, ["eth"+i]);
-            }
-            else{
-                level = $scope.addBranch(level);
-                pushJoint(level);
-                pushBridge(level);
-                pushPCI(level, "test", 0, ["eth"+i]);
-            }
-        }
+    function elbow(d, i) {
+        return "M" + d.source.y*1.5 + "," + d.source.x*1.5
+          + "V" + d.target.x*1.5 + "H" + d.target.y*1.5
+          + (d.target.children ? "" : ("v" + 0));
     }
 
-    $scope.addBranch = function(origin){
-        return origin.nodes[0].childBranch;
+    function convertBusid(value){
+        return value.substr(5, 7);
+    }
+
+    function size(nodes){
+        return Math.round(nodes.length*32);
     }
 
     $scope.begin=function(array, index){
         $timeout(function() {
-          $scope.test(array,index);
+            drawTree(array, index);
         }, 0);
     }
 
