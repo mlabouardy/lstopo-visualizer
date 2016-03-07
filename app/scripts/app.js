@@ -6,7 +6,7 @@ angular.module('myApp', ['ngRoute','cb.x2js', 'LocalStorageModule', 'isteven-mul
       controller: 'MainCtrl'
     })
     .when('/visualizer', {
-      templateUrl: 'views/visualizer.html',
+      templateUrl: 'views/visualizer2.html',
       controller: 'VisualizerCtrl'
     }).when('/vis', {
             templateUrl: 'views/vis.html',

@@ -25,6 +25,20 @@
                 <option ng-repeat="group in arrayGroups track by $index">{{group.os_index}}</option>
               </select>
             </div>
+            </br>
+              <div class="row">
+                <label> Alignement</label>
+                <div ng-repeat="choices in alignement">
+                      <input type="checkbox" ng-model="choices.value" ng-change="change(choices)"> {{choices.alignement}}
+
+                </div>
+              </div>
+              </br>
+              <div class="row">
+                <label> Zoom de l'image :  {{zoom}} <label> 
+                <button ng-click="Zoom('zoomIn')"> + </button>
+                <button ng-click="Zoom('zoomOut')"> - </button>
+              </div>
           </div>
           <div class="form-group col-md-3">
             <label>Colors</label>
