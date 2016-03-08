@@ -4,19 +4,19 @@
   	<div class="col-md-12">
 	    <div class="panel panel-primary">
 	      	<div class="panel-heading"><i class="fa fa-eye"></i> Visualizer</div>
-		      	<div class="panel-body">
-		        	<div ng-style="{'-moz-transform': 'scale({{zoom}})'}" id="components">
+		      	<div ng-style="{'-moz-transform': 'scale({{zoom}})'}" id="components" class="panel-body">
+		        	<div>
 						<div ng-repeat="entity in entities" ng-include="'lstopoTree'"></div>
 
 							<script type="text/ng-template" id="lstopoTree">
-								<div class="group" ng-if="entity.type=='Group'">
+								<div ng-show="ShowGroup(entity)" class="group" ng-if="entity.type=='Group'">
 									<div ng-style="{'background-color':userConfig.colors[8].color}" class="frame"><p>{{entity.type}} {{entity.depth}}</p>
 										<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
 										</span>
 									</div>
 								</div>
 
-								<div class="frame package" ng-if="entity.type=='Package'" ng-style="{'background-color':userConfig.colors[7].color}">
+								<div ng-show="checkPackage(entity)" class="frame package" ng-if="entity.type=='Package'" ng-style="{'background-color':userConfig.colors[7].color}">
 									<p>{{entity.type}} P#{{entity.os_index}}</p>
 										<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
 										</span>

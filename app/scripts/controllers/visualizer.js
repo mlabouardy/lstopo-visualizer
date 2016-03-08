@@ -263,7 +263,7 @@ angular.module('myApp')
        $scope.checkPackage = function(Package){
             var tmp;
             $scope.arrayPackages.forEach(function(packages,index){
-                if (packages.os_index == Package){
+                if (packages.os_index == Package.os_index){
                     tmp = packages.value;
                 }
             });
