@@ -15,13 +15,20 @@
           <div class="form-group col-md-3">
             <div ng-show="checkGroups(arrayPackages)" class="row">
               <label>Packages</label>
-              <div isteven-multi-select input-model="arrayPackages" style="min-width:100%" output-model="output" button-label="os_index" item-label="os_index" tick-property="value"></div>
+              <div isteven-multi-select input-model="arrayPackages" style="min-width:100%" output-model="outputPackages" button-label="os_index" item-label="os_index" tick-property="value"></div>
             </div><br/>
             <div ng-show="checkGroups(arrayGroups)" class="row">
               <label>Groups</label>
-              <div isteven-multi-select input-model="arrayGroups" style="min-width:100%" output-model="output" button-label="os_index" item-label="os_index" tick-property="value"></div>
+              <div isteven-multi-select input-model="arrayGroups" style="min-width:100%" output-model="outputGroups" button-label="os_index" item-label="os_index" tick-property="value"></div>
             </div>
             </br>
+
+             <div ng-show="checkGroups(arrayNUMANodes)" class="row">
+              <label>NUMANodes</label>
+              <div isteven-multi-select input-model="arrayNUMANodes" style="min-width:100%" output-model="outputNUMANodes" button-label="os_index" item-label="os_index" tick-property="value"></div>
+            </div>
+            </br>
+
               <div class="row">
                 <label> Alignement</label>
                 <div ng-repeat="choices in alignement">

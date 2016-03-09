@@ -12,6 +12,7 @@ angular.module('myApp')
         $scope.Pu = true;
         $scope.arrayPackages = [];
         $scope.arrayGroups = [];
+        $scope.arrayNUMANodes = [];
         var i = 0;
 
         function extractDatas(datas, entities){
@@ -54,6 +55,7 @@ angular.module('myApp')
             }
             else if(data._type == "NUMANode"){
                 array.push({type: data._type, os_index: data._os_index, memory: data._local_memory, children: [], pciTree: []});
+                $scope.arrayNUMANodes.push({os_index : data._os_index , value : true});
                 if(data.object){
                     extractDatas(data.object, array[array.length-1].children);
                     extractPciDatas(data.object, array[array.length-1].pciTree);
@@ -265,6 +267,18 @@ angular.module('myApp')
             $scope.arrayPackages.forEach(function(packages,index){
                 if (packages.os_index == Package.os_index){
                     tmp = packages.value;
+                }
+            });
+            return tmp;
+        }
+
+        $scope.checkNUMANodes = function(NUMANode){
+           
+            var tmp;
+            $scope.arrayNUMANodes.forEach(function(entity,index){
+                if (entity.os_index == NUMANode.os_index){
+                    console.log(entity);
+                    tmp = entity.value;
                 }
             });
             return tmp;

@@ -22,7 +22,7 @@
 										</span>
 								</div>
 
-								<div class="numanode frame" ng-if="entity.type=='NUMANode'" ng-style="{'background-color':userConfig.colors[6].color}">
+								<div ng-show="checkNUMANodes(entity)" class="numanode frame" ng-if="entity.type=='NUMANode'" ng-style="{'background-color':userConfig.colors[6].color}">
 									<div class="frame" ng-style="{'background-color':userConfig.colors[5].color}"><p>{{entity.type}} P#{{entity.os_index}} ({{convertMemory(entity.memory, "gb")}}GB)</p></div>
 									<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
 									</span>
