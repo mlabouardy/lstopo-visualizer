@@ -12,6 +12,7 @@ angular.module('myApp')
         $scope.Pu = true;
         $scope.arrayPackages = [];
         $scope.arrayGroups = [];
+        $scope.arrayNUMANodes = [];
         var i = 0;
 
         function extractDatas(datas, entities){
@@ -54,6 +55,7 @@ angular.module('myApp')
             }
             else if(data._type == "NUMANode"){
                 array.push({type: data._type, os_index: data._os_index, memory: data._local_memory, children: [], pciTree: []});
+                $scope.arrayNUMANodes.push({os_index : data._os_index , value : true});
                 if(data.object){
                     extractDatas(data.object, array[array.length-1].children);
                     extractPciDatas(data.object, array[array.length-1].pciTree);
@@ -263,8 +265,20 @@ angular.module('myApp')
        $scope.checkPackage = function(Package){
             var tmp;
             $scope.arrayPackages.forEach(function(packages,index){
-                if (packages.os_index == Package){
+                if (packages.os_index == Package.os_index){
                     tmp = packages.value;
+                }
+            });
+            return tmp;
+        }
+
+        $scope.checkNUMANodes = function(NUMANode){
+           
+            var tmp;
+            $scope.arrayNUMANodes.forEach(function(entity,index){
+                if (entity.os_index == NUMANode.os_index){
+                    console.log(entity);
+                    tmp = entity.value;
                 }
             });
             return tmp;
@@ -316,19 +330,24 @@ angular.module('myApp')
             }
         }
 
-        $scope.sizeCacheWithDepthAndType = function(array, depth, type){
-            var cpt = 0;
-            for(var i=0; i<array.length; i++){
-                if(array[i].depth == depth && array[i].cache_type == type){
-                    cpt++;
-                }
-            }
-            return (100-(cpt))/cpt+"%";
-        }
-
         $scope.convertBusid = function(value){
             return value.substr(5, 7);
         }
+
+        /*$scope.resize = function(array){
+            return Math.round(100/array.length) + "%";
+        }
+
+        $scope.shareWidth = function(entity, other){
+            console.log(entity);
+            if(other){
+                console.log("ok");
+                return "50%";
+            }
+            else{
+                return "100%";
+            }
+        }*/
     }
 )
 
@@ -337,8 +356,8 @@ angular.module('myApp')
     function drawTree(array, index){
         var datasTree = array;
 
-        var margin = {top: 30, right: 20, bottom: 30, left: 20},
-        width = 960 - margin.left - margin.right,
+        var margin = {top: 30, right: 10, bottom: 30, left: 10},
+        width = 600,
         barHeight = 20;
 
         var i = 0;
@@ -355,7 +374,7 @@ angular.module('myApp')
 
         var svg = d3.select("#tree-" + index + "-" + datasTree.os_index)
         .append("svg")
-            .attr("width", width + margin.left + margin.right)
+            .attr("width", width)
             .attr("height", height)
         .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -384,8 +403,10 @@ angular.module('myApp')
             function (d) {
                 if(d.type == "Bridge")
                     return 8;
-                else
-                    return "10%";
+                else if(d.type == "PCIDev")
+                    return 80;
+                else if(d.type == "OSDev")
+                    return 70;
             })
           .style("fill", 
             function (d) {
