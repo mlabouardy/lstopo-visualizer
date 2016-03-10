@@ -372,9 +372,9 @@ angular.module('myApp')
     function drawTree(array, index){
         var datasTree = array;
 
-        var margin = {top: 30, right: 10, bottom: 30, left: 10},
-        width = 600,
-        barHeight = 20;
+        var margin = {top: 30, right: 10, bottom: 30, left: 10};
+        var width = 600;
+        var barHeight = 20;
 
         var i = 0;
 
@@ -408,17 +408,18 @@ angular.module('myApp')
 
         nodeEnter.append("rect")
           .attr("y", -barHeight / 2)
+          .attr("x", -barHeight / 2)
           .attr("height", 
             function (d) {
                 if(d.type == "Bridge")
-                    return 8;
+                    return barHeight;
                 else
                     return barHeight;
             })
           .attr("width",
             function (d) {
                 if(d.type == "Bridge")
-                    return 8;
+                    return barHeight;
                 else if(d.type == "PCIDev")
                     return 80;
                 else if(d.type == "OSDev")
@@ -436,7 +437,7 @@ angular.module('myApp')
 
         nodeEnter.append("text")
           .attr("dy", 3.5)
-          .attr("dx", 5.5)
+          .attr("dx", 0)
           .text(
             function (d) {
                 if(d.type == "Bridge")
@@ -449,17 +450,7 @@ angular.module('myApp')
 
         node.transition()
           .attr("transform", function(d) { return "translate(" + d.y*1.5 + "," + d.x*1.5 + ")"; })
-          .style("opacity", 1)
-        .select("rect")
-          .style("fill", 
-            function (d) {
-                if(d.type == "Bridge")
-                    return "white";
-                else if(d.type == "PCIDev")
-                    return "#BED295";
-                else if(d.type == "OSDev")
-                    return "#DEDEDE";
-            });
+          .style("opacity", 1);
 
         var link= svg.selectAll("path.link")
             .data(links)
@@ -470,9 +461,8 @@ angular.module('myApp')
     }
 
     function elbow(d, i) {
-        return "M" + d.source.y*1.5 + "," + d.source.x*1.5
-          + "V" + d.target.x*1.5 + "H" + d.target.y*1.5
-          + (d.target.children ? "" : ("v" + 0));
+        return "M" + d.source.y*1.5 + "," + (d.source.x+8)*1.5
+          + "V" + d.target.x*1.5 + "H" + (d.target.y-8)*1.5;
     }
 
     function convertBusid(value){
