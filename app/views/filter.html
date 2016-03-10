@@ -38,7 +38,7 @@
               </div>
               </br>
               <div class="row">
-                <label> Zoom de l'image :  {{zoom}} <label> 
+                <label> Zoom de l'image :  {{zoom}} <label>
                 <button ng-click="Zoom('zoomIn')"> + </button>
                 <button ng-click="Zoom('zoomOut')"> - </button>
               </div>
@@ -59,11 +59,11 @@
           </div>
           <div class="form-group col-md-3">
             <label>Save Image</label>
-            <select ng-model="config.export" class="form-control">
-              <option value="PNG">PNG</option>
+            <select id="export_type" ng-model="config.export" class="form-control">
+              <option value="PNG" selected="selected">PNG</option>
               <option value="PDF">PDF</option>
             </select><br/>
-            <a class="btn btn-success btn-block" ng-click="download()" ><i class="fa fa-download"></i> Download</a>
+            <a class="btn btn-success btn-block" ng-click="download()" id="download" ><i class="fa fa-download"></i> Download</a>
           </div>
         </div>
       </div>

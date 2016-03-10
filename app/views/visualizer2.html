@@ -1,92 +1,92 @@
 <div ng-include="'views/filter.html'"></div>
 
 <div class="row">
-  	<div class="col-md-12">
-	    <div class="panel panel-primary">
-	      	<div class="panel-heading"><i class="fa fa-eye"></i> Visualizer</div>
-		      	<div ng-style="{'-moz-transform': 'scale({{zoom}})'}" id="components" class="panel-body">
-		        	<div>
-						<div ng-repeat="entity in entities" ng-include="'lstopoTree'"></div>
+  <div class="col-md-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading"><i class="fa fa-eye"></i> Visualizer</div>
+      <div ng-style="{'-moz-transform': 'scale({{zoom}})'}" id="components" class="panel-body">
+        <div>
+          <div ng-repeat="entity in entities" ng-include="'lstopoTree'"></div>
 
-							<script type="text/ng-template" id="lstopoTree">
-								<div ng-show="checkArrayEntity(entity,'Groups')" class="group" ng-if="entity.type=='Group'">
-									<div ng-style="{'background-color':userConfig.colors[8].color}" class="frame"><p>{{entity.type}} {{entity.depth}}</p>
-										<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
-										</span>
-									</div>
-								</div>
+          <script type="text/ng-template" id="lstopoTree">
+          <div ng-show="checkArrayEntity(entity,'Groups')" class="group" ng-if="entity.type=='Group'">
+          <div ng-style="{'background-color':userConfig.colors[8].color}" class="frame"><p>{{entity.type}} {{entity.depth}}</p>
+          <span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+          </span>
+          </div>
+          </div>
 
-								<div ng-show="checkArrayEntity(entity,'Packages')" class="frame package" ng-if="entity.type=='Package'" ng-style="{'background-color':userConfig.colors[7].color}">
-									<p>{{entity.type}} P#{{entity.os_index}}</p>
-										<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
-										</span>
-								</div>
+          <div ng-show="checkArrayEntity(entity,'Packages')" class="frame package" ng-if="entity.type=='Package'" ng-style="{'background-color':userConfig.colors[7].color}">
+          <p>{{entity.type}} P#{{entity.os_index}}</p>
+          <span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+          </span>
+          </div>
 
-								<div ng-show="checkArrayEntity(entity,'NUMANodes')" class="numanode frame" ng-if="entity.type=='NUMANode'" ng-style="{'background-color':userConfig.colors[6].color}">
-									<div class="frame" ng-style="{'background-color':userConfig.colors[5].color}"><p>{{entity.type}} P#{{entity.os_index}} ({{convertMemory(entity.memory, "gb")}}GB)</p></div>
-									<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
-									</span>
-									<span ng-if="entity.pciTree" ng-repeat="tree in entity.pciTree">
-										<div id="{{ 'tree-' + $index + '-' + tree.os_index }}" ng-controller="TestCtrl" ng-init="begin(tree, $index)" >
-                						</div>
-									</div>
-								</div>
+          <div ng-show="checkArrayEntity(entity,'NUMANodes')" class="numanode frame" ng-if="entity.type=='NUMANode'" ng-style="{'background-color':userConfig.colors[6].color}">
+          <div class="frame" ng-style="{'background-color':userConfig.colors[5].color}"><p>{{entity.type}} P#{{entity.os_index}} ({{convertMemory(entity.memory, "gb")}}GB)</p></div>
+          <span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+          </span>
+          <span ng-if="entity.pciTree" ng-repeat="tree in entity.pciTree">
+          <div id="{{ 'tree-' + $index + '-' + tree.os_index }}" ng-controller="TestCtrl" ng-init="begin(tree, $index)" >
+          </div>
+          </div>
+          </div>
 
-								<div class="cache3" ng-if="cacheType(entity.type, 'L3Cache')">
-									<div ng-show="config.show[0].ticked" class="frame" ng-style="{'background-color':userConfig.colors[0].color}"> <p>{{renameCache(entity)}} ({{convertMemory(entity.size, "mb")}}MB)</p> </div>
-									<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
-									</span>
-								</div>
+          <div class="cache3" ng-if="cacheType(entity.type, 'L3Cache')">
+          <div ng-show="config.show[0].ticked" class="frame" ng-style="{'background-color':userConfig.colors[0].color}"> <p>{{renameCache(entity)}} ({{convertMemory(entity.size, "mb")}}MB)</p> </div>
+          <span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+          </span>
+          </div>
 
-								<div class="cache2" ng-if="cacheType(entity.type, 'L2Cache')">
-									<div ng-show="config.show[1].ticked" ng-style="{'background-color':userConfig.colors[1].color}" class="frame"> <p>{{renameCache(entity)}} ({{convertMemory(entity.size, "kb")}}KB)</p> </div>
-									<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
-									</span>
-								</div>
+          <div class="cache2" ng-if="cacheType(entity.type, 'L2Cache')">
+          <div ng-show="config.show[1].ticked" ng-style="{'background-color':userConfig.colors[1].color}" class="frame"> <p>{{renameCache(entity)}} ({{convertMemory(entity.size, "kb")}}KB)</p> </div>
+          <span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+          </span>
+          </div>
 
-								<div class="cache2bis" ng-if="cacheType(entity.type, 'L2iCache')">
-									<div ng-show="config.show[1].ticked" ng-style="{'background-color':userConfig.colors[1].color}" class="frame"> <p>{{renameCache(entity)}} ({{convertMemory(entity.size, "kb")}}KB)</p> </div>
-									<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
-									</span>
-								</div>
+          <div class="cache2bis" ng-if="cacheType(entity.type, 'L2iCache')">
+          <div ng-show="config.show[1].ticked" ng-style="{'background-color':userConfig.colors[1].color}" class="frame"> <p>{{renameCache(entity)}} ({{convertMemory(entity.size, "kb")}}KB)</p> </div>
+          <span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+          </span>
+          </div>
 
-								<div class="cache1" ng-if="cacheType(entity.type, 'L1Cache')">
-									<div ng-show="config.show[2].ticked" ng-style="{'background-color':userConfig.colors[2].color}" class="frame"> <p>{{renameCache(entity)}} ({{convertMemory(entity.size, "kb")}}KB)</p> </div>
-									<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
-									</span>
-								</div>
+          <div class="cache1" ng-if="cacheType(entity.type, 'L1Cache')">
+          <div ng-show="config.show[2].ticked" ng-style="{'background-color':userConfig.colors[2].color}" class="frame"> <p>{{renameCache(entity)}} ({{convertMemory(entity.size, "kb")}}KB)</p> </div>
+          <span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+          </span>
+          </div>
 
-								<div class="cache1bis" ng-if="cacheType(entity.type, 'L1iCache')">
-									<div ng-show="config.show[2].ticked" ng-style="{'background-color':userConfig.colors[2].color}" class="frame"> <p>{{renameCache(entity)}} ({{convertMemory(entity.size, "kb")}}KB)</p> </div>
-									<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
-									</span>
-								</div>
+          <div class="cache1bis" ng-if="cacheType(entity.type, 'L1iCache')">
+          <div ng-show="config.show[2].ticked" ng-style="{'background-color':userConfig.colors[2].color}" class="frame"> <p>{{renameCache(entity)}} ({{convertMemory(entity.size, "kb")}}KB)</p> </div>
+          <span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+          </span>
+          </div>
 
-								<div class="core frame" ng-if="entity.type=='Core'">
-									<div ng-style="{'background-color':userConfig.colors[3].color}" ><p ng-show="config.show[3].ticked">{{entity.type}} P#{{entity.os_index}}</p>
-										<div  ng-show="alignement[0].value" ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
-										</div>
+          <div class="core frame" ng-if="entity.type=='Core'">
+          <div ng-style="{'background-color':userConfig.colors[3].color}" ><p ng-show="config.show[3].ticked">{{entity.type}} P#{{entity.os_index}}</p>
+          <div  ng-show="alignement[0].value" ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+          </div>
 
-				                    	<table ng-hide="alignement[0].value">
-				                        	<tr>
-				                        		<td ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
-				                        		</td>
-				                        	</tr>
-				                    	</table>
-									</div>
-								</div>
+          <table ng-hide="alignement[0].value">
+          <tr>
+          <td ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
+          </td>
+          </tr>
+          </table>
+          </div>
+          </div>
 
-								<div ng-show="config.show[4].ticked" ng-style="{'background-color':userConfig.colors[4].color}" class="frame" ng-if="entity.type=='PU'">
-									<div>
-										<p>{{entity.type}} P#{{entity.os_index}}</p>
-									</div>		                    
-								</div>
+          <div ng-show="config.show[4].ticked" ng-style="{'background-color':userConfig.colors[4].color}" class="frame" ng-if="entity.type=='PU'">
+          <div>
+          <p>{{entity.type}} P#{{entity.os_index}}</p>
+          </div>
+          </div>
 
-							</script>
+          </script>
 
-        			</div>
-     	 		</div>
-      		</div>
-    	</div>
-	</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
