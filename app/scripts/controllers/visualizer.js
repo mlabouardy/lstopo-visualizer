@@ -39,8 +39,8 @@ angular.module('myApp')
 
         function sortDatas(data, array){
             if(data._type == "Group"){
-                array.push({type: data._type, depth: data._depth, children: []});
-                $scope.arrayGroups.push({index : i, os_index : data._depth , value : true, pciTree: []});
+                array.push({type: data._type, _cpuset : data._cpuset, depth: data._depth, children: []});
+                $scope.arrayGroups.push({index : data._cpuset, os_index : data._depth , value : true, pciTree: []});
                 i++;
                 if(data.object){
                     extractDatas(data.object, array[array.length-1].children);
@@ -148,7 +148,6 @@ angular.module('myApp')
         }
 
         $scope.sizePu = function(array, type){
-            console.log(array.length);
             var cpt = 0;
             for(var i=0; i<array.length; i++){
                 if(array[i].type == type){
@@ -262,7 +261,25 @@ angular.module('myApp')
           }
         }
 
-       $scope.checkPackage = function(Package){
+        $scope.checkArrayEntity = function(entityArray, type){
+            var tmp;
+            var array = "$scope.array" + type;
+            eval(array).forEach(function(entity,index){
+                if(type != 'Groups'){
+                    if (entity.os_index == entityArray.os_index){
+                        tmp = entity.value;
+                    }
+                }
+                else{
+                    if(entity.index == entityArray._cpuset){
+                        tmp = entity.value;
+                    }
+                }
+            });
+            return tmp;
+        }
+
+      /* $scope.checkPackage = function(Package){
             var tmp;
             $scope.arrayPackages.forEach(function(packages,index){
                 if (packages.os_index == Package.os_index){
@@ -277,18 +294,17 @@ angular.module('myApp')
             var tmp;
             $scope.arrayNUMANodes.forEach(function(entity,index){
                 if (entity.os_index == NUMANode.os_index){
-                    console.log(entity);
                     tmp = entity.value;
                 }
             });
             return tmp;
-        }
+        }*/
 
         $scope.checkGroups = function(group){
             return (group[0] != undefined);
         }
 
-        $scope.ShowGroup = function(entity){
+        /*$scope.ShowGroup = function(entity){
             var check;
             $scope.arrayGroups.forEach(function(group,index){
                 if(group.index == $scope.entities.indexOf(entity)){
@@ -296,7 +312,7 @@ angular.module('myApp')
                 }
             });
             return check;
-        }
+        }*/
 
         $scope.ChangeColor = function(){
             var tmp;
