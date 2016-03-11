@@ -433,7 +433,8 @@ angular.module('myApp')
 
         var margin = {top: 30, right: 10, bottom: 30, left: 10};
         var width = 600;
-        var barHeight = 20;
+        var shapeHeight = {bridge: 10, pci: 20, os: 20};
+        var shapeWidth = {bridge: 10, pci: 80, os: 70};
 
         var i = 0;
 
@@ -456,7 +457,7 @@ angular.module('myApp')
 
         //Calcul de l'espacement entre chaque noeud
         nodes.forEach(function(n, i) {
-            n.x = i * barHeight;
+            n.x = i * shapeHeight.pci;
         });
 
         var node = svg.selectAll("g.node")
@@ -466,23 +467,41 @@ angular.module('myApp')
           .attr("class", "node");
 
         nodeEnter.append("rect")
-          .attr("y", -barHeight / 2)
-          .attr("x", -barHeight / 2)
+          .attr("y",
+                function (d) {
+                if(d.type == "Bridge")
+                    return -shapeHeight.bridge/2;
+                else if(d.type == "PCIDev")
+                    return -shapeHeight.pci/2;
+                else if(d.type == "OSDev")
+                    return -shapeHeight.os/2;
+            })
+          .attr("x", 
+            function (d) {
+                if(d.type == "Bridge")
+                    return -shapeHeight.bridge/2;
+                else if(d.type == "PCIDev")
+                    return -shapeHeight.pci/2;
+                else if(d.type == "OSDev")
+                    return -shapeHeight.os/2;
+            })
           .attr("height", 
             function (d) {
                 if(d.type == "Bridge")
-                    return barHeight;
-                else
-                    return barHeight;
+                    return shapeHeight.bridge;
+                else if(d.type == "PCIDev")
+                    return shapeHeight.pci;
+                else if(d.type == "OSDev")
+                    return shapeHeight.os;
             })
           .attr("width",
             function (d) {
                 if(d.type == "Bridge")
-                    return barHeight;
+                    return shapeWidth.bridge;
                 else if(d.type == "PCIDev")
-                    return 80;
+                    return shapeWidth.pci;
                 else if(d.type == "OSDev")
-                    return 70;
+                    return shapeWidth.os;
             })
           .style("fill", 
             function (d) {
@@ -520,8 +539,22 @@ angular.module('myApp')
     }
 
     function elbow(d, i) {
-        return "M" + d.source.y*1.5 + "," + (d.source.x+8)*1.5
-          + "V" + d.target.x*1.5 + "H" + (d.target.y-8)*1.5;
+        if(d.source.type == "Bridge" && d.target.type == "Bridge"){
+            return "M" + d.source.y*1.5 + "," + (d.source.x+4)*1.5
+              + "V" + d.target.x*1.5 + "H" + (d.target.y-4)*1.5;
+        }
+        else if (d.source.type == "Bridge" && d.target.type == "PCIDev"){
+            return "M" + d.source.y*1.5 + "," + (d.source.x+4)*1.5
+              + "V" + d.target.x*1.5 + "H" + (d.target.y-8)*1.5;
+        }
+        else if (d.source.type == "PCIDev" && d.target.type == "OSDev"){
+            return "M" + (d.source.y+8)*1.5 + "," + (d.source.x+8)*1.5
+              + "V" + d.target.x*1.5 + "H" + (d.target.y-8)*1.5;
+        }
+        else {
+            return "M" + d.source.y*1.5 + "," + (d.source.x+8)*1.5
+              + "V" + d.target.x*1.5 + "H" + (d.target.y-8)*1.5;
+        }
     }
 
     function convertBusid(value){
