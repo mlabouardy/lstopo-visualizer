@@ -30,11 +30,13 @@
             </br>
 
               <div class="row">
-                <label> Alignement</label>
-                <div ng-repeat="choices in alignement">
-                      <input type="checkbox" ng-model="choices.value" ng-change="change(choices)"> {{choices.alignement}}
-
-                </div>
+               
+                <label> Components alignement</label>
+         
+                    <div ng-repeat="components in componentsChoice">
+                        <input type="checkbox" ng-model="components.value"> {{components.description}}   
+                    </div>
+                </br>
               </div>
               </br>
               <div class="row">

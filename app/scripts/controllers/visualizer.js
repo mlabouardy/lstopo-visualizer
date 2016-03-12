@@ -233,6 +233,17 @@ angular.module('myApp')
 
         $scope.alignement = [{alignement : "vertical", value :true}, {alignement : "horizontal" , value : false}];
         $scope.zoom = 1;
+        $scope.componentsChoice = [{description : "Pu" , value : true} , {description : "Groups" , value : true}, {description : "Packages" , value : true},  {description : "NUMANodes" , value : true}]
+
+        $scope.alignementComponents = function(component){
+            var tmp;
+            $scope.componentsChoice.forEach(function(compo,index){
+                if(compo.description == component){
+                        tmp = compo.value;
+                }
+            });
+            return tmp;
+        }
 
         $scope.exportConfig=function(){
           var blob = new Blob([JSON.stringify($scope.userConfig)], {type: "application/json"});
@@ -279,40 +290,9 @@ angular.module('myApp')
             return tmp;
         }
 
-      /* $scope.checkPackage = function(Package){
-            var tmp;
-            $scope.arrayPackages.forEach(function(packages,index){
-                if (packages.os_index == Package.os_index){
-                    tmp = packages.value;
-                }
-            });
-            return tmp;
-        }
-
-        $scope.checkNUMANodes = function(NUMANode){
-           
-            var tmp;
-            $scope.arrayNUMANodes.forEach(function(entity,index){
-                if (entity.os_index == NUMANode.os_index){
-                    tmp = entity.value;
-                }
-            });
-            return tmp;
-        }*/
-
         $scope.checkGroups = function(group){
             return (group[0] != undefined);
         }
-
-        /*$scope.ShowGroup = function(entity){
-            var check;
-            $scope.arrayGroups.forEach(function(group,index){
-                if(group.index == $scope.entities.indexOf(entity)){
-                    check = group.value;
-                }
-            });
-            return check;
-        }*/
 
         $scope.ChangeColor = function(){
             var tmp;
