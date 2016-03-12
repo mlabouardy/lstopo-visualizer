@@ -113,16 +113,28 @@ angular.module('myApp')
             }
         }
 
-        $scope.convertMemory = function(value, unity){
-            if(unity == "gb"){
-                return Math.round(value/Math.pow(1024, 3));
+        $scope.convertMemory = function(value){
+            var i = 0;
+            var unity = "B";
+            var tmp = value;
+            while (tmp > 10000) 
+            {
+                i += 1;
+                tmp = Math.round(value/Math.pow(1024, i))
+                if(i==1){
+                    unity = "KB";
+                }
+                else if(i==2){
+                    unity = "MB";
+                }
+                else if(i==3){
+                    unity = "GB";
+                }
+                else if(i==4){
+                    unity = "TB";
+                }
             }
-            else if(unity == "mb"){
-                return Math.round(value/Math.pow(1024, 2));
-            }
-            else if(unity == "kb"){
-                return Math.round(value/1024);
-            }
+            return tmp+unity;
         }
 
         $scope.renameCache = function(entity){
