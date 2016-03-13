@@ -244,7 +244,7 @@ angular.module('myApp')
 
 
         $scope.alignement = [{alignement : "vertical", value :true}, {alignement : "horizontal" , value : false}];
-        $scope.zoom = 0.5;
+        $scope.zoom = 1;
         $scope.componentsChoice = [{description : "Pu" , value : true} , {description : "Groups" , value : true}, {description : "Packages" , value : true},  {description : "NUMANodes" , value : true}]
 
         $scope.alignementComponents = function(component){
@@ -264,6 +264,16 @@ angular.module('myApp')
 
 
         $scope.download = function(){
+
+            /*var html = d3.select("svg")
+                .attr("version", 1.1)
+                .attr("xmlns", "http://www.w3.org/2000/svg")
+                .node().parentNode.innerHTML;
+
+            var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
+            var img = '<img src="'+imgsrc+'">'; 
+            d3.select("#svgdataurl").html(img);*/
+
           if($scope.config.export=="PDF"){
             html2canvas($("#components"), {
             onrendered: function(canvas) {
@@ -422,146 +432,134 @@ angular.module('myApp')
 
 
 .controller('TestCtrl',function($scope,$timeout){
+    function initTree(array, index){
+        var canvas = document.getElementById('tree-' + index + '-' + array.os_index);
+        var context = canvas.getContext('2d');
 
-    function drawTree(array, index){
-        var datasTree = array;
+        var x = 10;
+        var y = 10;
 
-        var margin = {top: 30, right: 10, bottom: 30, left: 10};
-        var width = 600;
-        var shapeHeight = {bridge: 10, pci: 20, os: 20};
-        var shapeWidth = {bridge: 10, pci: 80, os: 70};
+        // First Bridge
+        context.beginPath();
+        context.rect(10, 10, 10, 10);
+        context.fillStyle = 'white';
+        context.fill();
+        context.lineWidth = 2;
+        context.strokeStyle = 'black';
+        context.stroke();
 
-        var i = 0;
-
-        var tree = d3.layout.tree().nodeSize([0, 30]);
-
-        //Ensemble des noeuds
-        var nodes = tree.nodes(datasTree);
-
-        //Ensemble des liens
-        var links = tree.links(nodes);
-
-        var height = nodes.length*33;
-
-        var svg = d3.select("#tree-" + index + "-" + datasTree.os_index)
-        .append("svg")
-            .attr("width", width)
-            .attr("height", height)
-        .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        //Calcul de l'espacement entre chaque noeud
-        nodes.forEach(function(n, i) {
-            n.x = i * shapeHeight.pci;
-        });
-
-        var node = svg.selectAll("g.node")
-            .data(nodes);
-
-        var nodeEnter = node.enter().append("g")
-          .attr("class", "node");
-        nodeEnter.append("rect")
-          .attr("y",
-                function (d) {
-                if(d.type == "Bridge")
-                    return -shapeHeight.bridge/2;
-                else if(d.type == "PCIDev")
-                    return -shapeHeight.pci/2;
-                else if(d.type == "OSDev")
-                    return -shapeHeight.os/2;
-            })
-          .attr("x", 
-            function (d) {
-                if(d.type == "Bridge")
-                    return -shapeHeight.bridge/2;
-                else if(d.type == "PCIDev")
-                    return -shapeHeight.pci/2;
-                else if(d.type == "OSDev")
-                    return -shapeHeight.os/2;
-            })
-          .attr("height", 
-            function (d) {
-                if(d.type == "Bridge")
-                    return shapeHeight.bridge;
-                else if(d.type == "PCIDev")
-                    return shapeHeight.pci;
-                else if(d.type == "OSDev")
-                    return shapeHeight.os;
-            })
-          .attr("width",
-            function (d) {
-                if(d.type == "Bridge")
-                    return shapeWidth.bridge;
-                else if(d.type == "PCIDev")
-                    return shapeWidth.pci;
-                else if(d.type == "OSDev")
-                    return shapeWidth.os;
-            })
-          .style("fill", 
-            function (d) {
-                if(d.type == "Bridge")
-                    return "white";
-                else if(d.type == "PCIDev")
-                    return "#BED295";
-                else if(d.type == "OSDev")
-                    return "#DEDEDE";
-            });
-
-        nodeEnter.append("text")
-          .attr("dy", 3.5)
-          .attr("dx", 0)
-          .text(
-            function (d) {
-                if(d.type == "Bridge")
-                    return;
-                else if(d.type == "PCIDev")
-                    return "PCI "+ convertBusid(d.pci_busid);
-                else if(d.type == "OSDev")
-                    return d.name;
-            });
-
-        node.transition()
-          .attr("transform", function(d) { return "translate(" + d.y*1.5 + "," + d.x*1.5 + ")"; })
-          .style("opacity", 1);
-
-        var link= svg.selectAll("path.link")
-            .data(links)
-          .enter().append("path")
-            .attr("class", "link")
-            .attr("d", elbow);  
+        drawLevel(array.children, context, x, y);
 
     }
 
-    function elbow(d, i) {
-        if(d.source.type == "Bridge" && d.target.type == "Bridge"){
-            return "M" + d.source.y*1.5 + "," + (d.source.x+4)*1.5
-              + "V" + d.target.x*1.5 + "H" + (d.target.y-4)*1.5;
+    function drawLevel(datas, context, x, y){
+        for(var i=0; i<datas.length; i++){
+            if(datas[i].type == "Bridge"){
+                context.beginPath();
+                var oldX = x;
+                var oldY = y;
+                if(i == 0){
+                    x += 50;
+                    makeSimpleLink(context, x, y+5, oldX+10);
+                }
+                else{
+                    if(datas[i-1].children && datas[i-1].children.length > 1)
+                        y += 160;
+                    else
+                        y += 90;
+                    makeElbowLink(context, x, y+5, oldX, oldY+5);
+                }
+                context.rect(x, y, 10, 10);
+                context.fillStyle = 'white';
+                context.fill();
+                //context.fillText(text);
+                context.lineWidth = 2;
+                context.strokeStyle = 'black';
+                context.stroke();
+                if(datas[i].children){
+                    drawLevel(datas[i].children, context, x, y);
+                }
+            }
+            else if(datas[i].type == "PCIDev"){
+                context.beginPath();
+                var oldX = x;
+                var oldY = y;
+                if(i == 0){
+                    x += 80;
+                    makeSimpleLink(context, x, y+5, oldX+10);
+                }
+                else{
+                    y += 80;
+                    makeElbowLink(context, x, y+5, oldX, oldY+5);
+                }
+                if(datas[i].children.length != 0)
+                    context.rect(x, y-8, 100, 60);
+                else
+                    context.rect(x, y-8, 80, 30);
+                context.fillStyle = '#BED295';
+                context.fill();
+                context.lineWidth = 2;
+                context.strokeStyle = 'black';
+                context.stroke();
+
+                context.font = "12px Arial";
+                context.fillStyle = "black";
+                context.fillText("PCI "+convertBusid(datas[i].pci_busid), x+10, y+10);
+
+                if(datas[i].children){
+                    drawLevel(datas[i].children, context, x, y);
+                }
+            }
+            else if(datas[i].type == "OSDev"){
+                context.beginPath();
+                context.rect(x+10, y+15, 80, 30);
+                context.fillStyle = '#DEDEDE';
+                context.fill();
+                context.lineWidth = 2;
+                context.strokeStyle = 'black';
+                context.stroke();
+
+                context.font = "12px Arial";
+                context.fillStyle = "black";
+                context.fillText(datas[i].name, x+20, y+30);
+            }
         }
-        else if (d.source.type == "Bridge" && d.target.type == "PCIDev"){
-            return "M" + d.source.y*1.5 + "," + (d.source.x+4)*1.5
-              + "V" + d.target.x*1.5 + "H" + (d.target.y-8)*1.5;
-        }
-        else if (d.source.type == "PCIDev" && d.target.type == "OSDev"){
-            return "M" + (d.source.y+8)*1.5 + "," + (d.source.x+8)*1.5
-              + "V" + d.target.x*1.5 + "H" + (d.target.y-8)*1.5;
-        }
-        else {
-            return "M" + d.source.y*1.5 + "," + (d.source.x+8)*1.5
-              + "V" + d.target.x*1.5 + "H" + (d.target.y-8)*1.5;
-        }
+    }
+
+    function makeElbowLink(context, x, y, oldX, oldY){
+        //Firt horizontal line
+        context.beginPath();
+        context.moveTo(x, y);
+        context.lineTo(x-25, y);
+        context.stroke();
+
+        //Vertical line
+        context.beginPath();
+        context.moveTo(x-25, y);
+        context.lineTo(x-25, oldY);
+        context.stroke();
+
+        //Second horizontal line
+        context.beginPath();
+        context.moveTo(x-25, oldY);
+        context.lineTo(oldX, oldY);
+        context.stroke();
+    }
+
+    function makeSimpleLink(context, x, y, oldX){
+        context.beginPath();
+        context.moveTo(oldX, y);
+        context.lineTo(x, y);
+        context.stroke();
     }
 
     function convertBusid(value){
         return value.substr(5, 7);
     }
 
-    function size(nodes){
-        return Math.round(nodes.length*32);
-    }
-
     $scope.begin=function(array, index){
         $timeout(function() {
-            drawTree(array, index);
+            initTree(array, index);
         }, 0);
     }
 

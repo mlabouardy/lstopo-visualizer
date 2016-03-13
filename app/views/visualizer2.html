@@ -8,7 +8,7 @@
 		        	<div>
 						<div ng-show="alignementComponents('Groups')" ng-repeat="entity in entities" ng-include="'lstopoTree'"></div>
 
-						<div ng-hide="alignementComponents('Groups')" ng-repeat="entity in entities"  ng-style="{'float' : 'left'}" ng-include="'lstopoTree'"></div>
+						<div ng-hide="alignementComponents('Groups')" ng-repeat="entity in entities"  ng-style="{'display' : 'table-cell'}" ng-include="'lstopoTree'"></div>
 
           				<script type="text/ng-template" id="lstopoTree">
 					        <div ng-show="checkArrayEntity(entity,'Groups')" class="group" ng-if="entity.type=='Group'">
@@ -27,7 +27,7 @@
 							</div>
 
 							<div ng-hide="alignementComponents('Packages')">
-								<div ng-show="checkArrayEntity(entity,'Packages')" class="frame package" ng-if="entity.type=='Package'" ng-style="{'background-color':userConfig.colors[7].color, 'float' : 'left'}">
+								<div ng-show="checkArrayEntity(entity,'Packages')" class="frame package" ng-if="entity.type=='Package'" ng-style="{'background-color':userConfig.colors[7].color, 'display' : 'table-cell'}">
 									<p>{{entity.type}} P#{{entity.os_index}}</p>
 									<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
 									</span>
@@ -39,10 +39,11 @@
 									<div class="frame" ng-style="{'background-color':userConfig.colors[5].color}"><p>{{entity.type}} P#{{entity.os_index}} ({{convertMemory(entity.memory, "gb")}}GB)</p></div>
 									<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
 									</span>
-									<span ng-if="entity.pciTree" ng-repeat="tree in entity.pciTree">
-										<div id="{{ 'tree-' + $index + '-' + tree.os_index }}" ng-controller="TestCtrl" ng-init="begin(tree, $index)" >
-	                					</div>
-	                				</span>
+									 <span ng-if="entity.pciTree" ng-repeat="tree in entity.pciTree">
+					              <!--<div id="{{ 'tree-' + $index + '-' + tree.os_index }}" ng-controller="TestCtrl" ng-init="begin(tree, $index)" >
+					              </div>-->
+					              <canvas id="{{ 'tree-' + $index + '-' + tree.os_index }}" ng-controller="TestCtrl" ng-init="begin(tree, $index)" width="500" height="700"></canvas>
+					              </span>
 									</div>
 								</div>
 							</div>
@@ -53,10 +54,11 @@
 									<div class="frame" ng-style="{'background-color':userConfig.colors[5].color}"><p>{{entity.type}} P#{{entity.os_index}} ({{convertMemory(entity.memory, "gb")}}GB)</p></div>
 									<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
 									</span>
-									<span ng-if="entity.pciTree" ng-repeat="tree in entity.pciTree">
-										<div id="{{ 'tree-' + $index + '-' + tree.os_index }}" ng-controller="TestCtrl" ng-init="begin(tree, $index)"  >
-		                				</div>
-		                			</span>
+									 <span ng-if="entity.pciTree" ng-repeat="tree in entity.pciTree">
+						              <!--<div id="{{ 'tree-' + $index + '-' + tree.os_index }}" ng-controller="TestCtrl" ng-init="begin(tree, $index)" >
+						              </div>-->
+						              <canvas id="{{ 'tree-' + $index + '-' + tree.os_index }}" ng-controller="TestCtrl" ng-init="begin(tree, $index)" width="500" height="700"></canvas>
+						              </span>
 									</div>
 								</div>
 							</div>
