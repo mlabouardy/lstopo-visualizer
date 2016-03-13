@@ -113,16 +113,28 @@ angular.module('myApp')
             }
         }
 
-        $scope.convertMemory = function(value, unity){
-            if(unity == "gb"){
-                return Math.round(value/Math.pow(1024, 3));
+        $scope.convertMemory = function(value){
+            var i = 0;
+            var unity = "B";
+            var tmp = value;
+            while (tmp > 10000) 
+            {
+                i += 1;
+                tmp = Math.round(value/Math.pow(1024, i))
+                if(i==1){
+                    unity = "KB";
+                }
+                else if(i==2){
+                    unity = "MB";
+                }
+                else if(i==3){
+                    unity = "GB";
+                }
+                else if(i==4){
+                    unity = "TB";
+                }
             }
-            else if(unity == "mb"){
-                return Math.round(value/Math.pow(1024, 2));
-            }
-            else if(unity == "kb"){
-                return Math.round(value/1024);
-            }
+            return tmp+unity;
         }
 
         $scope.renameCache = function(entity){
@@ -232,7 +244,7 @@ angular.module('myApp')
 
 
         $scope.alignement = [{alignement : "vertical", value :true}, {alignement : "horizontal" , value : false}];
-        $scope.zoom = 1;
+        $scope.zoom = 0.5;
         $scope.componentsChoice = [{description : "Pu" , value : true} , {description : "Groups" , value : true}, {description : "Packages" , value : true},  {description : "NUMANodes" , value : true}]
 
         $scope.alignementComponents = function(component){
@@ -255,14 +267,29 @@ angular.module('myApp')
           if($scope.config.export=="PDF"){
             html2canvas($("#components"), {
             onrendered: function(canvas) {
+
+                var imgWidth = 210;
+                var pageHeight = 300;
+                var imgHeight = canvas.height * imgWidth / canvas.width;
+                var heightLeft = imgHeight;
               var imgData = canvas.toDataURL('image/png');
               var doc = new jsPDF('p', 'mm');
-              doc.addImage(imgData, 'PNG', 10, 10);
-              doc.save('components.pdf');
+                var position = 0;
+              doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    doc.addPage();
+                    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                doc.save('components.pdf');
             }
             });
           }else{
             html2canvas($("#components"), {
+            taintTest:true,
             onrendered: function(canvas) {
               canvas.toBlob(function(blob) {
                     saveAs(blob, "components.png");
@@ -272,6 +299,51 @@ angular.module('myApp')
           }
         }
 
+ /*   $scope.downloadBis = function(){
+        if($scope.config.export=="PDF"){
+            var
+                form = $('.form'),
+                cache_width = form.width(),
+                a4  =[ 595.28,  841.89];  // for a4 size paper width and height
+
+            $('#components').on('click',function(){
+                $('body').scrollTop(0);
+                createPDF();
+            });
+//create pdf
+            function createPDF(){
+                getCanvas().then(function(canvas){
+                    var
+                        img = canvas.toDataURL("image/png"),
+                        doc = new jsPDF({
+                            unit:'px',
+                            format:'a4'
+                        });
+                    doc.addImage(img, 'JPEG', 20, 20);
+                    doc.save('techumber-html-to-pdf.pdf');
+                    form.width(cache_width);
+                });
+            }
+
+// create canvas object
+            function getCanvas(){
+                form.width((a4[0]*1.33333) -80).css('max-width','none');
+                return html2canvas(form,{
+                    imageTimeout:2000,
+                    removeContainer:true
+                });
+            }
+        }else{
+            html2canvas($("#components"), {
+                onrendered: function(canvas) {
+                    canvas.toBlob(function(blob) {
+                        saveAs(blob, "components.png");
+                    });
+                }
+            });
+        }
+    }
+*/
         $scope.checkArrayEntity = function(entityArray, type){
             var tmp;
             var array = "$scope.array" + type;
@@ -344,17 +416,20 @@ angular.module('myApp')
                 return "100%";
             }
         }*/
+
     }
 )
 
 
 .controller('TestCtrl',function($scope,$timeout){
+
     function drawTree(array, index){
         var datasTree = array;
 
-        var margin = {top: 30, right: 10, bottom: 30, left: 10},
-        width = 600,
-        barHeight = 20;
+        var margin = {top: 30, right: 10, bottom: 30, left: 10};
+        var width = 600;
+        var shapeHeight = {bridge: 10, pci: 20, os: 20};
+        var shapeWidth = {bridge: 10, pci: 80, os: 70};
 
         var i = 0;
 
@@ -377,7 +452,7 @@ angular.module('myApp')
 
         //Calcul de l'espacement entre chaque noeud
         nodes.forEach(function(n, i) {
-            n.x = i * barHeight;
+            n.x = i * shapeHeight.pci;
         });
 
         var node = svg.selectAll("g.node")
@@ -385,24 +460,42 @@ angular.module('myApp')
 
         var nodeEnter = node.enter().append("g")
           .attr("class", "node");
-
         nodeEnter.append("rect")
-          .attr("y", -barHeight / 2)
+          .attr("y",
+                function (d) {
+                if(d.type == "Bridge")
+                    return -shapeHeight.bridge/2;
+                else if(d.type == "PCIDev")
+                    return -shapeHeight.pci/2;
+                else if(d.type == "OSDev")
+                    return -shapeHeight.os/2;
+            })
+          .attr("x", 
+            function (d) {
+                if(d.type == "Bridge")
+                    return -shapeHeight.bridge/2;
+                else if(d.type == "PCIDev")
+                    return -shapeHeight.pci/2;
+                else if(d.type == "OSDev")
+                    return -shapeHeight.os/2;
+            })
           .attr("height", 
             function (d) {
                 if(d.type == "Bridge")
-                    return 8;
-                else
-                    return barHeight;
+                    return shapeHeight.bridge;
+                else if(d.type == "PCIDev")
+                    return shapeHeight.pci;
+                else if(d.type == "OSDev")
+                    return shapeHeight.os;
             })
           .attr("width",
             function (d) {
                 if(d.type == "Bridge")
-                    return 8;
+                    return shapeWidth.bridge;
                 else if(d.type == "PCIDev")
-                    return 80;
+                    return shapeWidth.pci;
                 else if(d.type == "OSDev")
-                    return 70;
+                    return shapeWidth.os;
             })
           .style("fill", 
             function (d) {
@@ -416,7 +509,7 @@ angular.module('myApp')
 
         nodeEnter.append("text")
           .attr("dy", 3.5)
-          .attr("dx", 5.5)
+          .attr("dx", 0)
           .text(
             function (d) {
                 if(d.type == "Bridge")
@@ -429,17 +522,7 @@ angular.module('myApp')
 
         node.transition()
           .attr("transform", function(d) { return "translate(" + d.y*1.5 + "," + d.x*1.5 + ")"; })
-          .style("opacity", 1)
-        .select("rect")
-          .style("fill", 
-            function (d) {
-                if(d.type == "Bridge")
-                    return "white";
-                else if(d.type == "PCIDev")
-                    return "#BED295";
-                else if(d.type == "OSDev")
-                    return "#DEDEDE";
-            });
+          .style("opacity", 1);
 
         var link= svg.selectAll("path.link")
             .data(links)
@@ -450,9 +533,22 @@ angular.module('myApp')
     }
 
     function elbow(d, i) {
-        return "M" + d.source.y*1.5 + "," + d.source.x*1.5
-          + "V" + d.target.x*1.5 + "H" + d.target.y*1.5
-          + (d.target.children ? "" : ("v" + 0));
+        if(d.source.type == "Bridge" && d.target.type == "Bridge"){
+            return "M" + d.source.y*1.5 + "," + (d.source.x+4)*1.5
+              + "V" + d.target.x*1.5 + "H" + (d.target.y-4)*1.5;
+        }
+        else if (d.source.type == "Bridge" && d.target.type == "PCIDev"){
+            return "M" + d.source.y*1.5 + "," + (d.source.x+4)*1.5
+              + "V" + d.target.x*1.5 + "H" + (d.target.y-8)*1.5;
+        }
+        else if (d.source.type == "PCIDev" && d.target.type == "OSDev"){
+            return "M" + (d.source.y+8)*1.5 + "," + (d.source.x+8)*1.5
+              + "V" + d.target.x*1.5 + "H" + (d.target.y-8)*1.5;
+        }
+        else {
+            return "M" + d.source.y*1.5 + "," + (d.source.x+8)*1.5
+              + "V" + d.target.x*1.5 + "H" + (d.target.y-8)*1.5;
+        }
     }
 
     function convertBusid(value){

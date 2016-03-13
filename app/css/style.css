@@ -28,13 +28,12 @@
 
 .numanode {
 	text-align:justify;
-	height: auto;
 }
 
 .numanode span{
 	display: inline-block;
 	vertical-align:top;
-	height: auto;
+	padding-left: 1%;
 }
 
 .cache3 {
@@ -87,7 +86,6 @@ p {
 }
 
 .node rect {
-  cursor: pointer;
   stroke: black;
   stroke-width: 1.5px;
 }
