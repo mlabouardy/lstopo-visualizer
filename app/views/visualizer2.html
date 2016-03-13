@@ -27,8 +27,10 @@
               <span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
               </span>
               <span ng-if="entity.pciTree" ng-repeat="tree in entity.pciTree">
-              <div id="{{ 'tree-' + $index + '-' + tree.os_index }}" ng-controller="TestCtrl" ng-init="begin(tree, $index)" >
-              </div>
+              <!--<div id="{{ 'tree-' + $index + '-' + tree.os_index }}" ng-controller="TestCtrl" ng-init="begin(tree, $index)" >
+              </div>-->
+              <canvas id="{{ 'tree-' + $index + '-' + tree.os_index }}" ng-controller="TestCtrl" ng-init="begin(tree, $index)" width="500" height="700"></canvas>
+              </span>
             </div>
           </div>
 
