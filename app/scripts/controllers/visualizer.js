@@ -221,22 +221,22 @@ angular.module('myApp')
               "color":"#FFFFFF"
             },
             {
-              "name":"NUMANode",
-              "color":"#EFDFDE"
-            }
-            ,
-            {
-              "name":"Node",
+              "name":"NUMANodes",
               "color":"#D2E7A4"
             }
             ,
             {
-              "name":"Package",
+              "name":"Node",
+              "color":"#EFDFDE"
+            }
+            ,
+            {
+              "name":"Packages",
               "color":"#DEDEDE"
             }
              ,
             {
-              "name":"Group",
+              "name":"Groups",
               "color":"white"
             }
           ]
@@ -245,16 +245,26 @@ angular.module('myApp')
 
         $scope.alignement = [{alignement : "vertical", value :true}, {alignement : "horizontal" , value : false}];
         $scope.zoom = 1;
-        $scope.componentsChoice = [{description : "Pu" , value : true} , {description : "Groups" , value : true}, {description : "Packages" , value : true},  {description : "NUMANodes" , value : true}]
+        $scope.componentsChoice = [{name : "Pu" , value : true} , {name : "Groups" , value : true}, {name : "Packages" , value : true},  {name : "NUMANodes" , value : true}]
 
         $scope.alignementComponents = function(component){
             var tmp;
             $scope.componentsChoice.forEach(function(compo,index){
-                if(compo.description == component){
+                if(compo.name == component){
                         tmp = compo.value;
                 }
             });
             return tmp;
+        }
+
+        $scope.alignementCompo = function(component){
+            if (component.name == "Packages" || component.name == "Groups" || component.name == "NUMANodes" ){
+               // console.log("$scope.array" + component.description);
+                return $scope.checkGroups(eval("$scope.array" + component.name));
+            }
+            else{
+                return true;
+            }
         }
 
         $scope.exportConfig=function(){

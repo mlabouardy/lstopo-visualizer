@@ -35,8 +35,8 @@
 							</div>
 
 							<div ng-show="alignementComponents('NUMANodes')">
-								<div ng-show="checkArrayEntity(entity,'NUMANodes')" class="numanode frame" ng-if="entity.type=='NUMANode'" ng-style="{'background-color':userConfig.colors[6].color}">
-									<div class="frame" ng-style="{'background-color':userConfig.colors[5].color}"><p>{{entity.type}} P#{{entity.os_index}} ({{convertMemory(entity.memory, "gb")}}GB)</p></div>
+								<div ng-show="checkArrayEntity(entity,'NUMANodes')" class="numanode frame" ng-if="entity.type=='NUMANode'" ng-style="{'background-color':userConfig.colors[5].color}">
+									<div class="frame" ng-style="{'background-color':userConfig.colors[6].color}"><p>{{entity.type}} P#{{entity.os_index}} ({{convertMemory(entity.memory, "gb")}}GB)</p></div>
 									<span ng-repeat="entity in entity.children" ng-include="'lstopoTree'">
 									</span>
 									 <span ng-if="entity.pciTree" ng-repeat="tree in entity.pciTree">

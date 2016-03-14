@@ -30,19 +30,19 @@
             </br>
 
               <div class="row">
-               
                 <label> Components alignement</label>
-         
-                    <div ng-repeat="components in componentsChoice">
-                        <input type="checkbox" ng-model="components.value"> {{components.description}}   
+                    <div ng-repeat="components in componentsChoice" ng-if="alignementCompo(components)">
+                        <input type="checkbox" ng-model="components.value"> {{components.name}}   
                     </div>
                 </br>
               </div>
           </div>
+
+
           <div class="form-group col-md-3">
             <label>Colors</label>
             <div class="row">
-              <div ng-repeat="d in userConfig.colors" class="form-group col-md-12">
+              <div ng-if="alignementCompo(d)" ng-repeat="d in userConfig.colors" class="form-group col-md-12">
                 <div class="col-md-3">
                   <label>{{d.name}}</label>
                 </div>
@@ -51,8 +51,8 @@
                 </div>
               </div>
             </div>
-
           </div>
+
           <!--  <form class="ui form">-->
             <div class="form-group col-md-3">
               <label>Save Image</label>
