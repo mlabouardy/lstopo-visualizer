@@ -79,13 +79,7 @@
 
 #left{
 	float:left;
-	width:73%;
 	background-color: white;
-}
-
-#rigth{
-	float:right;
-	width : 24%;
 }
 
 .pcidev {

@@ -13,17 +13,17 @@
             <div isteven-multi-select input-model="config.show" style="min-width:100%" output-model="serviceLinks" button-label="name" item-label="name maker" tick-property="ticked"></div>
           </div>
           <div class="form-group col-md-3">
-            <div ng-show="checkGroups(arrayPackages)" class="row">
+            <div ng-show="checkArray(arrayPackages)" class="row">
               <label>Packages</label>
               <div isteven-multi-select input-model="arrayPackages" style="min-width:100%" output-model="outputPackages" button-label="os_index" item-label="os_index" tick-property="value"></div>
             </div><br/>
-            <div ng-show="checkGroups(arrayGroups)" class="row">
+            <div ng-show="checkArray(arrayGroups)" class="row">
               <label>Groups</label>
               <div isteven-multi-select input-model="arrayGroups" style="min-width:100%" output-model="outputGroups" button-label="os_index" item-label="os_index" tick-property="value"></div>
             </div>
             </br>
 
-             <div ng-show="checkGroups(arrayNUMANodes)" class="row">
+             <div ng-show="checkArray(arrayNUMANodes)" class="row">
               <label>NUMANodes</label>
               <div isteven-multi-select input-model="arrayNUMANodes" style="min-width:100%" output-model="outputNUMANodes" button-label="os_index" item-label="os_index" tick-property="value"></div>
             </div>
@@ -31,7 +31,7 @@
 
               <div class="row">
                 <label> Components alignement</label>
-                    <div ng-repeat="components in componentsChoice" ng-if="alignementCompo(components)">
+                    <div ng-repeat="components in ::componentsChoice" ng-if="checkComponent(components)">
                         <input type="checkbox" ng-model="components.value"> {{components.name}}   
                     </div>
                 </br>
@@ -42,7 +42,7 @@
           <div class="form-group col-md-3">
             <label>Colors</label>
             <div class="row">
-              <div ng-if="alignementCompo(d)" ng-repeat="d in userConfig.colors" class="form-group col-md-12">
+              <div ng-if="checkComponent(d)" ng-repeat="d in ::userConfig.colors" class="form-group col-md-12">
                 <div class="col-md-3">
                   <label>{{d.name}}</label>
                 </div>
@@ -51,6 +51,7 @@
                 </div>
               </div>
             </div>
+            <label> <a ng-click="reset()"> reset color? </a> </label>
           </div>
 
           <!--  <form class="ui form">-->

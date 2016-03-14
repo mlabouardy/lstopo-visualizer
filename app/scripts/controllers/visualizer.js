@@ -257,14 +257,60 @@ angular.module('myApp')
             return tmp;
         }
 
-        $scope.alignementCompo = function(component){
+        $scope.checkComponent = function(component){
             if (component.name == "Packages" || component.name == "Groups" || component.name == "NUMANodes" ){
-               // console.log("$scope.array" + component.description);
-                return $scope.checkGroups(eval("$scope.array" + component.name));
+                return $scope.checkArray(eval("$scope.array" + component.name));
             }
             else{
                 return true;
             }
+        }
+
+        $scope.reset = function (){
+        $scope.userConfig={
+          show:[],
+          colors:[
+            {
+              "name":"L3",
+              "color":"#FFFFFF"
+            },
+            {
+              "name":"L2",
+              "color":"#FFFFFF"
+            },
+            {
+              "name":"L1",
+              "color":"#FFFFFF"
+            },
+            {
+              "name":"Cores",
+              "color":"#BEBEBE"
+            },
+            {
+              "name":"PU",
+              "color":"#FFFFFF"
+            },
+            {
+              "name":"NUMANodes",
+              "color":"#D2E7A4"
+            }
+            ,
+            {
+              "name":"Node",
+              "color":"#EFDFDE"
+            }
+            ,
+            {
+              "name":"Packages",
+              "color":"#DEDEDE"
+            }
+             ,
+            {
+              "name":"Groups",
+              "color":"white"
+            }
+          ]
+        };
         }
 
         $scope.exportConfig=function(){
@@ -373,7 +419,7 @@ angular.module('myApp')
             return tmp;
         }
 
-        $scope.checkGroups = function(group){
+        $scope.checkArray = function(group){
             return (group[0] != undefined);
         }
 
@@ -400,17 +446,7 @@ angular.module('myApp')
             });
         }
 
-        $scope.Zoom = function(fonction){
-            if(fonction == 'zoomIn'){
-                $scope.zoom += 0.1;
-            }
-            else{
-                $scope.zoom -= 0.1;
-            }
-        }
-
         $scope.resizeCaches = function(){
-            console.log("ok");
             var cores = document.getElementsByClassName('core');
             for(var i=0; i<cores.length; i++){
                 cores[i].setAttribute("style","width:100px");
