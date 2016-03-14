@@ -1,103 +1,86 @@
 .entity{
-	border: 1px black solid;
-	padding: 0;
-	margin-bottom: 1%;
+	border: 0px black solid;
+	display: inline-block;
 }
 
 .frame {
 	border: 2px #6F6F6F solid;
-	margin: 1%;
-	padding: 1%;
+	width: auto;
+	margin-bottom: 1%;
+	padding-left: 10px;
+}
+
+.frame_pu{
+	border: 2px #6F6F6F solid;
+	width: auto;
+	margin-bottom: 1%;
 }
 
 .package {
-	text-align:justify;
-}
-
-.package span {
 	display: inline-block;
 }
 
-.group {
-	text-align:justify;
+.package > span {
+	display: inline-block;
+	margin: 1%;
 }
 
-.group span{
+.group {
+	display: inline-block;
+	padding: 1%;
+}
+
+.group > span{
 	display: inline-block;
 }
 
 .numanode {
-	text-align:justify;
+	display: inline-block;
+	padding: 1%;
 }
 
-.numanode span{
+.numanode > span{
 	display: inline-block;
 	vertical-align:top;
-	padding-left: 1%;
+	margin-right: 1%;
 }
 
 .cache3 {
 	text-align:justify;
-	border: 1px solid black;
 }
 
-.cache3 span {
+.cache3 > span {
 	display: inline-block;
+	margin-right: 10px;
 }
 
 .cache2 {
-	text-align:justify;
 }
 
-
-.cache2 span {
+.cache2 > span {
 	display: inline-block;
 }
 
 .cache2bis {
-	text-align:justify;
 }
 
-.cache2bis span {
+.cache2bis > span {
 	display: inline-block;
 }
 
 .cache1 {
-	text-align:justify;
 }
 
-.cache1 span {
+.cache1 > span {
 	display: inline-block;
 }
 
 .cache1bis {
-	text-align:justify;
 }
 
-.cache1bis span {
+.cache1bis > span {
 	display: inline-block;
 }
 
-.components{
-	border:2px solid red;
-}
-
-p {
-	font-size: 100%;
-}
-
-.node rect {
-  stroke: black;
-  stroke-width: 1.5px;
-}
-
-.node text {
-  font: 12px sans-serif;
-  pointer-events: none;
-}
-
-path.link {
-  fill: none;
-  stroke: black;
-  stroke-width: 1.5px;
+#components{
 }
