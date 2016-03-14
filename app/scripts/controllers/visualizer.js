@@ -265,15 +265,6 @@ angular.module('myApp')
 
         $scope.download = function(){
 
-            /*var html = d3.select("svg")
-                .attr("version", 1.1)
-                .attr("xmlns", "http://www.w3.org/2000/svg")
-                .node().parentNode.innerHTML;
-
-            var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
-            var img = '<img src="'+imgsrc+'">'; 
-            d3.select("#svgdataurl").html(img);*/
-
           if($scope.config.export=="PDF"){
             html2canvas($("#components"), {
             onrendered: function(canvas) {
@@ -408,24 +399,19 @@ angular.module('myApp')
             }
         }
 
-        $scope.convertBusid = function(value){
-            return value.substr(5, 7);
-        }
-
-        /*$scope.resize = function(array){
-            return Math.round(100/array.length) + "%";
-        }
-
-        $scope.shareWidth = function(entity, other){
-            console.log(entity);
-            if(other){
-                console.log("ok");
-                return "50%";
+        $scope.resizeCaches = function(){
+            console.log("ok");
+            var cores = document.getElementsByClassName('core');
+            for(var i=0; i<cores.length; i++){
+                cores[i].setAttribute("style","width:100px");
             }
-            else{
-                return "100%";
+
+            var cache2 = document.getElementsByClassName('cache2');
+            var cache3 = document.getElementsByClassName('cache3');
+            for(var i=0; i<cache3.length; i++){
+                cache3[i].setAttribute("style","width:"+((cache2.length*100)+(10*cache2.length))/cache3.length+"px");
             }
-        }*/
+        }
 
     }
 )
@@ -439,7 +425,7 @@ angular.module('myApp')
         var x = 10;
         var y = 10;
 
-        // First Bridge
+        //First shape of Bridge type
         context.beginPath();
         context.rect(10, 10, 10, 10);
         context.fillStyle = 'white';
@@ -455,13 +441,16 @@ angular.module('myApp')
     function drawLevel(datas, context, x, y){
         for(var i=0; i<datas.length; i++){
             if(datas[i].type == "Bridge"){
-                context.beginPath();
                 var oldX = x;
                 var oldY = y;
+
+                //If it's the first element, we draw a straight line
                 if(i == 0){
                     x += 50;
                     makeSimpleLink(context, x, y+5, oldX+10);
                 }
+
+                //If not, we draw a elbow
                 else{
                     if(datas[i-1].children && datas[i-1].children.length > 1)
                         y += 160;
@@ -469,19 +458,22 @@ angular.module('myApp')
                         y += 90;
                     makeElbowLink(context, x, y+5, oldX, oldY+5);
                 }
+
+                //Draw a square of Bridge type
+                context.beginPath();
                 context.rect(x, y, 10, 10);
                 context.fillStyle = 'white';
                 context.fill();
-                //context.fillText(text);
                 context.lineWidth = 2;
                 context.strokeStyle = 'black';
                 context.stroke();
+
                 if(datas[i].children){
                     drawLevel(datas[i].children, context, x, y);
                 }
             }
-            else if(datas[i].type == "PCIDev"){
-                context.beginPath();
+            else if(datas[i].type == "PCIDev"){           
+                
                 var oldX = x;
                 var oldY = y;
                 if(i == 0){
@@ -492,6 +484,9 @@ angular.module('myApp')
                     y += 80;
                     makeElbowLink(context, x, y+5, oldX, oldY+5);
                 }
+
+                //Draw a rectangle of PCI type set with its content
+                context.beginPath();
                 if(datas[i].children.length != 0)
                     context.rect(x, y-8, 100, 60);
                 else
@@ -502,6 +497,7 @@ angular.module('myApp')
                 context.strokeStyle = 'black';
                 context.stroke();
 
+                //Draw informations about this element
                 context.font = "12px Arial";
                 context.fillStyle = "black";
                 context.fillText("PCI "+convertBusid(datas[i].pci_busid), x+10, y+10);
