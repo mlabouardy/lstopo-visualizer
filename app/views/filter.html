@@ -30,23 +30,19 @@
             </br>
 
               <div class="row">
-                <label> Alignement</label>
-                <div ng-repeat="choices in alignement">
-                      <input type="checkbox" ng-model="choices.value" ng-change="change(choices)"> {{choices.alignement}}
-
-                </div>
-              </div>
-              </br>
-              <div class="row">
-                <label> Zoom de l'image :  {{zoom}} <label> 
-                <button ng-click="Zoom('zoomIn')"> + </button>
-                <button ng-click="Zoom('zoomOut')"> - </button>
+                <label> Components alignement</label>
+                    <div ng-repeat="components in componentsChoice" ng-if="alignementCompo(components)">
+                        <input type="checkbox" ng-model="components.value"> {{components.name}}   
+                    </div>
+                </br>
               </div>
           </div>
+
+
           <div class="form-group col-md-3">
             <label>Colors</label>
             <div class="row">
-              <div ng-repeat="d in userConfig.colors" class="form-group col-md-12">
+              <div ng-if="alignementCompo(d)" ng-repeat="d in userConfig.colors" class="form-group col-md-12">
                 <div class="col-md-3">
                   <label>{{d.name}}</label>
                 </div>
@@ -55,16 +51,18 @@
                 </div>
               </div>
             </div>
+          </div>
 
-          </div>
-          <div class="form-group col-md-3">
-            <label>Save Image</label>
-            <select ng-model="config.export" class="form-control">
-              <option value="PNG">PNG</option>
-              <option value="PDF">PDF</option>
-            </select><br/>
-            <a class="btn btn-success btn-block" ng-click="download()" ><i class="fa fa-download"></i> Download</a>
-          </div>
+          <!--  <form class="ui form">-->
+            <div class="form-group col-md-3">
+              <label>Save Image</label>
+              <select id="export_type" ng-model="config.export" class="form-control">
+                <option value="PNG" selected="selected">PNG</option>
+                <option value="PDF">PDF</option>
+              </select><br/>
+              <a class="btn btn-success btn-block" ng-click="download()"  id="download" ><i class="fa fa-download"></i> Download</a>
+            </div>
+          <!--  </form> -->
         </div>
       </div>
     </div>

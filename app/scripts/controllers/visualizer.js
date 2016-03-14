@@ -39,8 +39,8 @@ angular.module('myApp')
 
         function sortDatas(data, array){
             if(data._type == "Group"){
-                array.push({type: data._type, depth: data._depth, children: []});
-                $scope.arrayGroups.push({index : i, os_index : data._depth , value : true, pciTree: []});
+                array.push({type: data._type, _cpuset : data._cpuset, depth: data._depth, children: []});
+                $scope.arrayGroups.push({index : data._cpuset, os_index : data._depth , value : true, pciTree: []});
                 i++;
                 if(data.object){
                     extractDatas(data.object, array[array.length-1].children);
@@ -113,16 +113,28 @@ angular.module('myApp')
             }
         }
 
-        $scope.convertMemory = function(value, unity){
-            if(unity == "gb"){
-                return Math.round(value/Math.pow(1024, 3));
+        $scope.convertMemory = function(value){
+            var i = 0;
+            var unity = "B";
+            var tmp = value;
+            while (tmp > 10000) 
+            {
+                i += 1;
+                tmp = Math.round(value/Math.pow(1024, i))
+                if(i==1){
+                    unity = "KB";
+                }
+                else if(i==2){
+                    unity = "MB";
+                }
+                else if(i==3){
+                    unity = "GB";
+                }
+                else if(i==4){
+                    unity = "TB";
+                }
             }
-            else if(unity == "mb"){
-                return Math.round(value/Math.pow(1024, 2));
-            }
-            else if(unity == "kb"){
-                return Math.round(value/1024);
-            }
+            return tmp+unity;
         }
 
         $scope.renameCache = function(entity){
@@ -148,7 +160,6 @@ angular.module('myApp')
         }
 
         $scope.sizePu = function(array, type){
-            console.log(array.length);
             var cpt = 0;
             for(var i=0; i<array.length; i++){
                 if(array[i].type == type){
@@ -210,22 +221,22 @@ angular.module('myApp')
               "color":"#FFFFFF"
             },
             {
-              "name":"NUMANode",
-              "color":"#EFDFDE"
-            }
-            ,
-            {
-              "name":"Node",
+              "name":"NUMANodes",
               "color":"#D2E7A4"
             }
             ,
             {
-              "name":"Package",
+              "name":"Node",
+              "color":"#EFDFDE"
+            }
+            ,
+            {
+              "name":"Packages",
               "color":"#DEDEDE"
             }
              ,
             {
-              "name":"Group",
+              "name":"Groups",
               "color":"white"
             }
           ]
@@ -234,6 +245,27 @@ angular.module('myApp')
 
         $scope.alignement = [{alignement : "vertical", value :true}, {alignement : "horizontal" , value : false}];
         $scope.zoom = 1;
+        $scope.componentsChoice = [{name : "Pu" , value : true} , {name : "Groups" , value : true}, {name : "Packages" , value : true},  {name : "NUMANodes" , value : true}]
+
+        $scope.alignementComponents = function(component){
+            var tmp;
+            $scope.componentsChoice.forEach(function(compo,index){
+                if(compo.name == component){
+                        tmp = compo.value;
+                }
+            });
+            return tmp;
+        }
+
+        $scope.alignementCompo = function(component){
+            if (component.name == "Packages" || component.name == "Groups" || component.name == "NUMANodes" ){
+               // console.log("$scope.array" + component.description);
+                return $scope.checkGroups(eval("$scope.array" + component.name));
+            }
+            else{
+                return true;
+            }
+        }
 
         $scope.exportConfig=function(){
           var blob = new Blob([JSON.stringify($scope.userConfig)], {type: "application/json"});
@@ -242,17 +274,33 @@ angular.module('myApp')
 
 
         $scope.download = function(){
+
           if($scope.config.export=="PDF"){
             html2canvas($("#components"), {
             onrendered: function(canvas) {
+
+                var imgWidth = 210;
+                var pageHeight = 300;
+                var imgHeight = canvas.height * imgWidth / canvas.width;
+                var heightLeft = imgHeight;
               var imgData = canvas.toDataURL('image/png');
               var doc = new jsPDF('p', 'mm');
-              doc.addImage(imgData, 'PNG', 10, 10);
-              doc.save('components.pdf');
+                var position = 0;
+              doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    doc.addPage();
+                    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                doc.save('components.pdf');
             }
             });
           }else{
             html2canvas($("#components"), {
+            taintTest:true,
             onrendered: function(canvas) {
               canvas.toBlob(function(blob) {
                     saveAs(blob, "components.png");
@@ -262,23 +310,64 @@ angular.module('myApp')
           }
         }
 
-       $scope.checkPackage = function(Package){
-            var tmp;
-            $scope.arrayPackages.forEach(function(packages,index){
-                if (packages.os_index == Package.os_index){
-                    tmp = packages.value;
+ /*   $scope.downloadBis = function(){
+        if($scope.config.export=="PDF"){
+            var
+                form = $('.form'),
+                cache_width = form.width(),
+                a4  =[ 595.28,  841.89];  // for a4 size paper width and height
+
+            $('#components').on('click',function(){
+                $('body').scrollTop(0);
+                createPDF();
+            });
+//create pdf
+            function createPDF(){
+                getCanvas().then(function(canvas){
+                    var
+                        img = canvas.toDataURL("image/png"),
+                        doc = new jsPDF({
+                            unit:'px',
+                            format:'a4'
+                        });
+                    doc.addImage(img, 'JPEG', 20, 20);
+                    doc.save('techumber-html-to-pdf.pdf');
+                    form.width(cache_width);
+                });
+            }
+
+// create canvas object
+            function getCanvas(){
+                form.width((a4[0]*1.33333) -80).css('max-width','none');
+                return html2canvas(form,{
+                    imageTimeout:2000,
+                    removeContainer:true
+                });
+            }
+        }else{
+            html2canvas($("#components"), {
+                onrendered: function(canvas) {
+                    canvas.toBlob(function(blob) {
+                        saveAs(blob, "components.png");
+                    });
                 }
             });
-            return tmp;
         }
-
-        $scope.checkNUMANodes = function(NUMANode){
-           
+    }
+*/
+        $scope.checkArrayEntity = function(entityArray, type){
             var tmp;
-            $scope.arrayNUMANodes.forEach(function(entity,index){
-                if (entity.os_index == NUMANode.os_index){
-                    console.log(entity);
-                    tmp = entity.value;
+            var array = "$scope.array" + type;
+            eval(array).forEach(function(entity,index){
+                if(type != 'Groups'){
+                    if (entity.os_index == entityArray.os_index){
+                        tmp = entity.value;
+                    }
+                }
+                else{
+                    if(entity.index == entityArray._cpuset){
+                        tmp = entity.value;
+                    }
                 }
             });
             return tmp;
@@ -286,16 +375,6 @@ angular.module('myApp')
 
         $scope.checkGroups = function(group){
             return (group[0] != undefined);
-        }
-
-        $scope.ShowGroup = function(entity){
-            var check;
-            $scope.arrayGroups.forEach(function(group,index){
-                if(group.index == $scope.entities.indexOf(entity)){
-                    check = group.value;
-                }
-            });
-            return check;
         }
 
         $scope.ChangeColor = function(){
@@ -330,146 +409,163 @@ angular.module('myApp')
             }
         }
 
-        $scope.convertBusid = function(value){
-            return value.substr(5, 7);
+        $scope.resizeCaches = function(){
+            console.log("ok");
+            var cores = document.getElementsByClassName('core');
+            for(var i=0; i<cores.length; i++){
+                cores[i].setAttribute("style","width:100px");
+            }
+
+            var cache2 = document.getElementsByClassName('cache2');
+            var cache3 = document.getElementsByClassName('cache3');
+            for(var i=0; i<cache3.length; i++){
+                cache3[i].setAttribute("style","width:"+((cache2.length*100)+(10*cache2.length))/cache3.length+"px");
+            }
         }
 
-        /*$scope.resize = function(array){
-            return Math.round(100/array.length) + "%";
-        }
-
-        $scope.shareWidth = function(entity, other){
-            console.log(entity);
-            if(other){
-                console.log("ok");
-                return "50%";
-            }
-            else{
-                return "100%";
-            }
-        }*/
     }
 )
 
 
 .controller('TestCtrl',function($scope,$timeout){
-    function drawTree(array, index){
-        var datasTree = array;
+    function initTree(array, index){
+        var canvas = document.getElementById('tree-' + index + '-' + array.os_index);
+        var context = canvas.getContext('2d');
 
-        var margin = {top: 30, right: 10, bottom: 30, left: 10},
-        width = 600,
-        barHeight = 20;
+        var x = 10;
+        var y = 10;
 
-        var i = 0;
+        //First shape of Bridge type
+        context.beginPath();
+        context.rect(10, 10, 10, 10);
+        context.fillStyle = 'white';
+        context.fill();
+        context.lineWidth = 2;
+        context.strokeStyle = 'black';
+        context.stroke();
 
-        var tree = d3.layout.tree().nodeSize([0, 30]);
-
-        //Ensemble des noeuds
-        var nodes = tree.nodes(datasTree);
-
-        //Ensemble des liens
-        var links = tree.links(nodes);
-
-        var height = nodes.length*33;
-
-        var svg = d3.select("#tree-" + index + "-" + datasTree.os_index)
-        .append("svg")
-            .attr("width", width)
-            .attr("height", height)
-        .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        //Calcul de l'espacement entre chaque noeud
-        nodes.forEach(function(n, i) {
-            n.x = i * barHeight;
-        });
-
-        var node = svg.selectAll("g.node")
-            .data(nodes);
-
-        var nodeEnter = node.enter().append("g")
-          .attr("class", "node");
-
-        nodeEnter.append("rect")
-          .attr("y", -barHeight / 2)
-          .attr("height", 
-            function (d) {
-                if(d.type == "Bridge")
-                    return 8;
-                else
-                    return barHeight;
-            })
-          .attr("width",
-            function (d) {
-                if(d.type == "Bridge")
-                    return 8;
-                else if(d.type == "PCIDev")
-                    return 80;
-                else if(d.type == "OSDev")
-                    return 70;
-            })
-          .style("fill", 
-            function (d) {
-                if(d.type == "Bridge")
-                    return "white";
-                else if(d.type == "PCIDev")
-                    return "#BED295";
-                else if(d.type == "OSDev")
-                    return "#DEDEDE";
-            });
-
-        nodeEnter.append("text")
-          .attr("dy", 3.5)
-          .attr("dx", 5.5)
-          .text(
-            function (d) {
-                if(d.type == "Bridge")
-                    return;
-                else if(d.type == "PCIDev")
-                    return "PCI "+ convertBusid(d.pci_busid);
-                else if(d.type == "OSDev")
-                    return d.name;
-            });
-
-        node.transition()
-          .attr("transform", function(d) { return "translate(" + d.y*1.5 + "," + d.x*1.5 + ")"; })
-          .style("opacity", 1)
-        .select("rect")
-          .style("fill", 
-            function (d) {
-                if(d.type == "Bridge")
-                    return "white";
-                else if(d.type == "PCIDev")
-                    return "#BED295";
-                else if(d.type == "OSDev")
-                    return "#DEDEDE";
-            });
-
-        var link= svg.selectAll("path.link")
-            .data(links)
-          .enter().append("path")
-            .attr("class", "link")
-            .attr("d", elbow);  
+        drawLevel(array.children, context, x, y);
 
     }
 
-    function elbow(d, i) {
-        return "M" + d.source.y*1.5 + "," + d.source.x*1.5
-          + "V" + d.target.x*1.5 + "H" + d.target.y*1.5
-          + (d.target.children ? "" : ("v" + 0));
+    function drawLevel(datas, context, x, y){
+        for(var i=0; i<datas.length; i++){
+            if(datas[i].type == "Bridge"){
+                var oldX = x;
+                var oldY = y;
+
+                //If it's the first element, we draw a straight line
+                if(i == 0){
+                    x += 50;
+                    makeSimpleLink(context, x, y+5, oldX+10);
+                }
+
+                //If not, we draw a elbow
+                else{
+                    if(datas[i-1].children && datas[i-1].children.length > 1)
+                        y += 160;
+                    else
+                        y += 90;
+                    makeElbowLink(context, x, y+5, oldX, oldY+5);
+                }
+
+                //Draw a square of Bridge type
+                context.beginPath();
+                context.rect(x, y, 10, 10);
+                context.fillStyle = 'white';
+                context.fill();
+                context.lineWidth = 2;
+                context.strokeStyle = 'black';
+                context.stroke();
+
+                if(datas[i].children){
+                    drawLevel(datas[i].children, context, x, y);
+                }
+            }
+            else if(datas[i].type == "PCIDev"){           
+                
+                var oldX = x;
+                var oldY = y;
+                if(i == 0){
+                    x += 80;
+                    makeSimpleLink(context, x, y+5, oldX+10);
+                }
+                else{
+                    y += 80;
+                    makeElbowLink(context, x, y+5, oldX, oldY+5);
+                }
+
+                //Draw a rectangle of PCI type set with its content
+                context.beginPath();
+                if(datas[i].children.length != 0)
+                    context.rect(x, y-8, 100, 60);
+                else
+                    context.rect(x, y-8, 80, 30);
+                context.fillStyle = '#BED295';
+                context.fill();
+                context.lineWidth = 2;
+                context.strokeStyle = 'black';
+                context.stroke();
+
+                //Draw informations about this element
+                context.font = "12px Arial";
+                context.fillStyle = "black";
+                context.fillText("PCI "+convertBusid(datas[i].pci_busid), x+10, y+10);
+
+                if(datas[i].children){
+                    drawLevel(datas[i].children, context, x, y);
+                }
+            }
+            else if(datas[i].type == "OSDev"){
+                context.beginPath();
+                context.rect(x+10, y+15, 80, 30);
+                context.fillStyle = '#DEDEDE';
+                context.fill();
+                context.lineWidth = 2;
+                context.strokeStyle = 'black';
+                context.stroke();
+
+                context.font = "12px Arial";
+                context.fillStyle = "black";
+                context.fillText(datas[i].name, x+20, y+30);
+            }
+        }
+    }
+
+    function makeElbowLink(context, x, y, oldX, oldY){
+        //Firt horizontal line
+        context.beginPath();
+        context.moveTo(x, y);
+        context.lineTo(x-25, y);
+        context.stroke();
+
+        //Vertical line
+        context.beginPath();
+        context.moveTo(x-25, y);
+        context.lineTo(x-25, oldY);
+        context.stroke();
+
+        //Second horizontal line
+        context.beginPath();
+        context.moveTo(x-25, oldY);
+        context.lineTo(oldX, oldY);
+        context.stroke();
+    }
+
+    function makeSimpleLink(context, x, y, oldX){
+        context.beginPath();
+        context.moveTo(oldX, y);
+        context.lineTo(x, y);
+        context.stroke();
     }
 
     function convertBusid(value){
         return value.substr(5, 7);
     }
 
-    function size(nodes){
-        return Math.round(nodes.length*32);
-    }
-
     $scope.begin=function(array, index){
         $timeout(function() {
-            drawTree(array, index);
+            initTree(array, index);
         }, 0);
     }
 
