@@ -246,6 +246,19 @@ angular.module('myApp')
           ]
         };
 
+        $scope.importConfig=function(){
+          var xml = document.getElementById('file').files[0];
+          var reader = new FileReader();
+          reader.readAsText(xml);
+
+          reader.onload = function(evt){
+              $scope.$apply(function() {
+                  var data=JSON.parse(evt.target.result.toString());
+                  $scope.userConfig.colors=data.colors;
+                  toastr.success('User config successfuly imported !',"Lstopo Visualizer");
+              });
+          };
+        }
 
         $scope.alignement = [{alignement : "vertical", value :true}, {alignement : "horizontal" , value : false}];
         $scope.zoom = 1;
@@ -340,6 +353,7 @@ angular.module('myApp')
         $scope.exportConfig=function(){
           var blob = new Blob([JSON.stringify($scope.userConfig)], {type: "application/json"});
           saveAs(blob, "config.json");
+          toastr.success('User config successfuly saved !',"Lstopo Visualizer");
         }
 
 

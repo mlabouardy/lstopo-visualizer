@@ -4,7 +4,6 @@
     <div class="panel panel-primary">
       <div class="panel-heading">
         <i class="fa fa-cog"></i> Config
-        <a class="btn btn-danger btn-xs pull-right" ng-click="exportConfig()"><i class="fa fa-download"></i> Export</a>
       </div>
       <div class="panel-body">
         <div class="row">
@@ -46,7 +45,7 @@
           <div class="form-group col-md-3">
             <label>Colors</label>
             <div class="row">
-              <div ng-if="checkComponent(d)" ng-repeat="d in ::userConfig.colors" class="form-group col-md-12">
+              <div ng-if="checkComponent(d)" ng-repeat="d in userConfig.colors" class="form-group col-md-12">
                 <div class="col-md-3">
                   <label>{{::d.name}}</label>
                 </div>
@@ -66,6 +65,11 @@
                 <option value="PDF">PDF</option>
               </select><br/>
               <a class="btn btn-success btn-block" ng-click="download()"  id="download" ><i class="fa fa-download"></i> Download</a>
+              <br/>
+              <input type="file" class="form-control" id="file" name="file"  accept=".json"/><br/>
+              <a class="btn btn-primary btn-block" ng-click="importConfig()" id="import"><i class="fa fa-upload"></i> Import</a>
+              <br/>
+              <a class="btn btn-warning btn-block" ng-click="exportConfig()" id="export"><i class="fa fa-download"></i> Export</a>
             </div>
           <!--  </form> -->
         </div>
