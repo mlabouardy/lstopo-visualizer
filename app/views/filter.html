@@ -22,7 +22,6 @@
               <div isteven-multi-select input-model="arrayGroups" style="min-width:100%" output-model="userConfig.arrayGroups" button-label="os_index" item-label="os_index" tick-property="value"></div>
             </div>
             </br>
-
              <div ng-show="checkArray(arrayNUMANodes)" class="row">
               <label>NUMANodes</label>
               <div isteven-multi-select input-model="arrayNUMANodes" style="min-width:100%" output-model="userConfig.arrayNUMANodes" button-label="os_index" item-label="os_index" tick-property="value"></div>
@@ -36,6 +35,11 @@
                     </div>
                 </br>
               </div>
+              <div class="row">
+                 <label> Size police</label> {{ font_size }}
+                 <button ng-click="changeSize('+')"> + </button> <button ng-click="changeSize('-')"> - </button>
+                </br>
+            </div>
           </div>
 
 

@@ -4,7 +4,7 @@
   	<div class="col-md-12">
 	    <div class="panel panel-primary">
 	      	<div class="panel-heading"><i class="fa fa-eye"></i> Visualizer</div>
-		      	<div ng-style="{'-moz-transform': 'scale({{zoom}})'}" id="components" class="panel-body">
+		      	<div ng-style="{'font-size': font_size}" id="components" class="panel-body">
 					<div class="entity" ng-if="alignementComponents('Groups')" ng-repeat="entity in ::entities" ng-include="'lstopoTree'">
 					</div>
 					<div class="entity" ng-if="!alignementComponents('Groups')" ng-repeat="entity in ::entities" ng-style="{'display' : 'table-cell'}" ng-include="'lstopoTree'">

@@ -13,6 +13,7 @@ angular.module('myApp')
         $scope.arrayPackages = [];
         $scope.arrayGroups = [];
         $scope.arrayNUMANodes = [];
+        $scope.font_size = 14;
         var i = 0;
 
         function extractDatas(datas, entities){
@@ -314,6 +315,15 @@ angular.module('myApp')
             }
           ]
         };
+        }
+
+        $scope.changeSize = function (ope){
+            if (ope =="+"){
+                $scope.font_size ++ ;
+            }
+            else{
+                $scope.font_size -- ;
+            }
         }
 
         $scope.exportConfig=function(){
