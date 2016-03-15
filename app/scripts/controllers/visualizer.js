@@ -318,11 +318,22 @@ angular.module('myApp')
         }
 
         $scope.changeSize = function (ope){
+
+            var tailleMax = 17;
+            var tailleMin= 7;
             if (ope =="+"){
+
                 $scope.font_size ++ ;
+                if($scope.font_size >= tailleMax ){
+                    $scope.font_size = tailleMax;
+                }
             }
             else{
                 $scope.font_size -- ;
+                if($scope.font_size <= tailleMin ){
+                    $scope.font_size = tailleMin;
+
+                }
             }
         }
 
