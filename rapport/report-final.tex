@@ -1,0 +1,108 @@
+\documentclass [a4paper,11pt]{report}
+
+
+\usepackage [francais]{babel}
+\usepackage[utf8]{inputenc}%       encodage du fichier source
+\usepackage[T1]{fontenc}%          gestion des accents (pour les pdf)
+\usepackage[a4paper]{geometry}%    taille correcte du papier
+\usepackage{hyperref}%			   gestion des hyperliens
+\usepackage{graphicx}%			   gestion des images
+\usepackage{fancyhdr}%
+\usepackage{lastpage}%			   pour avoir le numero de page
+\usepackage{fancyvrb}%			   meilleur verbatim
+\usepackage{chngcntr}%			   pour numéroté les figures au lieux du numéro de section
+\usepackage[toc,page]{appendix}%   pour les annexes
+
+\counterwithout{figure}{chapter}% initialise le compteur de section
+
+% Chemin par defaut des images
+\graphicspath{{img/}}
+
+
+
+
+\pagestyle{fancyplain}
+\fancyhf{}
+\cfoot{\thepage\ sur \pageref{LastPage}}
+
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+{\bf Université Sciences et Technologies - Bordeaux1} \vspace{0.5cm}\\
+
+{\bf {\large Master 2 Informatique : Genie logiciel parcours conduite de projet}}\\
+%{\emph{Rapport du Projet d'Etude et de Développement }}\\\vspace{1cm}
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[scale=0.2]{img/uniBx-logo}
+
+  \label{fig:logUniBx}
+\end{figure}
+
+
+{\large{\bf{rapport:}}}\\\vspace{1cm}
+{\huge{\bf Visualisation interactive de topologie de plates-formes parallèles avec lstopo et HTML}}\\\vspace{0.5cm}
+
+
+
+
+
+\end{center}
+
+\hspace{1cm}\textbf{Réalisé par:} GreenScrum \\
+%\bigskip
+
+\hspace{1cm}\textbf{Encadré par:} Philippe Narbel , David Auber.\\
+
+
+\hspace{1cm}\textbf{Client:} Brice Goglin\\
+
+
+
+\end{titlepage}
+
+
+
+
+
+\tableofcontents
+
+
+\chapter{Introduction}
+
+
+
+
+\newpage 
+
+\chapter{  }
+
+
+
+ 
+
+\chapter{}
+
+
+
+\chapter{ }
+
+
+
+
+
+
+ 
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{report} 
+
+
+
+
+\end{document}
+
+
