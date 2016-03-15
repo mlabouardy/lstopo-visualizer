@@ -1,0 +1,124 @@
+{
+  "show": [
+    {
+      "name": "L3",
+      "ticked": true
+    },
+    {
+      "name": "L2",
+      "ticked": true
+    },
+    {
+      "name": "L1",
+      "ticked": true
+    },
+    {
+      "name": "Cores",
+      "ticked": true
+    },
+    {
+      "name": "PU",
+      "ticked": true
+    }
+  ],
+  "arrayPackages": [
+    {
+      "os_index": "0",
+      "value": true
+    },
+    {
+      "os_index": "3",
+      "value": true
+    },
+    {
+      "os_index": "1",
+      "value": true
+    },
+    {
+      "os_index": "2",
+      "value": true
+    }
+  ],
+  "arrayGroups": [],
+  "arrayNUMANodes": [
+    {
+      "os_index": "0",
+      "value": true
+    },
+    {
+      "os_index": "1",
+      "value": true
+    },
+    {
+      "os_index": "6",
+      "value": true
+    },
+    {
+      "os_index": "7",
+      "value": true
+    },
+    {
+      "os_index": "2",
+      "value": true
+    },
+    {
+      "os_index": "3",
+      "value": true
+    },
+    {
+      "os_index": "4",
+      "value": true
+    },
+    {
+      "os_index": "5",
+      "value": true
+    }
+  ],
+  "colors": [
+    {
+      "name": "L3",
+      "color": "#d42121",
+      "$$hashKey": "object:1167"
+    },
+    {
+      "name": "L2",
+      "color": "#d41cf2",
+      "$$hashKey": "object:1168"
+    },
+    {
+      "name": "L1",
+      "color": "#FFFFFF",
+      "$$hashKey": "object:1169"
+    },
+    {
+      "name": "Cores",
+      "color": "#BEBEBE",
+      "$$hashKey": "object:1170"
+    },
+    {
+      "name": "PU",
+      "color": "#FFFFFF",
+      "$$hashKey": "object:1171"
+    },
+    {
+      "name": "NUMANodes",
+      "color": "#D2E7A4",
+      "$$hashKey": "object:1172"
+    },
+    {
+      "name": "Node",
+      "color": "#EFDFDE",
+      "$$hashKey": "object:1173"
+    },
+    {
+      "name": "Packages",
+      "color": "#DEDEDE",
+      "$$hashKey": "object:1174"
+    },
+    {
+      "name": "Groups",
+      "color": "white",
+      "$$hashKey": "object:1175"
+    }
+  ]
+}
