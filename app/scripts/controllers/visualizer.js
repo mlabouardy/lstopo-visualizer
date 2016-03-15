@@ -117,7 +117,7 @@ angular.module('myApp')
             var i = 0;
             var unity = "B";
             var tmp = value;
-            while (tmp > 10000) 
+            while (tmp > 10000)
             {
                 i += 1;
                 tmp = Math.round(value/Math.pow(1024, i))
@@ -199,6 +199,9 @@ angular.module('myApp')
 
         $scope.userConfig={
           show:[],
+          arrayPackages:[],
+          arrayGroups:[],
+          arrayNUMANodes:[],
           colors:[
             {
               "name":"L3",
@@ -518,8 +521,8 @@ angular.module('myApp')
                     drawLevel(datas[i].children, context, x, y);
                 }
             }
-            else if(datas[i].type == "PCIDev"){           
-                
+            else if(datas[i].type == "PCIDev"){
+
                 var oldX = x;
                 var oldY = y;
                 if(i == 0){
