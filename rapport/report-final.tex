@@ -82,19 +82,6 @@ Le projet devait être fait en 2 parties avec une partie en C et une partie Web.
 
 \subsection{Technologies utilisées}
 
-\subsection{Tests}
-
-\subsubsection{Intégration Continue}
-
-Intégration continue est une étape importante à mettre en place dans le processus de développement logiciel. Nous parlerons donc ici de cette pratique et de l'outil utilisé au cours de ce projet.
-
-\begin{table}[h]
-\begin{center}
-\includegraphics[scale=0.5]{img/ci.png}
-    \caption{Intégration continue workflow}
-\end{center}
-\end{table}
-
 \newpage
 
 \section{Développement}
@@ -104,6 +91,64 @@ Intégration continue est une étape importante à mettre en place dans le proce
 \subsection{Problèmes rencontrés}
 
 \subsection{Résultat}
+
+
+\newpage
+
+\section{Intégration Continue}
+
+Intégration continue est une étape importante à mettre en place dans le processus de développement logiciel. Nous parlerons donc ici de cette pratique et de l'outil utilisé au cours de ce projet.
+
+\begin{center}
+\includegraphics[scale=0.5]{img/ci.png}
+\end{center}
+
+\subsection{Bitbucket}
+
+Un système de versionnement
+
+\subsection{Jenkins}
+
+Serveur d'intégration continue, il assure le deploiement et les tests automatisé.
+
+\subsection{Docker}
+
+Docker est un système de container linux ultra léger basé sur les cgroups, lxc et aufs.\newline
+
+L'idée est la suivante pour un build:
+
+\begin{itemize}
+ \item Jenkins crée une image docker à partir de Dockerfile
+ \item Jenkins push l'image dans un dépot privé
+ \item Jenkins crée un container docker à partir de cette image
+\end{itemize}
+
+\subsection{Private Registry}
+
+Depot pour stocker l'ensemble des versions de l'application tout au long de la phase de développement
+
+\begin{center}
+\includegraphics[scale=0.5]{img/registry.png}
+\end{center}
+
+L'avatange d'utilisation d'un docker private registry c'est avoir un systéme de versionning pour l'application. et rendre disponible facilement le dernier exécutable.
+\subsection{Selenium Webdriver}
+WebDriver est un framework de tests fonctionnels issu du projet Selenium, célèbre outil d'automatisation de tests pour navigateurs.\newline
+
+Un exemple des test faites avec l'API Selenium c'est la mesure du temps d'execution pour un ensemble des exemples d'Architecture.
+
+\begin{center}
+\includegraphics[scale=0.5]{img/benchmark.png}
+\end{center}
+
+\subsection{JSLint/CSSLint}
+
+La qualité du code est vitale pour qu'un projet soit pérenne sur le moyen et long terme. De nombreux outils existent pour automatiser les contrôles et générer des rapports statistiques:\newline
+
+\begin{itemize}
+ \item \textbf{JSLint} est un analyseur de code Javascript. Son but est de parser votre code Javascript pour vérifier que vous respecter les règles de coding Javascript.\newline
+ \item \textbf{CSSLint} détecte les problèmes d'une feuille de style CSS.
+\end{itemize}
 
 \newpage
 
@@ -125,5 +170,3 @@ Intégration continue est une étape importante à mettre en place dans le proce
 
 
 \end{document}
-
-
