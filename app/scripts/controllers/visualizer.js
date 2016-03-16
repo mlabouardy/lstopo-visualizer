@@ -3,16 +3,18 @@ angular.module('myApp')
 
         $scope.jsonObj = jsonObj.getJson().topology.object;
         $scope.entities = [];
-
         // variables for display or not elements
-        $scope.showL1 = true;
-        $scope.showL2 = true;
-        $scope.showL3 = true;
-        $scope.cores = true;
-        $scope.Pu = true;
+        $scope.showL1 = false;
+        $scope.showL2 = false;
+        $scope.showL3 = false;
+        $scope.showCores = false;
+        $scope.showPu = false;
         $scope.arrayPackages = [];
         $scope.arrayGroups = [];
         $scope.arrayNUMANodes = [];
+        $scope.alignement = [{alignement : "vertical", value :true}, {alignement : "horizontal" , value : false}];
+        $scope.zoom = 1;
+        $scope.componentsChoice = [{name : "Pu" , value : true} , {name : "Groups" , value : true}, {name : "Packages" , value : true},  {name : "NUMANodes" , value : true}]
         $scope.font_size = 14;
         var i = 0;
 
@@ -70,12 +72,14 @@ angular.module('myApp')
             }
             else if(data._type == "Core"){
                 array.push({type: data._type, os_index: data._os_index, children: []});
+                 $scope.showCores = true;
                 if(data.object){
                     extractDatas(data.object, array[array.length-1].children);
                 }
             }
             else if(data._type == "PU"){
                 array.push({type: data._type, os_index: data._os_index});
+                 $scope.showPu = true;
                 if(data.object){
                     extractDatas(data.object, array[array.length-1].children);
                 }
@@ -160,16 +164,6 @@ angular.module('myApp')
             return (100-(cpt))/cpt+"%";
         }
 
-        $scope.sizePu = function(array, type){
-            var cpt = 0;
-            for(var i=0; i<array.length; i++){
-                if(array[i].type == type){
-                    cpt++;
-                }
-            }
-            return (100-(cpt))/cpt * 3+"%";
-        }
-
         // Config part
 
         $scope.config={
@@ -242,11 +236,6 @@ angular.module('myApp')
             }
           ]
         };
-
-
-        $scope.alignement = [{alignement : "vertical", value :true}, {alignement : "horizontal" , value : false}];
-        $scope.zoom = 1;
-        $scope.componentsChoice = [{name : "Pu" , value : true} , {name : "Groups" , value : true}, {name : "Packages" , value : true},  {name : "NUMANodes" , value : true}]
 
         $scope.alignementComponents = function(component){
             var tmp;
