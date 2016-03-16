@@ -504,6 +504,13 @@ angular.module('myApp')
 .controller('TestCtrl',function($scope,$timeout){
     function initTree(array, index){
         var canvas = document.getElementById('tree-' + index + '-' + array.os_index);
+        
+        //Compute the approximate sizes of tree
+        //var widthTree = computeWidthTree(array.children)*;
+        var nbPCI = computeHeightTree(array.children)
+        var heightTree = (nbPCI*60)+(nbPCI*20);
+        canvas.height = heightTree
+
         var context = canvas.getContext('2d');
 
         var x = 10;
@@ -520,6 +527,19 @@ angular.module('myApp')
 
         drawLevel(array.children, context, x, y);
 
+    }
+
+    function computeHeightTree(datas){
+        var sum = 0;
+        for(var i=0; i<datas.length; i++){
+            if(datas[i].children){
+                sum += computeHeightTree(datas[i].children);
+            }
+            if(datas[i].type == "PCIDev"){
+                sum += 1;
+            }
+        }
+        return sum;
     }
 
     function drawLevel(datas, context, x, y){
