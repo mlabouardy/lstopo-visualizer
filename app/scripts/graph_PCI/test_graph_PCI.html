@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="libs/joint.css" />
+    <script src="libs/jquery.min.js"></script>
+    <script src="libs/lodash.min.js"></script>
+    <script src="libs/backbone-min.js"></script>
+    <script src="libs/joint.js"></script>
+</head>
+<body>
+	<div id="myholder"></div>
+	<script src="graph_PCI.js"></script>
+	<script type="text/javascript">
+		// Collapse.png
+		
+		/* 
+		 * On construit la partie supérieure de collapse
+		 * niveau par niveau.
+		 *
+		 * Chaque noeud permet d'accéder à une branche fille, vide par défaut.
+		 * Chaque branche contient une liste de noeuds.
+		 *
+		 * Les noeuds sont soit des bridges (carrés blancs), soit des PCI. toutes
+		 * ces fonctions renvoient le noeud ajouté.
+		 *
+		 * Les fonctions à utiliser :
+		 * 
+		 * branch createBranch()
+		 * node pushBridge( branch )
+		 * node pushPCI( branch, name, nbCollapses, listEthNames )
+		 * drawTree( branch )
+		 * debugBranch( branch )
+		 *
+		 * Les propriétés des structures (éviter de les modifier manuellement) :
+		 *
+		 * Branch :
+		 *		xLvl, yLvl: 0,
+		 *		x: 0, y: MARGIN_TOP, 
+		 *		w: 0, h: 0,
+		 *		nbChildBranches: 0,
+		 *		parentNode: null,
+		 *		nodes : []
+		 *
+		 * Node :
+		 *		nodeParams: null,
+		 *	 	branch: null,
+		 *	 	childBranch: null,
+		 *	 	rect: null
+		 */
+
+		var root = createBranch();
+		var level0 = root;
+		
+		var firstNode = pushBridge(level0);
+		var curNode = firstNode;
+		curNode = pushBridge(level0);
+		pushPCI(level0, "PCI 02:00.0", 0, ["eth0"]);
+		
+		var level1 = curNode.childBranch;
+		pushPCI(level1, "PCI 02:00.1", 0, ["eth1"]);
+		
+		var level2 = firstNode.childBranch;
+		for ( var i = 0; i < 5; ++i ) pushBridge(level2);
+		pushPCI(level2, "PCI 0b:00.0", 0, ["eth4", "usnic_0"]);
+		
+		var level3 = level2.nodes[level2.nodes.length - 2].childBranch;
+		pushPCI(level3, "3 x { PCI 0b:00.1-3 }", 2);
+		
+		var level4 = level2.nodes[level2.nodes.length - 3].childBranch;
+		pushBridge(level4);
+		pushPCI(level4, "PCI 0c:00.0", 0, ["eth5", "usnic_1"]);
+		
+		var level5 = level4.nodes[0].childBranch;
+		pushPCI(level5, "PCI 0c:00.1");
+		
+		var level6 = level5.nodes[0].childBranch;
+		pushPCI(level6, "2 x { PCI 0c:00.2-3 }", 1);
+		
+		var level7 = level6.nodes[0].childBranch;
+		pushPCI(level7, "PCI 0c:00.4");
+		
+		drawTree(root);
+  
+	</script>
+</body>
+</html>

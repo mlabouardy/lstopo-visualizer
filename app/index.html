@@ -6,11 +6,14 @@
   <link rel="stylesheet" href="bower_components/bootstrap-css/css/bootstrap.min.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/style2.css">
+  <link rel="stylesheet" href="scripts/graph_PCI/libs/joint.css" />
   <link rel="stylesheet" href="http://isteven.github.io/angular-multi-select/css/isteven-multi-select.css" media="screen" title="no title" charset="utf-8">
   <link rel="stylesheet" href="bower_components/angular-bootstrap-colorpicker/css/colorpicker.min.css" media="screen" title="no title" charset="utf-8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.15.0/vis.min.css" />
   <link rel="stylesheet" href="bower_components/toastr/toastr.css" media="screen" title="no title" charset="utf-8">
 </head>
-<body class="container-fluid container-custom">
+<body class="container-fluid" style="background: url('img/content.png');margin-top:20px;">
   <div ng-view=""></div>
 </body>
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
@@ -25,6 +28,7 @@
 <script src="scripts/app.js"></script>
 <script src="scripts/controllers/main.js" charset="utf-8"></script>
 <script src="scripts/controllers/visualizer.js" charset="utf-8"></script>
+<script src="scripts/controllers/vis.js" charset="utf-8"></script>
 <script src="scripts/plugins/isteven-multi-select.js" charset="utf-8"></script>
 <script src="bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.min.js" charset="utf-8"></script>
 <script src="scripts/plugins/filesaver.js"></script>
