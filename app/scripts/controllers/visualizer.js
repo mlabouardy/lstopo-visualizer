@@ -8,7 +8,8 @@ angular.module('myApp')
         $scope.showL2 = false;
         $scope.showL3 = false;
         $scope.showCores = false;
-        $scope.showPu = false;
+        $scope.showNode = false;
+        $scope.showPU = false;
         $scope.arrayPackages = [];
         $scope.arrayGroups = [];
         $scope.arrayNUMANodes = [];
@@ -59,6 +60,7 @@ angular.module('myApp')
             else if(data._type == "NUMANode"){
                 array.push({type: data._type, os_index: data._os_index, memory: data._local_memory, children: [], pciTree: []});
                 $scope.arrayNUMANodes.push({os_index : data._os_index , value : true});
+                $scope.showNode = true;
                 if(data.object){
                     extractDatas(data.object, array[array.length-1].children);
                     extractPciDatas(data.object, array[array.length-1].pciTree);
@@ -72,14 +74,15 @@ angular.module('myApp')
             }
             else if(data._type == "Core"){
                 array.push({type: data._type, os_index: data._os_index, children: []});
-                 $scope.showCores = true;
+                $scope.showCores = true;
                 if(data.object){
                     extractDatas(data.object, array[array.length-1].children);
                 }
             }
             else if(data._type == "PU"){
+                console.log("caca");
                 array.push({type: data._type, os_index: data._os_index});
-                 $scope.showPu = true;
+                $scope.showPU = true;
                 if(data.object){
                     extractDatas(data.object, array[array.length-1].children);
                 }
@@ -111,6 +114,15 @@ angular.module('myApp')
 
         $scope.cacheType = function(entity,type){
             if(entity == type){
+                if (type == 'L3Cache'){
+                    $scope.showL3 = true;
+                }
+                if (type == 'L2Cache'){
+                    $scope.showL2 = true;
+                }
+                if (type == 'L1Cache'){
+                    $scope.showL1 = true;
+                }
                 return true;
             }
             else{
@@ -122,7 +134,7 @@ angular.module('myApp')
             var i = 0;
             var unity = "B";
             var tmp = value;
-            while (tmp > 10000) 
+            while (tmp > 10000)
             {
                 i += 1;
                 tmp = Math.round(value/Math.pow(1024, i))
@@ -194,6 +206,9 @@ angular.module('myApp')
 
         $scope.userConfig={
           show:[],
+          arrayPackages:[],
+          arrayGroups:[],
+          arrayNUMANodes:[],
           colors:[
             {
               "name":"L3",
@@ -237,6 +252,20 @@ angular.module('myApp')
           ]
         };
 
+        $scope.importConfig=function(){
+          var xml = document.getElementById('file').files[0];
+          var reader = new FileReader();
+          reader.readAsText(xml);
+
+          reader.onload = function(evt){
+              $scope.$apply(function() {
+                  var data=JSON.parse(evt.target.result.toString());
+                  $scope.userConfig.colors=data.colors;
+                  toastr.success('User config successfuly imported !',"Lstopo Visualizer");
+              });
+          };
+        }
+
         $scope.alignementComponents = function(component){
             var tmp;
             $scope.componentsChoice.forEach(function(compo,index){
@@ -252,7 +281,9 @@ angular.module('myApp')
                 return $scope.checkArray(eval("$scope.array" + component.name));
             }
             else{
-                return true;
+                console.log("$scope.show" + component.name);
+                return eval("$scope.show" + component.name);
+                //return true;
             }
         }
 
@@ -304,17 +335,29 @@ angular.module('myApp')
         }
 
         $scope.changeSize = function (ope){
+
+            var tailleMax = 17;
+            var tailleMin= 7;
             if (ope =="+"){
+
                 $scope.font_size ++ ;
+                if($scope.font_size >= tailleMax ){
+                    $scope.font_size = tailleMax;
+                }
             }
             else{
                 $scope.font_size -- ;
+                if($scope.font_size <= tailleMin ){
+                    $scope.font_size = tailleMin;
+
+                }
             }
         }
 
         $scope.exportConfig=function(){
           var blob = new Blob([JSON.stringify($scope.userConfig)], {type: "application/json"});
           saveAs(blob, "config.json");
+          toastr.success('User config successfuly saved !',"Lstopo Visualizer");
         }
 
 
@@ -465,6 +508,13 @@ angular.module('myApp')
 .controller('TestCtrl',function($scope,$timeout){
     function initTree(array, index){
         var canvas = document.getElementById('tree-' + index + '-' + array.os_index);
+        
+        //Compute the approximate sizes of tree
+        //var widthTree = computeWidthTree(array.children)*;
+        var nbPCI = computeHeightTree(array.children)
+        var heightTree = (nbPCI*60)+(nbPCI*20);
+        canvas.height = heightTree
+
         var context = canvas.getContext('2d');
 
         var x = 10;
@@ -481,6 +531,19 @@ angular.module('myApp')
 
         drawLevel(array.children, context, x, y);
 
+    }
+
+    function computeHeightTree(datas){
+        var sum = 0;
+        for(var i=0; i<datas.length; i++){
+            if(datas[i].children){
+                sum += computeHeightTree(datas[i].children);
+            }
+            if(datas[i].type == "PCIDev"){
+                sum += 1;
+            }
+        }
+        return sum;
     }
 
     function drawLevel(datas, context, x, y){
@@ -517,8 +580,8 @@ angular.module('myApp')
                     drawLevel(datas[i].children, context, x, y);
                 }
             }
-            else if(datas[i].type == "PCIDev"){           
-                
+            else if(datas[i].type == "PCIDev"){
+
                 var oldX = x;
                 var oldY = y;
                 if(i == 0){
