@@ -510,10 +510,13 @@ angular.module('myApp')
         var canvas = document.getElementById('tree-' + index + '-' + array.os_index);
         
         //Compute the approximate sizes of tree
-        //var widthTree = computeWidthTree(array.children)*;
-        var nbPCI = computeHeightTree(array.children)
-        var heightTree = (nbPCI*60)+(nbPCI*20);
-        canvas.height = heightTree
+        var nbVerticalPCI = computeHeightTree(array.children)
+        var heightTree = (nbVerticalPCI*60)+(nbVerticalPCI*20);
+        var nbHorizontalElement = computeWidthTree(array.children);
+        var widthTree = (nbHorizontalElement-2)*50+200;
+
+        canvas.height = heightTree;
+        canvas.width = widthTree;
 
         var context = canvas.getContext('2d');
 
@@ -544,6 +547,19 @@ angular.module('myApp')
             }
         }
         return sum;
+    }
+
+    function computeWidthTree(datas){
+        var maxDepth = 1;
+        for(var i=0; i<datas.length; i++){
+            if(datas[i].children){
+                var depth = computeWidthTree(datas[i].children) + 1;
+            }
+            if(depth > maxDepth){
+                maxDepth = depth;
+            }
+        }
+        return maxDepth;
     }
 
     function drawLevel(datas, context, x, y){
