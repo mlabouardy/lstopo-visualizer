@@ -80,7 +80,6 @@ angular.module('myApp')
                 }
             }
             else if(data._type == "PU"){
-                console.log("caca");
                 array.push({type: data._type, os_index: data._os_index});
                 $scope.showPU = true;
                 if(data.object){
@@ -198,6 +197,11 @@ angular.module('myApp')
             },
             {
               name:"PU",
+              ticked:true
+            }
+            ,
+            {
+              name:"PCI",
               ticked:true
             }
           ],
