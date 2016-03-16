@@ -4,6 +4,4 @@ lstopo - Show the topology of the system provides a detailed explanation of the 
 
 # CI Workflow
 
-<p style="text-align:center">
-  <img src="preview/ci.png"/>
-</p>
+![]("preview/ci.png")
