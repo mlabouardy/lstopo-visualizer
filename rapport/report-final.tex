@@ -1,5 +1,4 @@
-\documentclass [a4paper,11pt]{report}
-
+\documentclass [a4paper,11pt]{article}
 
 \usepackage [francais]{babel}
 \usepackage[utf8]{inputenc}%       encodage du fichier source
@@ -13,13 +12,8 @@
 \usepackage{chngcntr}%			   pour numéroté les figures au lieux du numéro de section
 \usepackage[toc,page]{appendix}%   pour les annexes
 
-\counterwithout{figure}{chapter}% initialise le compteur de section
-
 % Chemin par defaut des images
 \graphicspath{{img/}}
-
-
-
 
 \pagestyle{fancyplain}
 \fancyhf{}
@@ -71,7 +65,7 @@
 \tableofcontents
 
 
-\chapter{Introduction}
+\section{Introduction}
 
 \subsection{Présentation du projet}
 Le but du projet est de proposer un logiciel de visualisation au format HTML d'une topologie de machines. Cette topologie est constituée d'informations matérielles de chaque machine. Ces données servent à àméliorer les calculs parallèles en optimisant l'utilisation du matériel. Les données à utiliser sont extraites du module lstopo de la bibliothèque logicielle hwloc
@@ -81,27 +75,18 @@ Le projet devait être fait en 2 parties avec une partie en C et une partie Web.
 
 
 
-\newpage 
+\newpage
 
-\chapter{Intégration Continue}
+\section{Intégration Continue}
 
 Intégration continue est une étape importante à mettre en place dans le processus de développement logiciel. Nous parlerons donc ici de cette pratique et de l'outil utilisé au cours de ce projet.
 
+\begin{table}[h]
 \begin{center}
 \includegraphics[scale=0.5]{img/ci.png}
     \caption{Intégration continue workflow}
 \end{center}
-
-\chapter{}
-
-
-
-\chapter{ }
-
-
-
-
-
+\end{table}
 
  
 \nocite{*}
@@ -112,5 +97,3 @@ Intégration continue est une étape importante à mettre en place dans le proce
 
 
 \end{document}
-
-
