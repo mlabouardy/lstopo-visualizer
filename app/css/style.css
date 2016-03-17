@@ -1,6 +1,6 @@
 .entity{
+	border: 0px black solid;
 	display: inline-block;
-	width:100%;
 
 }
 
@@ -32,11 +32,11 @@
 
 .group > span{
 	display: inline-block;
+	width:100%;
 }
 
 .numanode {
 	padding: 1%;
-	border:1px solid black;
 }
 
 .numanode > span{
@@ -114,7 +114,7 @@
 }
 
 .insideNode {
-	width: 100%;
+	width: 98%;
 }
 
 .caches {
