@@ -13,7 +13,7 @@ angular.module('myApp')
         };
 
         json.getJson = function(){
-			json = localStorageService.get("json");
+			json = localStorageService.get("json").topology.object.object;
 			
 			if ( typeof json == "undefined" )
 				json = {};
