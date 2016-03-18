@@ -102,7 +102,12 @@ angular.module('myApp')
                 }
             }
             else if(data._type == "OSDev"){
-                array.push({type: data._type, name: data._name});
+                if(/^opencl.*/.test(data._name)){
+                    array.push({type: data._type, name: data._name, info: data.info});
+                }
+                else{
+                    array.push({type: data._type, name: data._name});
+                }
                 if(data.object){
                     extractPciDatas(data.object, array[array.length-1].children);
                 }
@@ -202,7 +207,7 @@ angular.module('myApp')
             ,
             {
               name:"PCI",
-              ticked:true
+              ticked:false
             }
           ],
           export:"PDF"
@@ -285,7 +290,6 @@ angular.module('myApp')
                 return $scope.checkArray(eval("$scope.array" + component.name));
             }
             else{
-                console.log("$scope.show" + component.name);
                 return eval("$scope.show" + component.name);
                 //return true;
             }
@@ -513,13 +517,9 @@ angular.module('myApp')
     function initTree(array, index){
         var canvas = document.getElementById('tree-' + index + '-' + array.os_index);
         
-        //Compute the approximate sizes of tree
-        var nbVerticalPCI = computeHeightTree(array.children)
-        var heightTree = (nbVerticalPCI*60)+(nbVerticalPCI*20);
-        var nbHorizontalElement = computeWidthTree(array.children);
-        var widthTree = (nbHorizontalElement-2)*50+200;
+        var widthTree = (computeWidthTree(array.children)-2)*60+220;
 
-        canvas.height = heightTree;
+        canvas.height = computeHeightTree(array.children);
         canvas.width = widthTree;
 
         var context = canvas.getContext('2d');
@@ -536,18 +536,32 @@ angular.module('myApp')
         context.strokeStyle = 'black';
         context.stroke();
 
+        console.log(array.children);
         drawLevel(array.children, context, x, y);
 
     }
 
-    function computeHeightTree(datas){
+    /*function computeNbVerticalEntities(datas, entity){
         var sum = 0;
         for(var i=0; i<datas.length; i++){
             if(datas[i].children){
-                sum += computeHeightTree(datas[i].children);
+                sum += computeNbVerticalEntities(datas[i].children, entity);
             }
-            if(datas[i].type == "PCIDev"){
+            if(datas[i].type == entity){
                 sum += 1;
+            }
+        }
+        return sum;
+    }*/
+
+    function computeHeightTree(datas){
+        var sum = 0;
+        for(var i=0; i<datas.length; i++){
+            if(datas[i].type == "Bridge"){
+                sum += datas[i].children.length*85;
+            }
+            else{
+                sum += 80;
             }
         }
         return sum;
@@ -578,12 +592,9 @@ angular.module('myApp')
                     makeSimpleLink(context, x, y+5, oldX+10);
                 }
 
-                //If not, we draw a elbow
+                //If not, we draw an elbow
                 else{
-                    if(datas[i-1].children && datas[i-1].children.length > 1)
-                        y += 160;
-                    else
-                        y += 90;
+                    y += (datas[i-1].children.length)*85;
                     makeElbowLink(context, x, y+5, oldX, oldY+5);
                 }
 
@@ -615,10 +626,17 @@ angular.module('myApp')
 
                 //Draw a rectangle of PCI type set with its content
                 context.beginPath();
-                if(datas[i].children.length != 0)
-                    context.rect(x, y-8, 100, 60);
-                else
+                if(datas[i].children.length != 0){
+                    if(datas[i].children[0].info){
+                        context.rect(x, y-8, 130, 80);
+                    }
+                    else{
+                        context.rect(x, y-8, 80, 50);
+                    }
+                }
+                else{
                     context.rect(x, y-8, 80, 30);
+                }
                 context.fillStyle = '#BED295';
                 context.fill();
                 context.lineWidth = 2;
@@ -636,7 +654,12 @@ angular.module('myApp')
             }
             else if(datas[i].type == "OSDev"){
                 context.beginPath();
-                context.rect(x+10, y+15, 80, 30);
+                if(datas[i].info){
+                    context.rect(x+10, y+15, 110, 50);
+                }
+                else{
+                    context.rect(x+10, y+15, 60, 20);
+                }
                 context.fillStyle = '#DEDEDE';
                 context.fill();
                 context.lineWidth = 2;
@@ -645,7 +668,54 @@ angular.module('myApp')
 
                 context.font = "12px Arial";
                 context.fillStyle = "black";
-                context.fillText(datas[i].name, x+20, y+30);
+                if(datas[i].info){
+                    context.fillText(datas[i].name, x+15, y+30);
+                    context.fillText(searchNumberOfUnit(datas[i].info)+" compute units", x+15, y+45);
+                    context.fillText(searchMemorySize(datas[i].info), x+15, y+60);
+                }
+                else{
+                    context.fillText(datas[i].name, x+30, y+30);
+                }
+            }
+        }
+    }
+
+    function searchNumberOfUnit(datas){
+        for(var i=0; i<datas.length; i++){
+            if(datas[i]._name == "OpenCLComputeUnits"){
+                return datas[i]._value;
+            }
+        }
+    }
+
+    function convertMemory(value){
+        var i = 0;
+        var unity = "B";
+        var tmp = value;
+        while (tmp > 10000)
+        {
+            i += 1;
+            tmp = Math.round(value/Math.pow(1024, i))
+            if(i==1){
+                unity = "KB";
+            }
+            else if(i==2){
+                unity = "MB";
+            }
+            else if(i==3){
+                unity = "GB";
+            }
+            else if(i==4){
+                unity = "TB";
+            }
+        }
+        return tmp+unity;
+    }
+
+    function searchMemorySize(datas){
+        for(var i=0; i<datas.length; i++){
+            if(datas[i]._name == "OpenCLGlobalMemorySize"){
+                return convertMemory(datas[i]._value);
             }
         }
     }

@@ -1,7 +1,6 @@
 .entity{
 	border: 0px black solid;
 	display: inline-block;
-
 }
 
 .frame {
@@ -17,7 +16,6 @@
 }
 
 .package {
-	display: inline-block;
 }
 
 .package > span {
@@ -26,7 +24,6 @@
 }
 
 .group {
-	display: inline-block;
 	padding: 1%;
 }
 
@@ -42,11 +39,9 @@
 .numanode > span{
 	display: inline-block;
 	vertical-align:top;
-	margin-right: 1%;
 }
 
 .cache3 {
-	text-align:justify;
 }
 
 .cache3 > span {
@@ -86,6 +81,7 @@
 	display:none;
 }
 
+<<<<<<< HEAD
 .pcis {
 	width: 35%;
 	display:inline-block;
@@ -168,33 +164,4 @@
 #left{
 	float:left;
 	background-color: white;
-}
-
-.pcidev {
-	border: 2px solid #7F7F7F;
-	background-color: #BED295;
-	padding-left: 1%;
-	width: 30%;
-	margin: 1%;
-	padding-bottom: 1%;
-	text-align: center;
-}
-
-.pcidev .osdev {
-	border: 2px solid #7F7F7F;
-	background-color: #DEDEDE;
-	padding: 5%;
-    display:inline-block;
-}
-
-ul
-{
-    list-style-type: none;
-}
-
-.bridge {
-	border: 2px solid #7F7F7F;
-	background-color: white;
-	width : 10px;
-	height: 10px;
 }

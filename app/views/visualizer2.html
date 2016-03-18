@@ -5,9 +5,9 @@
 	    <div class="panel panel-primary">
 	      	<div class="panel-heading"><i class="fa fa-eye"></i> Visualizer</div>
 		      	<div ng-style="{'font-size': font_size}" id="components" class="panel-body">
-					<div class="entity" ng-if="alignementComponents('Groups')" ng-repeat="entity in ::entities" ng-include="'lstopoTree'">
+					<div class="frame" ng-if="alignementComponents('Groups')" ng-repeat="entity in ::entities" ng-include="'lstopoTree'">
 					</div>
-					<div class="entity" ng-if="!alignementComponents('Groups')" ng-repeat="entity in ::entities" ng-style="{'display' : 'table-cell'}" ng-include="'lstopoTree'">
+					<div class="frame" ng-if="!alignementComponents('Groups')" ng-repeat="entity in ::entities" ng-style="{'display' : 'table-cell'}" ng-include="'lstopoTree'">
 					</div>
 
       				<script type="text/ng-template" id="lstopoTree">
@@ -53,8 +53,8 @@
 								<div class="frame" ng-style="{'background-color':userConfig.colors[6].color}"><p>{{::entity.type}} P#{{::entity.os_index}} ({{::convertMemory(entity.memory)}})</p></div>
 								<span ng-repeat="entity in ::entity.children" ng-include="'lstopoTree'">
 								</span>
-								<span ng-if="entity.pciTree" ng-repeat="tree in ::entity.pciTree" ng-style="{'width': '20%'}">
-									<canvas id="{{ ::'tree-' + $index + '-' + tree.os_index }}" ng-controller="TestCtrl" ng-init="begin(tree, $index)" height="100" width="600"></canvas>
+								<span ng-if="entity.pciTree" ng-repeat="tree in ::entity.pciTree">
+									<canvas id="{{ ::'tree-' + $index + '-' + tree.os_index }}" ng-controller="TestCtrl" ng-init="begin(tree, $index)" height="100" width="100"></canvas>
 								</span>
 
 								</div>
