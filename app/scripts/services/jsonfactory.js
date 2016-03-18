@@ -1,4 +1,3 @@
-
 angular.module('myApp')
   .factory('jsonObj',function(localStorageService){
         var json = {};
@@ -13,7 +12,7 @@ angular.module('myApp')
         };
 
         json.getJson = function(){
-			json = localStorageService.get("json").topology.object.object;
+			json = localStorageService.get("json");
 			
 			if ( typeof json == "undefined" )
 				json = {};

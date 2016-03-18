@@ -1,23 +1,23 @@
 angular.module('myApp')
-    .controller('VisualizerCtrl', function($scope, $location, treeFactory, $timeout){
-            // variables for display or not elements
-            $scope.loaded=false;
-            $scope.showL1 = false;
-            $scope.showL2 = false;
-            $scope.showL3 = false;
-            var treeParams = treeFactory.load();
-            $scope.entities = treeParams.entities;
-            $scope.showCores = treeParams.showCores;
-            $scope.showNode = treeParams.showNode;
-            $scope.showPU = treeParams.showPU;
-            $scope.arrayPackages = treeParams.arrayPackages;
-            $scope.arrayGroups = treeParams.arrayGroups;
-            $scope.arrayNUMANodes = treeParams.arrayNUMANodes;
-            $scope.alignement = [{alignement : "vertical", value :true}, {alignement : "horizontal" , value : false}];
-            $scope.zoom = 1;
-            var componentsChoice = [{name:"Pu" , value : true} , {name : "Groups" , value : true}, {name : "Packages" , value : true},  {name : "NUMANodes" , value : true}]
-            $scope.font_size = 14;
-            var i = 0;
+.controller('VisualizerCtrl', function($scope, $location, jsonObj, $timeout){
+        $scope.loaded=false;
+        $scope.jsonObj = jsonObj.getJson().topology.object;
+        $scope.entities = [];
+        // variables for display or not elements
+        $scope.showL1 = false;
+        $scope.showL2 = false;
+        $scope.showL3 = false;
+        $scope.showCores = false;
+        $scope.showNode = false;
+        $scope.showPU = false;
+        $scope.arrayPackages = [];
+        $scope.arrayGroups = [];
+        $scope.arrayNUMANodes = [];
+        $scope.alignement = [{alignement : "vertical", value :true}, {alignement : "horizontal" , value : false}];
+        $scope.zoom = 1;
+        $scope.componentsChoice = [{name : "Pu" , value : true} , {name : "Groups" , value : true}, {name : "Packages" , value : true},  {name : "NUMANodes" , value : true}]
+        $scope.font_size = 14;
+        var i = 0;
 
         function extractDatas(datas, entities){
             if(datas instanceof Array){
@@ -275,15 +275,15 @@ angular.module('myApp')
           };
         }
 
-            $scope.alignementComponents = function(component){
-                var tmp;
-                componentsChoice.forEach(function(compo,index){
-                    if(compo.name == component){
-                        return tmp = compo.value;
-                    }
-                });
-                return tmp;
-            }
+        $scope.alignementComponents = function(component){
+            var tmp;
+            $scope.componentsChoice.forEach(function(compo,index){
+                if(compo.name == component){
+                        tmp = compo.value;
+                }
+            });
+            return tmp;
+        }
 
         $scope.checkComponent = function(component){
             if (component.name == "Packages" || component.name == "Groups" || component.name == "NUMANodes" ){
@@ -471,26 +471,26 @@ angular.module('myApp')
 
             var widthTree = (computeWidthTree(array.children)-2)*60+220;
 
-        canvas.height = computeHeightTree(array.children);
-        canvas.width = widthTree;
+            canvas.height = computeHeightTree(array.children);
+            canvas.width = widthTree;
 
-        var context = canvas.getContext('2d');
+            var context = canvas.getContext('2d');
 
-        var x = 10;
-        var y = 10;
+            var x = 10;
+            var y = 10;
 
-        //First shape of Bridge type
-        context.beginPath();
-        context.rect(10, 10, 10, 10);
-        context.fillStyle = 'white';
-        context.fill();
-        context.lineWidth = 2;
-        context.strokeStyle = 'black';
-        context.stroke();
+            //First shape of Bridge type
+            context.beginPath();
+            context.rect(10, 10, 10, 10);
+            context.fillStyle = 'white';
+            context.fill();
+            context.lineWidth = 2;
+            context.strokeStyle = 'black';
+            context.stroke();
 
             drawLevel(array.children, context, x, y);
 
-    }
+        }
 
         function computeHeightTree(datas){
             var sum = 0;
@@ -505,189 +505,189 @@ angular.module('myApp')
             return sum;
         }
 
-    function computeWidthTree(datas){
-        var maxDepth = 1;
-        for(var i=0; i<datas.length; i++){
-            if(datas[i].children){
-                var depth = computeWidthTree(datas[i].children) + 1;
-            }
-            if(depth > maxDepth){
-                maxDepth = depth;
-            }
-        }
-        return maxDepth;
-    }
-
-    function drawLevel(datas, context, x, y){
-        for(var i=0; i<datas.length; i++){
-            if(datas[i].type == "Bridge"){
-                var oldX = x;
-                var oldY = y;
-
-                //If it's the first element, we draw a straight line
-                if(i == 0){
-                    x += 50;
-                    makeSimpleLink(context, x, y+5, oldX+10);
-                }
-
-                //If not, we draw an elbow
-                else{
-                    y += (datas[i-1].children.length)*85;
-                    makeElbowLink(context, x, y+5, oldX, oldY+5);
-                }
-
-                //Draw a square of Bridge type
-                context.beginPath();
-                context.rect(x, y, 10, 10);
-                context.fillStyle = 'white';
-                context.fill();
-                context.lineWidth = 2;
-                context.strokeStyle = 'black';
-                context.stroke();
-
+        function computeWidthTree(datas){
+            var maxDepth = 1;
+            for(var i=0; i<datas.length; i++){
                 if(datas[i].children){
-                    drawLevel(datas[i].children, context, x, y);
+                    var depth = computeWidthTree(datas[i].children) + 1;
+                }
+                if(depth > maxDepth){
+                    maxDepth = depth;
                 }
             }
-            else if(datas[i].type == "PCIDev"){
+            return maxDepth;
+        }
 
-                var oldX = x;
-                var oldY = y;
-                if(i == 0){
-                    x += 80;
-                    makeSimpleLink(context, x, y+5, oldX+10);
-                }
-                else{
-                    y += 80;
-                    makeElbowLink(context, x, y+5, oldX, oldY+5);
-                }
+        function drawLevel(datas, context, x, y){
+            for(var i=0; i<datas.length; i++){
+                if(datas[i].type == "Bridge"){
+                    var oldX = x;
+                    var oldY = y;
 
-                //Draw a rectangle of PCI type set with its content
-                context.beginPath();
-                if(datas[i].children.length != 0){
-                    if(datas[i].children[0].info){
-                        context.rect(x, y-8, 130, 80);
+                    //If it's the first element, we draw a straight line
+                    if(i == 0){
+                        x += 50;
+                        makeSimpleLink(context, x, y+5, oldX+10);
+                    }
+
+                    //If not, we draw an elbow
+                    else{
+                        y += (datas[i-1].children.length)*85;
+                        makeElbowLink(context, x, y+5, oldX, oldY+5);
+                    }
+
+                    //Draw a square of Bridge type
+                    context.beginPath();
+                    context.rect(x, y, 10, 10);
+                    context.fillStyle = 'white';
+                    context.fill();
+                    context.lineWidth = 2;
+                    context.strokeStyle = 'black';
+                    context.stroke();
+
+                    if(datas[i].children){
+                        drawLevel(datas[i].children, context, x, y);
+                    }
+                }
+                else if(datas[i].type == "PCIDev"){
+
+                    var oldX = x;
+                    var oldY = y;
+                    if(i == 0){
+                        x += 80;
+                        makeSimpleLink(context, x, y+5, oldX+10);
                     }
                     else{
-                        context.rect(x, y-8, 80, 50);
+                        y += 80;
+                        makeElbowLink(context, x, y+5, oldX, oldY+5);
+                    }
+
+                    //Draw a rectangle of PCI type set with its content
+                    context.beginPath();
+                    if(datas[i].children.length != 0){
+                        if(datas[i].children[0].info){
+                            context.rect(x, y-8, 130, 80);
+                        }
+                        else{
+                            context.rect(x, y-8, 80, 50);
+                        }
+                    }
+                    else{
+                        context.rect(x, y-8, 80, 30);
+                    }
+                    context.fillStyle = '#BED295';
+                    context.fill();
+                    context.lineWidth = 2;
+                    context.strokeStyle = 'black';
+                    context.stroke();
+
+                    //Draw informations about this element
+                    context.font = "12px Arial";
+                    context.fillStyle = "black";
+                    context.fillText("PCI "+convertBusid(datas[i].pci_busid), x+10, y+10);
+
+                    if(datas[i].children){
+                        drawLevel(datas[i].children, context, x, y);
                     }
                 }
-                else{
-                    context.rect(x, y-8, 80, 30);
-                }
-                context.fillStyle = '#BED295';
-                context.fill();
-                context.lineWidth = 2;
-                context.strokeStyle = 'black';
-                context.stroke();
+                else if(datas[i].type == "OSDev"){
+                    context.beginPath();
+                    if(datas[i].info){
+                        context.rect(x+10, y+15, 110, 50);
+                    }
+                    else{
+                        context.rect(x+10, y+15, 60, 20);
+                    }
+                    context.fillStyle = '#DEDEDE';
+                    context.fill();
+                    context.lineWidth = 2;
+                    context.strokeStyle = 'black';
+                    context.stroke();
 
-                //Draw informations about this element
-                context.font = "12px Arial";
-                context.fillStyle = "black";
-                context.fillText("PCI "+convertBusid(datas[i].pci_busid), x+10, y+10);
-
-                if(datas[i].children){
-                    drawLevel(datas[i].children, context, x, y);
-                }
-            }
-            else if(datas[i].type == "OSDev"){
-                context.beginPath();
-                if(datas[i].info){
-                    context.rect(x+10, y+15, 110, 50);
-                }
-                else{
-                    context.rect(x+10, y+15, 60, 20);
-                }
-                context.fillStyle = '#DEDEDE';
-                context.fill();
-                context.lineWidth = 2;
-                context.strokeStyle = 'black';
-                context.stroke();
-
-                context.font = "12px Arial";
-                context.fillStyle = "black";
-                if(datas[i].info){
-                    context.fillText(datas[i].name, x+15, y+30);
-                    context.fillText(searchNumberOfUnit(datas[i].info)+" compute units", x+15, y+45);
-                    context.fillText(searchMemorySize(datas[i].info), x+15, y+60);
-                }
-                else{
-                    context.fillText(datas[i].name, x+30, y+30);
+                    context.font = "12px Arial";
+                    context.fillStyle = "black";
+                    if(datas[i].info){
+                        context.fillText(datas[i].name, x+15, y+30);
+                        context.fillText(searchNumberOfUnit(datas[i].info)+" compute units", x+15, y+45);
+                        context.fillText(searchMemorySize(datas[i].info), x+15, y+60);
+                    }
+                    else{
+                        context.fillText(datas[i].name, x+30, y+30);
+                    }
                 }
             }
         }
-    }
 
-    function searchNumberOfUnit(datas){
-        for(var i=0; i<datas.length; i++){
-            if(datas[i]._name == "OpenCLComputeUnits"){
-                return datas[i]._value;
+        function searchNumberOfUnit(datas){
+            for(var i=0; i<datas.length; i++){
+                if(datas[i]._name == "OpenCLComputeUnits"){
+                    return datas[i]._value;
+                }
             }
         }
-    }
 
-    function convertMemory(value){
-        var i = 0;
-        var unity = "B";
-        var tmp = value;
-        while (tmp > 10000)
-        {
-            i += 1;
-            tmp = Math.round(value/Math.pow(1024, i))
-            if(i==1){
-                unity = "KB";
+        function convertMemory(value){
+            var i = 0;
+            var unity = "B";
+            var tmp = value;
+            while (tmp > 10000)
+            {
+                i += 1;
+                tmp = Math.round(value/Math.pow(1024, i))
+                if(i==1){
+                    unity = "KB";
+                }
+                else if(i==2){
+                    unity = "MB";
+                }
+                else if(i==3){
+                    unity = "GB";
+                }
+                else if(i==4){
+                    unity = "TB";
+                }
             }
-            else if(i==2){
-                unity = "MB";
-            }
-            else if(i==3){
-                unity = "GB";
-            }
-            else if(i==4){
-                unity = "TB";
+            return tmp+unity;
+        }
+
+        function searchMemorySize(datas){
+            for(var i=0; i<datas.length; i++){
+                if(datas[i]._name == "OpenCLGlobalMemorySize"){
+                    return convertMemory(datas[i]._value);
+                }
             }
         }
-        return tmp+unity;
-    }
 
-    function searchMemorySize(datas){
-        for(var i=0; i<datas.length; i++){
-            if(datas[i]._name == "OpenCLGlobalMemorySize"){
-                return convertMemory(datas[i]._value);
-            }
+        function makeElbowLink(context, x, y, oldX, oldY){
+            //Firt horizontal line
+            context.beginPath();
+            context.moveTo(x, y);
+            context.lineTo(x-25, y);
+            context.stroke();
+
+            //Vertical line
+            context.beginPath();
+            context.moveTo(x-25, y);
+            context.lineTo(x-25, oldY);
+            context.stroke();
+
+            //Second horizontal line
+            context.beginPath();
+            context.moveTo(x-25, oldY);
+            context.lineTo(oldX, oldY);
+            context.stroke();
         }
-    }
 
-    function makeElbowLink(context, x, y, oldX, oldY){
-        //Firt horizontal line
-        context.beginPath();
-        context.moveTo(x, y);
-        context.lineTo(x-25, y);
-        context.stroke();
+        function makeSimpleLink(context, x, y, oldX){
+            context.beginPath();
+            context.moveTo(oldX, y);
+            context.lineTo(x, y);
+            context.stroke();
+        }
 
-        //Vertical line
-        context.beginPath();
-        context.moveTo(x-25, y);
-        context.lineTo(x-25, oldY);
-        context.stroke();
-
-        //Second horizontal line
-        context.beginPath();
-        context.moveTo(x-25, oldY);
-        context.lineTo(oldX, oldY);
-        context.stroke();
-    }
-
-    function makeSimpleLink(context, x, y, oldX){
-        context.beginPath();
-        context.moveTo(oldX, y);
-        context.lineTo(x, y);
-        context.stroke();
-    }
-
-    function convertBusid(value){
-        return value.substr(5, 7);
-    }
+        function convertBusid(value){
+            return value.substr(5, 7);
+        }
 
         $scope.begin=function(array, index){
             $timeout(function() {
