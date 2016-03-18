@@ -405,52 +405,6 @@ angular.module('myApp')
             });
           }
         }
-
- /*   $scope.downloadBis = function(){
-        if($scope.config.export=="PDF"){
-            var
-                form = $('.form'),
-                cache_width = form.width(),
-                a4  =[ 595.28,  841.89];  // for a4 size paper width and height
-
-            $('#components').on('click',function(){
-                $('body').scrollTop(0);
-                createPDF();
-            });
-//create pdf
-            function createPDF(){
-                getCanvas().then(function(canvas){
-                    var
-                        img = canvas.toDataURL("image/png"),
-                        doc = new jsPDF({
-                            unit:'px',
-                            format:'a4'
-                        });
-                    doc.addImage(img, 'JPEG', 20, 20);
-                    doc.save('techumber-html-to-pdf.pdf');
-                    form.width(cache_width);
-                });
-            }
-
-// create canvas object
-            function getCanvas(){
-                form.width((a4[0]*1.33333) -80).css('max-width','none');
-                return html2canvas(form,{
-                    imageTimeout:2000,
-                    removeContainer:true
-                });
-            }
-        }else{
-            html2canvas($("#components"), {
-                onrendered: function(canvas) {
-                    canvas.toBlob(function(blob) {
-                        saveAs(blob, "components.png");
-                    });
-                }
-            });
-        }
-    }
-*/
         $scope.checkArrayEntity = function(entityArray, type){
             var tmp;
             var array = "$scope.array" + type;
@@ -516,7 +470,7 @@ angular.module('myApp')
 .controller('TestCtrl',function($scope,$timeout){
     function initTree(array, index){
         var canvas = document.getElementById('tree-' + index + '-' + array.os_index);
-        
+
         var widthTree = (computeWidthTree(array.children)-2)*60+220;
 
         canvas.height = computeHeightTree(array.children);
@@ -536,7 +490,6 @@ angular.module('myApp')
         context.strokeStyle = 'black';
         context.stroke();
 
-        console.log(array.children);
         drawLevel(array.children, context, x, y);
 
     }
