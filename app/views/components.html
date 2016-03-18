@@ -1,4 +1,4 @@
-<div ng-show="checkArrayEntity(entity,'Groups')" class="group" ng-if="entity.type=='Group'">
+<div class="group" ng-if="entity.type=='Group' && checkArrayEntity(entity,'Groups')">
   <div ng-style="{'background-color':userConfig.colors[8].color}" class="frame"><p>{{entity.type}} {{$index}}</p>
     <span ng-repeat="entity in ::entity.children" ng-include="'views/components.html'">
     </span>
@@ -6,7 +6,7 @@
 </div>
 
 <div ng-if="alignementComponents('Packages')">
-  <div ng-show="checkArrayEntity(entity,'Packages')" class="frame package" ng-if="entity.type=='Package'" ng-style="{'background-color':userConfig.colors[7].color}">
+  <div class="frame package" ng-if="entity.type=='Package' && checkArrayEntity(entity,'Packages')" ng-style="{'background-color':userConfig.colors[7].color}">
     <p>{{::entity.type}} P#{{::entity.os_index}}</p>
     <span ng-repeat="entity in ::entity.children" ng-include="'views/components.html'">
     </span>
@@ -14,7 +14,7 @@
 </div>
 
 <div ng-if="!alignementComponents('Packages')">
-  <div ng-show="checkArrayEntity(entity,'Packages')" class="frame package" ng-if="entity.type=='Package'" ng-style="{'background-color':userConfig.colors[7].color, 'display' : 'table-cell'}">
+  <div class="frame package" ng-if="entity.type=='Package' && checkArrayEntity(entity,'Packages')" ng-style="{'background-color':userConfig.colors[7].color, 'display' : 'table-cell'}">
     <p>{{::entity.type}} P#{{::entity.os_index}}</p>
     <span ng-repeat="entity in ::entity.children" ng-include="'views/views/components.html'">
     </span>
@@ -22,11 +22,11 @@
 </div>
 
 <div ng-if="alignementComponents('NUMANodes')">
-  <div ng-show="checkArrayEntity(entity,'NUMANodes')" class="numanode frame" ng-if="entity.type=='NUMANode'" ng-style="{'background-color':userConfig.colors[5].color}">
+  <div class="numanode frame" ng-if="entity.type=='NUMANode' && checkArrayEntity(entity,'NUMANodes')" ng-style="{'background-color':userConfig.colors[5].color}">
     <div class="frame" ng-style="{'background-color':userConfig.colors[6].color}"><p>{{::entity.type}} P#{{::entity.os_index}} ({{::convertMemory(entity.memory)}})</p></div>
     <span ng-repeat="entity in ::entity.children" ng-include="'views/components.html'">
     </span>
-    <span ng-show="config.show[5].ticked" ng-if="entity.pciTree" ng-repeat="tree in ::entity.pciTree">
+    <span ng-if="entity.pciTree && config.show[5].ticked" ng-repeat="tree in ::entity.pciTree">
       <canvas id="{{ ::'tree-' + $index + '-' + tree.os_index }}" ng-init="begin(tree, $index)" height="100" width="100"></canvas>
     </span>
   </div>
@@ -34,11 +34,11 @@
 </div>
 
 <div ng-if="!alignementComponents('NUMANodes')">
-  <div ng-show="checkArrayEntity(entity,'NUMANodes')" class="numanode frame" ng-if="entity.type=='NUMANode'" ng-style="{'background-color':userConfig.colors[5].color, 'display' : 'table-cell'}">
+  <div  class="numanode frame" ng-if="entity.type=='NUMANode' && checkArrayEntity(entity,'NUMANodes')" ng-style="{'background-color':userConfig.colors[5].color, 'display' : 'table-cell'}">
     <div class="frame" ng-style="{'background-color':userConfig.colors[6].color}"><p>{{::entity.type}} P#{{::entity.os_index}} ({{::convertMemory(entity.memory)}})</p></div>
     <span ng-repeat="entity in ::entity.children" ng-include="'views/components.html'">
     </span>
-    <span ng-show="config.show[5].ticked" ng-if="entity.pciTree" ng-repeat="tree in ::entity.pciTree">
+    <span ng-if="entity.pciTree && config.show[5].ticked" ng-repeat="tree in ::entity.pciTree">
       <canvas id="{{ ::'tree-' + $index + '-' + tree.os_index }}" ng-init="begin(tree, $index)" height="100" width="100"></canvas>
     </span>
   </div>
