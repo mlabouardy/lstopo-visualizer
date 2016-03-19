@@ -26,8 +26,5 @@ angular.module('myApp')
             };
         };
 
-        $scope.showContent = function($fileContent){
-            $scope.content = $fileContent;
-        };
     }
 );

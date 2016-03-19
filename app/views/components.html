@@ -1,0 +1,96 @@
+<div class="group" ng-if="entity.type=='Group' && checkArrayEntity(entity,'Groups')">
+  <div ng-style="{'background-color':userConfig.colors[8].color}" class="frame"><p>{{entity.type}} {{$index}}</p>
+    <span ng-repeat="entity in ::entity.children" ng-include="'views/components.html'">
+    </span>
+  </div>
+</div>
+
+<div ng-if="alignementComponents('Packages')">
+  <div class="frame package" ng-if="entity.type=='Package' && checkArrayEntity(entity,'Packages')" ng-style="{'background-color':userConfig.colors[7].color}">
+    <p>{{::entity.type}} P#{{::entity.os_index}}</p>
+    <span ng-repeat="entity in ::entity.children" ng-include="'views/components.html'">
+    </span>
+  </div>
+</div>
+
+<div ng-if="!alignementComponents('Packages')">
+  <div class="frame package" ng-if="entity.type=='Package' && checkArrayEntity(entity,'Packages')" ng-style="{'background-color':userConfig.colors[7].color, 'display' : 'table-cell'}">
+    <p>{{::entity.type}} P#{{::entity.os_index}}</p>
+    <span ng-repeat="entity in ::entity.children" ng-include="'views/views/components.html'">
+    </span>
+  </div>
+</div>
+
+<div ng-if="alignementComponents('NUMANodes')">
+  <div class="numanode frame" ng-if="entity.type=='NUMANode' && checkArrayEntity(entity,'NUMANodes')" ng-style="{'background-color':userConfig.colors[5].color}">
+    <div class="frame" ng-style="{'background-color':userConfig.colors[6].color}"><p>{{::entity.type}} P#{{::entity.os_index}} ({{::convertMemory(entity.memory)}})</p></div>
+    <span ng-repeat="entity in ::entity.children" ng-include="'views/components.html'">
+    </span>
+    <span ng-if="entity.pciTree && config.show[5].ticked" ng-repeat="tree in ::entity.pciTree">
+      <canvas id="{{ ::'tree-' + $index + '-' + tree.os_index }}" ng-init="begin(tree, $index)" height="100" width="100"></canvas>
+    </span>
+  </div>
+</div>
+</div>
+
+<div ng-if="!alignementComponents('NUMANodes')">
+  <div  class="numanode frame" ng-if="entity.type=='NUMANode' && checkArrayEntity(entity,'NUMANodes')" ng-style="{'background-color':userConfig.colors[5].color, 'display' : 'table-cell'}">
+    <div class="frame" ng-style="{'background-color':userConfig.colors[6].color}"><p>{{::entity.type}} P#{{::entity.os_index}} ({{::convertMemory(entity.memory)}})</p></div>
+    <span ng-repeat="entity in ::entity.children" ng-include="'views/components.html'">
+    </span>
+    <span ng-if="entity.pciTree && config.show[5].ticked" ng-repeat="tree in ::entity.pciTree">
+      <canvas id="{{ ::'tree-' + $index + '-' + tree.os_index }}" ng-init="begin(tree, $index)" height="100" width="100"></canvas>
+    </span>
+  </div>
+</div>
+</div>
+
+<div class="cache3" ng-if="cacheType(entity.type, 'L3Cache')">
+  <div ng-show="config.show[0].ticked" class="frame" ng-style="{'background-color':userConfig.colors[0].color}"> <p>{{::renameCache(entity)}} ({{::convertMemory(entity.size)}})</p> </div>
+  <span ng-repeat="entity in ::entity.children" ng-include="'views/components.html'">
+  </span>
+</div>
+
+
+<div class="cache2" ng-if="cacheType(entity.type, 'L2Cache')">
+  <div ng-show="config.show[1].ticked" ng-style="{'background-color':userConfig.colors[1].color}" class="frame"> <p>{{::renameCache(entity)}} ({{::convertMemory(entity.size)}})</p> </div>
+  <span ng-repeat="entity in ::entity.children" ng-include="'views/components.html'">
+  </span>
+</div>
+
+<div class="cache2bis" ng-if="cacheType(entity.type, 'L2iCache')">
+  <div ng-show="config.show[1].ticked" ng-style="{'background-color':userConfig.colors[1].color}" class="frame"> <p>{{::renameCache(entity)}} ({{::convertMemory(entity.size)}})</p> </div>
+  <span ng-repeat="entity in ::entity.children" ng-include="'views/components.html'">
+  </span>
+</div>
+
+<div class="cache1" ng-if="cacheType(entity.type, 'L1Cache')">
+  <div ng-show="config.show[2].ticked" ng-style="{'background-color':userConfig.colors[2].color}" class="frame"> <p>{{::renameCache(entity)}} ({{::convertMemory(entity.size)}})</p> </div>
+  <span ng-repeat="entity in ::entity.children" ng-include="'views/components.html'">
+  </span>
+</div>
+
+<div class="cache1bis" ng-if="cacheType(entity.type, 'L1iCache')">
+  <div ng-show="config.show[2].ticked" ng-style="{'background-color':userConfig.colors[2].color}" class="frame"> <p>{{::renameCache(entity)}} ({{::convertMemory(entity.size)}})</p> </div>
+  <span ng-repeat="entity in ::entity.children" ng-include="'views/components.html'">
+  </span>
+</div>
+
+<div class="core frame_pu" ng-if="entity.type=='Core'" ng-init="resizeCaches()">
+  <div ng-style="{'background-color':userConfig.colors[3].color}" ><p ng-show="config.show[3].ticked">{{::entity.type}} P#{{::entity.os_index}}</p>
+    <div  ng-show="alignementComponents('Pu')" ng-repeat="entity in entity.children" ng-include="'views/components.html'">
+    </div>
+
+    <table ng-hide="alignementComponents('Pu')">
+      <tr>
+        <td ng-repeat="entity in ::entity.children" ng-include="'views/components.html'">
+        </td>
+      </tr>
+    </table>
+
+  </div>
+</div>
+
+<div ng-show="config.show[4].ticked" ng-style="{'background-color':userConfig.colors[4].color}" class="frame_pu" ng-if="entity.type=='PU'">
+  <p>{{::entity.type}} P#{{::entity.os_index}}</p>
+</div>

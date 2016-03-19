@@ -10,6 +10,9 @@
     "bootstrap-css": "~3.3.6",
     "angular-bootstrap-colorpicker": "~3.0.24",
     "jspdf": "~1.2.61",
-    "toastr": "~2.1.2"
+    "toastr": "~2.1.2",
+    "d3": "~3.5.16",
+    "components-font-awesome": "~4.5.0",
+    "isteven-angular-multiselect": "angular-multi-select#~4.0.0"
   }
 }
