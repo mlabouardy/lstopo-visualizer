@@ -78,6 +78,34 @@ Le projet devait être fait en 2 parties avec une partie en C et une partie Web.
 \section{Architecture}
 
 \subsection{MVC}
+L’image ci-dessous réalisée avec le logiciel Enterprise Architect représente un schéma de l’architecture de l’application. Il est important de comprendre que ce schéma n’utilise pas une norme ni même un langage de modélisation en particulier. Il a simplement été conçu pour simplifier la compréhension et les liens existants entre les différentes entités de l’application, il ne peut être considéré comme exactement conforme à la réalité.
+\newline
+
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.5]{img/ped_architecture.png}
+\caption[Résultats]{Architecture simplifiée de l'application}
+\end{figure}
+\newline
+
+D’une certaine façon l’application est organisée suivant une architecture modèle-vue-contrôleur avec quelques particularités. Dans un souci de lisibilité, le schéma utilise un système de couleur. En vert sont représentées les vues qui, dans notre cas, correspondent à des fichiers HTML et en rouge les différents contrôleurs.
+\newline
+
+Avant de rentrer plus en détails, il est nécessaire de faire le point sur les objectifs des différentes entités présents sur le schéma :
+\newline
+
+\begin{itemize}
+ \item \textbf{index.html} et \textbf{app.js} sont en charge du routage.
+ \item \textbf{main.html} et son contrôleur \textbf{main.js} sélectionnent, récupèrent et traduisent les données du fichier XML.
+ \item \textbf{visualizer.html}, \textbf{filter.html}, \textbf{components.html} et leur contrôleur visualizer.js affichent et permettent d’interagir avec les données issues du fichier XML.
+ \item \textbf{jsonfactory.js} en bleu est un service qui transmet les données issues du fichier XML entre les deux contrôleurs décrits précédemment.
+\end{itemize}
+\newline
+
+L’utilisateur accède à l’application via index.html qui est le layout général. Cette page associée au script app.js gère le système de routage de l’application et va insérer le bon template (main.html ou visualizer.html) en fonction de l’URL demandé et en particulier des ancres.
+\newline
+
+Dans notre cas, il n’existe pas de choix à proprement parler. Lorsque l’utilisateur lance l’application il est forcément dirigé sur main.html qui est la vue en charge de sélectionner le fichier XML à analyser. Le contrôleur associé main.js va traduire ce fichier XML au format JSON et insérer toutes les informations dans une variable qu’il va transmettre au service jsonfactory.js en vue d’être exploitée par le contrôleur visualizer.js.
 
 \subsection{Technologies}
 
