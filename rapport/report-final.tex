@@ -99,15 +99,42 @@ Avant de rentrer plus en détails, il est nécessaire de faire le point sur les 
  \item \textbf{main.html} et son contrôleur \textbf{main.js} sélectionnent, récupèrent et traduisent les données du fichier XML.
  \item \textbf{visualizer.html}, \textbf{filter.html}, \textbf{components.html} et leur contrôleur visualizer.js affichent et permettent d’interagir avec les données issues du fichier XML.
  \item \textbf{jsonfactory.js} en bleu est un service qui transmet les données issues du fichier XML entre les deux contrôleurs décrits précédemment.
+ \newline
 \end{itemize}
-\newline
 
 L’utilisateur accède à l’application via index.html qui est le layout général. Cette page associée au script app.js gère le système de routage de l’application et va insérer le bon template (main.html ou visualizer.html) en fonction de l’URL demandé et en particulier des ancres.
 \newline
 
-Dans notre cas, il n’existe pas de choix à proprement parler. Lorsque l’utilisateur lance l’application il est forcément dirigé sur main.html qui est la vue en charge de sélectionner le fichier XML à analyser. Le contrôleur associé main.js va traduire ce fichier XML au format JSON et insérer toutes les informations dans une variable qu’il va transmettre au service jsonfactory.js en vue d’être exploitée par le contrôleur visualizer.js.
+Dans notre cas, il n’existe pas de choix à proprement parler. Lorsque l’utilisateur lance l’application il est forcément dirigé sur main.html qui est la vue en charge de sélectionner le fichier XML à analyser. Le contrôleur associé main.js va traduire ce fichier XML au format JSON et insérer toutes les informations dans une variable javascript qu’il va transmettre au service jsonfactory.js en vue d’être exploitée par le contrôleur visualizer.js.
+\newline
+
+La vue visualizer.html inclus deux fragments externes HTML. Le premier, filter.html décrit l’interface graphique avec les différents boutons et autres éléments sur lesquels l’utilisateur peut interagir. Le second n’est autre que components.html qui est la vue pour l’affichage des informations provenant indirectement du fichier XML.
+\newline
+
+Ces vues sont en relation avec le script visualizer.js qui contient deux contrôleurs. Le premier contient plusieurs types de fonctions :
+\newline
+
+\begin{itemize}
+ \item Les fonctions permettant d’extraire les données considérées par l’application et contenues jusqu’alors dans la variable javascript du service jsonfactory.js décrit avant. Ces données dites « scopes » (AngularJS) serviront donc de modèles.
+ \item Les fonctions déclenchées par des évènements utilisateurs et celles appelées en réponse.
+ \newline
+\end{itemize}
+\newline
+
+Ce contrôleur est donc en lien avec filtre.html et une partie de component.html.
+\newline
+
+Le second contrôleur est entièrement dédié à la partie concernant les cartes d’extension PCI et qui seront visuellement représenté sous la forme d’un arbre. Nous verrons dans une prochaine partie les technologies utilisées pour une telle représentation.
+\newline
 
 \subsection{Technologies}
+AngularJS, le framework javascript de Google est au cœur des relations entres les vues et les contrôleurs décrits précédemment. L’intérêt principal de cet outil est bien entendue la mise en place d’un architecture MVC et ce, même si l’on ne considère que le côté client d’une application.
+\newline
+
+AngularJS étend le HTML classique via l’apport de directives natives qui ont la forme d’attributs HTML et qui permettent de maîtriser le DOM. Par exemple, à l’aide de la directive ng-repeat dans components.html on va pouvoir itérer indirectement sur les éléments parents du fichier XML de base (des packages ou des groupes par exemple) et appliquer de façon récursive un même template HTML sur les éléments enfants.
+\newline
+
+La visualisation concernant la partie des caches et des cœurs s’appuie sur du HTML via des balises div et span aidé par du feuilles de style. Pour la partie concernant les PCI il a fallut essayer plusieurs outils avec des résultats très variables.
 
 \subsection{Fonctionnalités}
 
