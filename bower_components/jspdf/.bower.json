@@ -33,6 +33,5 @@
   },
   "_source": "git://github.com/MrRio/jsPDF.git",
   "_target": "~1.2.61",
-  "_originalSource": "jspdf",
-  "_direct": true
+  "_originalSource": "jspdf"
 }

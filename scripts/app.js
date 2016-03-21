@@ -8,7 +8,7 @@ angular.module('myApp', ['ngRoute','cb.x2js', 'LocalStorageModule', 'isteven-mul
     .when('/visualizer', {
       templateUrl: 'views/visualizer.html',
       controller: 'VisualizerCtrl'
-    })
+   })
     .otherwise({
       redirectTo: '/'
     });

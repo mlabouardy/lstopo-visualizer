@@ -1,4 +1,3 @@
-
 angular.module('myApp')
   .factory('jsonObj',function(localStorageService){
         var json = {};

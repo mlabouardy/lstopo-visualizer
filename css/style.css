@@ -1,89 +1,171 @@
-#cachesAndCores{
-	background-color: #DEDEDE;
-	border: 3px #6F6F6F solid;
+.entity{
+	border: 0px black solid;
+	display: inline-block;
+}
+
+.frame {
+	border: 2px #6F6F6F solid;
+	margin-bottom: 1%;
+	padding-left: 10px;
+}
+
+.frame_pu{
+	border: 2px #6F6F6F solid;
+	width: auto;
+	margin-bottom: 1%;
+}
+
+.package {
+}
+
+.package > span {
+	display: inline-block;
+	margin: 1%;
+}
+
+.group {
+	padding: 1%;
+}
+
+.group > span{
+	display: inline-block;
+	width:100%;
+}
+
+.numanode {
+	padding: 1%;
+}
+
+.numanode > span{
+	display: inline-block;
+	vertical-align:top;
+}
+
+.cache3 {
+}
+
+.cache3 > span {
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.cache2 {
+}
+
+.cache2 > span {
+	display: inline-block;
+}
+
+.cache2bis {
+}
+
+.cache2bis > span {
+	display: inline-block;
+}
+
+.cache1 {
+}
+
+.cache1 > span {
+	display: inline-block;
+}
+
+.cache1bis {
+}
+
+.cache1bis > span {
+	display: inline-block;
+}
+
+#fileLoader{
+	display:none;
+}
+
+<<<<<<< HEAD
+.pcis {
+	width: 35%;
+	display:inline-block;
+	vertical-align: top;
+}
+
+.bridge {
+	vertical-align: top;
+	border: 1px solid black;
+}
+
+.pci {
+	display:table;
+	border: 2px solid #7F7F7F;
+	background-color: #D2E7A4;
+	padding: 1%;
+	margin: 1%;
+	width: 12%;
+}
+
+.insidePackage {
+	display:inline-block;
+	border: 2px solid #7F7F7F;
+	padding: 1%;
 	width: 60%;
 }
 
-.biggestCache {
-	background-color: #DEDEDE;
-	border-collapse: separate;
-	border-spacing: 1em 0;
+.insideNode {
+	width: 98%;
 }
 
-.biggestCache tr {
-	background-color: #DEDEDE;
+.caches {
+	margin-bottom: 1%;
+	text-align:justify;
 }
 
-.biggestCache tbody > tr > td {
-	background-color: #DEDEDE;
-	border: 3px #6F6F6F solid;
-}
-
-.secondCache {
-	border-collapse: separate;
-	background-color: #DEDEDE;
-	border-spacing: 1em 0;
-}
-
-.secondCache tbody{
-	background-color: #DEDEDE;
-}
-
-.secondCache tr {
-	background-color: #DEDEDE;
-}
-
-.secondCache tbody > tr > td {
-	background-color: #DEDEDE;
-	border: 3px #6F6F6F solid;
-}
-
-.cacheL1 {
-	border-collapse: separate;
-	background-color: #DEDEDE;
-	border-spacing: 1em 0;
-}
-
-.cacheL1 tbody{
-	background-color: #DEDEDE;
-}
-
-.cacheL1 tr {
-	background-color: #DEDEDE;
-}
-
-.cacheL1 tbody > tr > td {
-	background-color: #DEDEDE;
-	border: 3px #6F6F6F solid;
+.caches > span {
+	display:inline-block;
+	border: 2px solid #7F7F7F;
+	margin-right: 1%;
+	padding-left: 1%;
 }
 
 .cores {
-	border-collapse: separate;
-	border-spacing: 1em 0;
-	background-color: #DEDEDE;
+	margin-bottom: 1%;
+	text-align:justify;
 }
 
-.cores tbody {
-	background-color: #DEDEDE;
+.cores > span { 
+	display:inline-block;
+	border: 2px solid #7F7F7F;
+	margin-right: 1%;
+	padding-left: 1%;
+	padding-bottom: 1%;
 }
 
-.cores tr {
-	background-color: #DEDEDE;
+.coresInNode {
+	margin-bottom: 1%;
+	text-align:justify;
+
 }
 
-.cores tbody > tr > td {
-	background-color: #BEBEBE;
-	border: 3px #6F6F6F solid;
+.coresInNode > span { 
+	display:inline-block;
+	border: 2px solid #7F7F7F;
+	margin-right: 1%;
+	padding-bottom: 1%;
 }
 
 .pus {
-	background-color: #DEDEDE;
+	width: 80%;
+    margin: 0 auto;
 }
 
-.pus tr{
-	background-color: #DEDEDE;
+.pu{
+	border: 1px solid #7F7F7F;
+	padding-left: 1%;
 }
 
-.pus tbody > tr > td{
-	background-color: #FFFFFF;
+#left{
+	float:left;
+	background-color: white;
+}
+
+.container-custom{
+	margin-top:20px;
 }
