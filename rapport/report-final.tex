@@ -134,7 +134,62 @@ AngularJS, le framework javascript de Google est au cœur des relations entres l
 AngularJS étend le HTML classique via l’apport de directives natives qui ont la forme d’attributs HTML et qui permettent de maîtriser le DOM. Par exemple, à l’aide de la directive ng-repeat dans components.html on va pouvoir itérer indirectement sur les éléments parents du fichier XML de base (des packages ou des groupes par exemple) et appliquer de façon récursive un même template HTML sur les éléments enfants.
 \newline
 
-La visualisation concernant la partie des caches et des cœurs s’appuie sur du HTML via des balises div et span aidé par du feuilles de style. Pour la partie concernant les PCI il a fallut essayer plusieurs outils avec des résultats très variables.
+La visualisation concernant la partie des caches et des cœurs s’appuie sur du HTML via des balises div et span aidé par du feuilles de style.
+
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.5]{img/caches.png}
+\caption[Résultats]{Exemple d'une représentation des caches et des coeurs produit par lstopo}
+\end{figure}
+\newline
+
+Pour la partie concernant les PCI il a fallut essayer plusieurs outils avec des résultats très variables. 
+
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.5]{img/treePCI.png}
+\caption[Résultats]{Exemple d'un arbre PCI obtenu avec lstopo}
+\end{figure}
+\newline
+
+Voici les principales technologies qui ont été testé pour se rapprocher au maximum d’un résultat satisfaisant :
+\newline
+
+\begin{itemize}
+ \item La bibliothèque graphique javascript \textbf{D3.js} spécialisée dans la représentation de données sous forme graphique et dynamique.
+ \item La bibliothèque javascript \textbf{JointJS} qui permet la création de diagramme interactif.
+ \item Le composant HTML \textbf{canvas} qui permet la réalisation de dessin.
+ \newline
+\end{itemize}
+\newline
+
+Dans le cas de D3, en utilisant un modèle nativement destiné à la représentation d’arborescence de fichiers (collapsible indented tree) nous sommes parvenus à un résultat proche de celui attendu. La principale différence résidait dans la représentation des entités PCI qui n’était pas exactement la même.
+\newline
+
+Avec JointJS nous étions également parvenus à un résultat satisfaisant. Cette fois la différence se faisait dans la représentation des arêtes ou des branches qui n’étaient pas tout à fait conforme aux attentes.
+\newline
+
+Si les solutions avec ces deux outils ont été abandonnées, malgré le fait qu’elles permettaient une interaction, c’est parce que les deux différentes représentations que l’on obtenait était gravement déformées lors de l’exportation en PNG (une fonctionnalité importante de l’application). Tandis que les branches étaient transformées en polygone pleins, les entités étaient dépourvues de contour. 
+\newline
+
+Ces deux bibliothèques utilisent la technologie SVG (scalable vector graphics) pour la représentation des données. Or cela implique une conversion avec canvas avant de pouvoir être exporté sous un format d’image. C’est sans doute cette conversion qui posait problème mais n’ayant pas trouvé de véritable solution nous nous sommes tournée vers la troisième technologie : canvas.
+\newline
+
+Canvas est un composant qui fait partie de la spécification HTML5 et qui correspond à une zone de dessin. Du code javascript permet ensuite d’accéder à cette zone et d’utiliser toute une série de fonction de dessin comme une API classique.
+\newline
+
+L’interface graphique de l’application utilise l’outil \textbf{Bootstrap} et plusieurs directives AngularJS particulières :
+\newline
+
+\begin{itemize}
+ \item \textbf{angular-bootstrap-colorpicker} pour une sélection poussée des couleurs sur chaque élément.
+ \item \textbf{angular-multi-select} pour une liste déroulante des éléments à afficher ou non.
+ \newline
+\end{itemize}
+\newline
+
+La conversion du fichier XML en JSON pour une manipulation des données en JavaScript est possible grâce à la bibliothèque \textbf{x2js} qui à l’intérêt de ne pas avoir de dépendances.
+\newline
 
 \subsection{Fonctionnalités}
 
