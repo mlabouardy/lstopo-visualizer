@@ -88,9 +88,20 @@ L’image ci-dessous réalisée avec le logiciel Enterprise Architect représent
 \end{figure}
 \newline
 
-D’une certaine façon l’application est organisée suivant une architecture modèle-vue-contrôleur avec quelques particularités. Dans un souci de lisibilité, le schéma utilise un système de couleur. En vert sont représentées les vues qui, dans notre cas, correspondent à des fichiers HTML et en rouge les différents contrôleurs.
-\newline
+D’une certaine façon l’application est organisée suivant une architecture modèle-vue-contrôleur avec quelques particularités. Dans un souci de lisibilité, le schéma utilise un système de couleur. En vert sont représentées les vues qui, dans notre cas, correspondent à des fichiers HTML et en rouge les différents contrôleurs.\newline
 
+\newpage
+\\ 
+Lors de la création du site web, nous avions utilisé une architecture \textbf{monopage} (single-page application) avec Angular Js,
+c'est à dire une application web accessible via une page web unique, contrairement à un site web classique composés de plusieurs pages
+et donc de plusieurs codes sources.\\
+Cette architecture nous permet de naviguer sur le site de la même manière qu'un site web classique mais sans avoir à recharger
+notre page à chaque action demandée, plus précisément les liens ne rechargent pas la page mais le contenu est modifié au fur
+et à mesure selon les requêtes.\\
+Pour ce faire il existe deux manières differentes: soit on charge tout les éléments dans un fichier html (template),
+soit on récupere et affiche dynamiquement les ressources nécessaires selon les requêtes envoyées par l'utilisateur.\\ \\
+
+  
 Avant de rentrer plus en détails, il est nécessaire de faire le point sur les objectifs des différentes entités présents sur le schéma :
 \newline
 
@@ -267,7 +278,7 @@ L'idée est la suivante pour un build:\newline
  \item Jenkins push l'image dans un dépot privé
  \item Jenkins crée un container docker à partir de cette image\newline
 \end{itemize}
-\newline
+
 Les containers sont running de manière continue, permettant ainsi aux responsables du projet et au client de tester la dernière version du produit poussé manuellement à partir de Jenkins.
 
 \subsection{Private Registry}
