@@ -285,14 +285,25 @@ angular.module('myApp')
             return tmp;
         }
 
-        $scope.checkComponent = function(component){
-            if (component.name == "Packages" || component.name == "Groups" || component.name == "NUMANodes" ){
-                return $scope.checkArray(eval("$scope.array" + component.name));
+        $scope.checkComponent = function(component, color){
+
+            if (color != 'color'){
+                if (component.name == "Packages" || component.name == "Groups" || component.name == "NUMANodes" ){
+                    return $scope.checkArray(eval("$scope.array" + component.name));
+                }
+                else{
+                    return true;
+                }
             }
             else{
-                return eval("$scope.show" + component.name);
-                //return true;
+                if (component.name == "Packages" || component.name == "Groups" || component.name == "NUMANodes" ){
+                    return $scope.checkArray(eval("$scope.array" + component.name));
+                }
+                else{
+                   return eval("$scope.show" + component.name);
+                }
             }
+              
         }
 
         $scope.reset = function (){
