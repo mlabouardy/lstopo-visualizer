@@ -83,11 +83,22 @@ L’image ci-dessous réalisée avec le logiciel Enterprise Architect représent
 \includegraphics[scale=0.5]{img/ped_architecture.png}
 \caption[Résultats]{Architecture simplifiée de l'application}
 \end{figure}
-\newline
 
-D’une certaine façon l’application est organisée suivant une architecture modèle-vue-contrôleur avec quelques particularités. Dans un souci de lisibilité, le schéma utilise un système de couleur. En vert sont représentées les vues qui, dans notre cas, correspondent à des fichiers HTML et en rouge les différents contrôleurs.
-\newline
 
+D’une certaine façon l’application est organisée suivant une architecture modèle-vue-contrôleur avec quelques particularités. Dans un souci de lisibilité, le schéma utilise un système de couleur. En vert sont représentées les vues qui, dans notre cas, correspondent à des fichiers HTML et en rouge les différents contrôleurs.\newline
+
+\newpage
+
+Lors de la création du site web, nous avions utilisé une architecture \textbf{monopage} (single-page application) avec Angular Js,
+c'est à dire une application web accessible via une page web unique, contrairement à un site web classique composés de plusieurs pages
+et donc de plusieurs codes sources.\\
+Cette architecture nous permet de naviguer sur le site de la même manière qu'un site web classique mais sans avoir à recharger
+notre page à chaque action demandée, plus précisément les liens ne rechargent pas la page mais le contenu est modifié au fur
+et à mesure selon les requêtes.\\
+Pour ce faire il existe deux manières differentes: soit on charge tout les éléments dans un fichier html (template),
+soit on récupere et affiche dynamiquement les ressources nécessaires selon les requêtes envoyées par l'utilisateur.\\ \\
+
+  
 Avant de rentrer plus en détails, il est nécessaire de faire le point sur les objectifs des différentes entités présents sur le schéma :
 \newline
 
@@ -116,13 +127,15 @@ Ces vues sont en relation avec le script visualizer.js qui contient deux contrô
  \item Les fonctions déclenchées par des évènements utilisateurs et celles appelées en réponse.
  \newline
 \end{itemize}
-\newline
+
 
 Ce contrôleur est donc en lien avec filtre.html et une partie de component.html.
 \newline
 
 Le second contrôleur est entièrement dédié à la partie concernant les cartes d’extension PCI et qui seront visuellement représenté sous la forme d’un arbre. Nous verrons dans une prochaine partie les technologies utilisées pour une telle représentation.
 \newline
+
+Une demonstration de notre application web est disponible sur ce lien.\cite{APPLI}
 
 \subsection{Technologies}
 AngularJS, le framework javascript de Google est au cœur des relations entres les vues et les contrôleurs décrits précédemment. L’intérêt principal de cet outil est bien entendue la mise en place d’un architecture MVC et ce, même si l’on ne considère que le côté client d’une application.
@@ -138,7 +151,7 @@ La visualisation concernant la partie des caches et des cœurs s’appuie sur du
 \includegraphics[scale=0.5]{img/caches.png}
 \caption[Résultats]{Exemple d'une représentation des caches et des coeurs produit par lstopo}
 \end{figure}
-\newline
+
 
 Pour la partie concernant les PCI il a fallut essayer plusieurs outils avec des résultats très variables. 
 
@@ -147,7 +160,7 @@ Pour la partie concernant les PCI il a fallut essayer plusieurs outils avec des 
 \includegraphics[scale=0.5]{img/treePCI.png}
 \caption[Résultats]{Exemple d'un arbre PCI obtenu avec lstopo}
 \end{figure}
-\newline
+
 
 Voici les principales technologies qui ont été testé pour se rapprocher au maximum d’un résultat satisfaisant :
 \newline
@@ -158,7 +171,7 @@ Voici les principales technologies qui ont été testé pour se rapprocher au ma
  \item Le composant HTML \textbf{canvas} qui permet la réalisation de dessin.
  \newline
 \end{itemize}
-\newline
+
 
 Dans le cas de D3, en utilisant un modèle nativement destiné à la représentation d’arborescence de fichiers (collapsible indented tree) nous sommes parvenus à un résultat proche de celui attendu. La principale différence résidait dans la représentation des entités PCI qui n’était pas exactement la même.
 \newline
@@ -183,7 +196,7 @@ L’interface graphique de l’application utilise l’outil \textbf{Bootstrap} 
  \item \textbf{angular-multi-select} pour une liste déroulante des éléments à afficher ou non.
  \newline
 \end{itemize}
-\newline
+
 
 La conversion du fichier XML en JSON pour une manipulation des données en JavaScript est possible grâce à la bibliothèque \textbf{x2js} qui à l’intérêt de ne pas avoir de dépendances.
 \newline
@@ -241,7 +254,7 @@ Au moment d’un push d’un ou plusieurs commit au niveau de Bitbucket (sur la 
 
 \subsection{Bitbucket}
 
-Un système de versionnement, il a été choisi pour héberger les sources des projets internes et clients. Pour notre projet on a utilisé 3 branches:\newline
+Un système de versionnement, il a été choisi pour héberger les sources des projets internes et clients.\cite{BITBUCKET} Pour notre projet on a utilisé 3 branches:\newline
 
 \begin{itemize}
  \item \textbf{master} utilisé pour la phase de développement
@@ -264,7 +277,7 @@ L'idée est la suivante pour un build:\newline
  \item Jenkins push l'image dans un dépot privé
  \item Jenkins crée un container docker à partir de cette image\newline
 \end{itemize}
-\newline
+
 Les containers sont running de manière continue, permettant ainsi aux responsables du projet et au client de tester la dernière version du produit poussé manuellement à partir de Jenkins.
 
 \subsection{Private Registry}
@@ -313,7 +326,7 @@ Une extension de Google Chrome. Il permet d'observer le code en action, de faire
 \subsection{Scrum}
 
 Durant l'ensemble du projet nous avons suivi la méthode Scrum qui est une méthode agile. Le but était d'être en conditions réelles de projet avec une équipe de 7 personnes. Pour appliquer la méthode Scrum on a utilisé le logiciel Icescrum qui permet de répondre aux besoins de ce genre de projet. Il nous a permis notamment de définir un backlog qui contenait l'ensemble des User Stories à faire pendant la durée du projet, définir différents sprints avec les User Stories à réaliser et les différentes taches de celles-ci. Dans chaque sprint on peut définir le kanban pour les différentes tâches et connaitre l'évolution de leurs taches. Nous avons choisi de réaliser des sprints de deux semaines comme c'était prévu à la base. 
-Pour les taches nous avons choisi différentes couleurs afin de différencier les différents groupes de taches. Il y a :
+Pour les taches nous avons choisi différentes couleurs afin de différencier les différents groupes de taches.\cite{ICESCRUM} Il y a :
 \begin{itemize}
 \item Taches jaune : Elles représentent le code produit pour le projet.
 \item Taches bleu : Elles représentent les tests de validations pour notre code.
