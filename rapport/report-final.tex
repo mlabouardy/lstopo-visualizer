@@ -1,5 +1,6 @@
 \documentclass [a4paper,11pt]{article}
 
+\usepackage[numbers,sort&compress]{natbib}
 \usepackage [francais]{babel}
 \usepackage[utf8]{inputenc}%       encodage du fichier source
 \usepackage[T1]{fontenc}%          gestion des accents (pour les pdf)
@@ -11,14 +12,12 @@
 \usepackage{fancyvrb}%			   meilleur verbatim
 \usepackage{chngcntr}%			   pour numéroté les figures au lieux du numéro de section
 \usepackage[toc,page]{appendix}%   pour les annexes
+\usepackage{url}
 
-% Chemin par defaut des images
-\graphicspath{{img/}}
-
+\graphicspath{{img/}} % Chemin par defaut des images
 \pagestyle{fancyplain}
 \fancyhf{}
 \cfoot{\thepage\ sur \pageref{LastPage}}
-
 
 \begin{document}
 
@@ -41,9 +40,6 @@
 {\huge{\bf Visualisation interactive de topologie de plates-formes parallèles avec lstopo et HTML}}\\\vspace{0.5cm}
 
 
-
-
-
 \end{center}
 
 \hspace{1cm}\textbf{Réalisé par:} GreenScrum \\
@@ -59,22 +55,90 @@
 \end{titlepage}
 
 
-
-
-
 \tableofcontents
 
 \newpage
 
 \section{Introduction}
 
-hwloc (Hardware Locality) est une bibliothèque logicielle exposant de manière portable et abstraite la topologie des machines, en terme de coeurs, caches partagés, threads, sockets, noeuds numa … . Elle est notamment utilisée par la plupart des bibliothèques de calcul parallèle de type MPI, OpenMP, … pour maîtriser le matériel et ainsi mieux l'exploiter en tenant compte des affinités entre différents composants et entre composants et tâches de calcul. Le composant le plus célèbre de hwloc est l'outil lstopo qui permet de visualiser dans de nombreux formats la topologie de la plate-forme telle que modélisée par hwloc.
-Le projet était composé de 2 parties avec une partie en C et une autre qui utilise les technologies Web. Le but de la 1ère partie devait être de créer une exportation des données à visualiser tandis que la seconde était une visualisation du code html suscité. Après discussion avec le client, nous avons compris que la première partie n'etait pas nécessaire étant donné que le fichier xml en sortie suffisait pour obtenir les données nécessaires à la création de l'application de visualisation. La seconde partie était donc la visualisation des données en ajoutant des options pour une personnalisation du rendu final.
+Hwloc (Hardware Locality) est une bibliothèque logicielle exposant de manière portable et abstraite la topologie des machines, en terme de coeurs, caches partagés, threads, sockets, noeuds numa, etc.
+\newline
+
+Hwloc est notamment utilisée par la plupart des bibliothèques de calcul parallèle de type MPI et OpenMP afin de maîtriser le matériel et ainsi mieux l'exploiter en tenant compte des affinités entre différents composants et entre composants et tâches de calcul.
+\newline
+
+L'un des constituants le plus célèbre de hwloc est l'outil lstopo qui permet de visualiser dans de nombreux formats la topologie de la plate-forme telle que modélisée par hwloc.
+\newline
+
+Le projet était initialement composé de deux parties avec une partie en C et une autre qui utilise les technologies Web. Le but de la première partie devait être de créer une exportation des données à visualiser tandis que la seconde était une visualisation du code html suscité. 
+\newline
+
+Après discussion avec le client, nous avons convenu que la première partie n'etait pas nécessaire étant donné que le fichier XML en sortie suffisait pour obtenir les données nécessaires à la création de l'application de visualisation. La seconde partie était donc la visualisation des données en ajoutant des options pour une personnalisation du rendu final.
 
 \newpage
 \section{Architecture}
 
-\subsection{MVC}
+\subsection{Technologies}
+\textbf{AngularJS} \cite{angular}, le framework javascript de Google est au cœur des relations entres les vues et les contrôleurs décrits précédemment. L’intérêt principal de cet outil est bien entendue la mise en place d’un architecture \textbf{MVC} et ce, même si l’on ne considère que le côté client d’une application.
+\newline
+
+AngularJS étend le \textbf{HTML} classique via l’apport de directives natives qui ont la forme d’attributs HTML et qui permettent de maîtriser le \textbf{DOM}. Par exemple, à l’aide de la directive \textbf{ng-repeat} dans components.html on va pouvoir itérer indirectement sur les éléments parents du fichier XML de base (des packages ou des groupes par exemple) et appliquer de façon récursive un même template HTML sur les éléments enfants \cite{Foster14}.
+\newline
+
+La visualisation concernant la partie des caches et des cœurs s’appuie sur du HTML via des balises \textbf{div} et \textbf{span} aidées par des feuilles de style \textbf{CSS}.
+
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.5]{img/caches.png}
+\caption[Résultats]{Exemple d'une représentation des caches et des coeurs obtenu avec lstopo}
+\end{figure}
+
+Pour la partie concernant les PCI il a fallut essayer plusieurs outils avec des résultats très variables. 
+
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.5]{img/treePCI.png}
+\caption[Résultats]{Exemple d'un arbre PCI obtenu avec lstopo}
+\end{figure}
+
+Voici les principales technologies qui ont été testé pour se rapprocher au maximum d’un résultat satisfaisant :
+\newline
+
+\begin{itemize}
+ \item La bibliothèque graphique javascript \textbf{D3.js} spécialisée dans la représentation de données sous forme graphique et dynamique \cite{d3}.
+ \item La bibliothèque javascript \textbf{JointJS} qui permet la création de diagramme interactif \cite{jointjs}.
+ \item Le composant HTML \textbf{canvas} qui permet la réalisation de dessins \cite{canvas}.
+ \newline
+\end{itemize}
+
+Dans le cas de D3, en utilisant un modèle surtout destiné à la représentation d’arborescence de fichiers \cite{Bostock16} nous sommes parvenus à un résultat proche de celui attendu. La principale différence résidait dans la représentation des entités PCI qui n’était pas exactement la même que celle de référence.
+\newline
+
+Avec JointJS nous étions également parvenus à un résultat satisfaisant. Cette fois la différence se faisait dans la représentation des arêtes ou des branches qui n’étaient pas tout à fait conforme aux attentes.
+\newline
+
+Si les solutions avec ces deux outils ont été abandonnées, malgré le fait qu’elles permettaient une interaction, c’est parce que les deux différentes représentations que l’on obtenait était gravement déformées lors de l’exportation en PNG (une fonctionnalité importante de l’application). Tandis que les branches étaient transformées en polygone pleins, les entités étaient dépourvues de contour. 
+\newline
+
+Ces deux bibliothèques utilisent la technologie \textbf{SVG} (Scalable Vector Graphics) pour la représentation des données. Or cela implique une conversion avec canvas avant de pouvoir être exporté sous un format d’image. C’est sans doute cette conversion qui posait problème mais n’ayant pas trouvé de véritable solution nous nous sommes tourné vers la troisième technologie : canvas.
+\newline
+
+Canvas est un composant qui fait partie de la spécification \textbf{HTML5} et qui correspond à une zone de dessin. Du code javascript permet ensuite d’accéder à cette zone et d’utiliser toute une série de fonction de dessin comme une \textbf{API} classique.
+\newline
+
+L’interface graphique de l’application utilise l’outil \textbf{Bootstrap} et plusieurs directives AngularJS particulières :
+\newline
+
+\begin{itemize}
+ \item \textbf{angular-bootstrap-colorpicker} pour une sélection poussée des couleurs sur chaque élément \cite{colorpicker13}.
+ \item \textbf{angular-multi-select} pour une liste déroulante des éléments à afficher ou non \cite{select14}.
+ \newline
+\end{itemize}
+
+La conversion du fichier XML en JSON pour une manipulation des données en JavaScript est possible grâce à la bibliothèque \textbf{x2js} qui présente l’intérêt de ne pas avoir de dépendances \cite{x2js14}.
+\newline
+
+\subsection{Système MVC}
 L’image ci-dessous réalisée avec le logiciel Enterprise Architect représente un schéma de l’architecture de l’application. Il est important de comprendre que ce schéma n’utilise pas une norme ni même un langage de modélisation en particulier. Il a simplement été conçu pour simplifier la compréhension et les liens existants entre les différentes entités de l’application, il ne peut être considéré comme exactement conforme à la réalité.
 \newline
 
@@ -84,20 +148,9 @@ L’image ci-dessous réalisée avec le logiciel Enterprise Architect représent
 \caption[Résultats]{Architecture simplifiée de l'application}
 \end{figure}
 
-
 D’une certaine façon l’application est organisée suivant une architecture modèle-vue-contrôleur avec quelques particularités. Dans un souci de lisibilité, le schéma utilise un système de couleur. En vert sont représentées les vues qui, dans notre cas, correspondent à des fichiers HTML et en rouge les différents contrôleurs.\newline
 
-\newpage
-
-Lors de la création du site web, nous avions utilisé une architecture \textbf{monopage} (single-page application) avec Angular Js,
-c'est à dire une application web accessible via une page web unique, contrairement à un site web classique composés de plusieurs pages
-et donc de plusieurs codes sources.\\
-Cette architecture nous permet de naviguer sur le site de la même manière qu'un site web classique mais sans avoir à recharger
-notre page à chaque action demandée, plus précisément les liens ne rechargent pas la page mais le contenu est modifié au fur
-et à mesure selon les requêtes.\\
-Pour ce faire il existe deux manières differentes: soit on charge tout les éléments dans un fichier html (template),
-soit on récupere et affiche dynamiquement les ressources nécessaires selon les requêtes envoyées par l'utilisateur.\\ \\
-
+%Lors de la création du site web, nous avions utilisé une architecture \textbf{monopage} (single-page application) avec Angular Js, c'est à dire une application web accessible via une page web unique, contrairement à un site web classique composés de plusieurs pages et donc de plusieurs codes sources. Cette architecture nous permet de naviguer sur le site de la même manière qu'un site web classique mais sans avoir à recharger notre page à chaque action demandée, plus précisément les liens ne rechargent pas la page mais le contenu est modifié au fur et à mesure selon les requêtes. Pour ce faire il existe deux manières differentes: soit on charge tout les éléments dans un fichier html (template), soit on récupere et affiche dynamiquement les ressources nécessaires selon les requêtes envoyées par l'utilisateur.
   
 Avant de rentrer plus en détails, il est nécessaire de faire le point sur les objectifs des différentes entités présents sur le schéma :
 \newline
@@ -110,7 +163,7 @@ Avant de rentrer plus en détails, il est nécessaire de faire le point sur les 
  \newline
 \end{itemize}
 
-L’utilisateur accède à l’application via index.html qui est le layout général. Cette page associée au script app.js gère le système de routage de l’application et va insérer le bon template (main.html ou visualizer.html) en fonction de l’URL demandé et en particulier des ancres.
+L’utilisateur accède à l’application via index.html qui est le layout général. Cette page associée au script app.js gère le système de routage de l’application et va insérer le bon template (main.html ou visualizer.html) en fonction de l’URL demandé et en particulier des ancres \cite{Landazuri16}.
 \newline
 
 Dans notre cas, il n’existe pas de choix à proprement parler. Lorsque l’utilisateur lance l’application il est forcément dirigé sur main.html qui est la vue en charge de sélectionner le fichier XML à analyser. Le contrôleur associé main.js va traduire ce fichier XML au format JSON et insérer toutes les informations dans une variable javascript qu’il va transmettre au service jsonfactory.js en vue d’être exploitée par le contrôleur visualizer.js.
@@ -128,7 +181,6 @@ Ces vues sont en relation avec le script visualizer.js qui contient deux contrô
  \newline
 \end{itemize}
 
-
 Ce contrôleur est donc en lien avec filtre.html et une partie de component.html.
 \newline
 
@@ -136,70 +188,6 @@ Le second contrôleur est entièrement dédié à la partie concernant les carte
 \newline
 
 Une demonstration de notre application web est disponible sur ce lien.\cite{APPLI}
-
-\subsection{Technologies}
-AngularJS, le framework javascript de Google est au cœur des relations entres les vues et les contrôleurs décrits précédemment. L’intérêt principal de cet outil est bien entendue la mise en place d’un architecture MVC et ce, même si l’on ne considère que le côté client d’une application.
-\newline
-
-AngularJS étend le HTML classique via l’apport de directives natives qui ont la forme d’attributs HTML et qui permettent de maîtriser le DOM. Par exemple, à l’aide de la directive ng-repeat dans components.html on va pouvoir itérer indirectement sur les éléments parents du fichier XML de base (des packages ou des groupes par exemple) et appliquer de façon récursive un même template HTML sur les éléments enfants.
-\newline
-
-La visualisation concernant la partie des caches et des cœurs s’appuie sur du HTML via des balises div et span aidé par du feuilles de style.
-
-\begin{figure}[!h]
-\centering
-\includegraphics[scale=0.5]{img/caches.png}
-\caption[Résultats]{Exemple d'une représentation des caches et des coeurs produit par lstopo}
-\end{figure}
-
-
-Pour la partie concernant les PCI il a fallut essayer plusieurs outils avec des résultats très variables. 
-
-\begin{figure}[!h]
-\centering
-\includegraphics[scale=0.5]{img/treePCI.png}
-\caption[Résultats]{Exemple d'un arbre PCI obtenu avec lstopo}
-\end{figure}
-
-
-Voici les principales technologies qui ont été testé pour se rapprocher au maximum d’un résultat satisfaisant :
-\newline
-
-\begin{itemize}
- \item La bibliothèque graphique javascript \textbf{D3.js} spécialisée dans la représentation de données sous forme graphique et dynamique.
- \item La bibliothèque javascript \textbf{JointJS} qui permet la création de diagramme interactif.
- \item Le composant HTML \textbf{canvas} qui permet la réalisation de dessin.
- \newline
-\end{itemize}
-
-
-Dans le cas de D3, en utilisant un modèle nativement destiné à la représentation d’arborescence de fichiers (collapsible indented tree) nous sommes parvenus à un résultat proche de celui attendu. La principale différence résidait dans la représentation des entités PCI qui n’était pas exactement la même.
-\newline
-
-Avec JointJS nous étions également parvenus à un résultat satisfaisant. Cette fois la différence se faisait dans la représentation des arêtes ou des branches qui n’étaient pas tout à fait conforme aux attentes.
-\newline
-
-Si les solutions avec ces deux outils ont été abandonnées, malgré le fait qu’elles permettaient une interaction, c’est parce que les deux différentes représentations que l’on obtenait était gravement déformées lors de l’exportation en PNG (une fonctionnalité importante de l’application). Tandis que les branches étaient transformées en polygone pleins, les entités étaient dépourvues de contour. 
-\newline
-
-Ces deux bibliothèques utilisent la technologie SVG (scalable vector graphics) pour la représentation des données. Or cela implique une conversion avec canvas avant de pouvoir être exporté sous un format d’image. C’est sans doute cette conversion qui posait problème mais n’ayant pas trouvé de véritable solution nous nous sommes tournée vers la troisième technologie : canvas.
-\newline
-
-Canvas est un composant qui fait partie de la spécification HTML5 et qui correspond à une zone de dessin. Du code javascript permet ensuite d’accéder à cette zone et d’utiliser toute une série de fonction de dessin comme une API classique.
-\newline
-
-L’interface graphique de l’application utilise l’outil \textbf{Bootstrap} et plusieurs directives AngularJS particulières :
-\newline
-
-\begin{itemize}
- \item \textbf{angular-bootstrap-colorpicker} pour une sélection poussée des couleurs sur chaque élément.
- \item \textbf{angular-multi-select} pour une liste déroulante des éléments à afficher ou non.
- \newline
-\end{itemize}
-
-
-La conversion du fichier XML en JSON pour une manipulation des données en JavaScript est possible grâce à la bibliothèque \textbf{x2js} qui à l’intérêt de ne pas avoir de dépendances.
-\newline
 
 \subsection{Fonctionnalités}
 
@@ -367,11 +355,7 @@ En plus des améliorations citées bien avant, on peut aussi ajouter d’autres 
 
 \newpage
 
-\nocite{*}
-\bibliographystyle{plain}
+\bibliographystyle{unsrtnat}
 \bibliography{report}
-
-
-
 
 \end{document}
