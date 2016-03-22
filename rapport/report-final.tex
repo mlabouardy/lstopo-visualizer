@@ -68,11 +68,8 @@
 
 \section{Introduction}
 
-\subsection{Présentation du projet}
-Le but du projet etait de proposer un logiciel de visualisation au format HTML d'une topologie de machines. Cette topologie est constituée d'informations matérielles de chaque machine. Ces données servent à àméliorer les calculs parallèles en optimisant l'utilisation du matériel. Les données à utiliser sont extraites du module lstopo de la bibliothèque logicielle hwloc.
-
-\subsection{Réalisation du projet}
-Le projet devait être fait en 2 parties avec une partie en C et une partie Web. Le but de la 1ère partie devait être de créer une exportation des données à visualiser. Mais, après discussion avec le client, nous avons compris que cette partie n'etait pas nécessaire. En effet, une exportation au format XML existe déjà, et elle est suffisante pour fournir les données nécessaires à la création de l'application de visualisation. 
+hwloc (Hardware Locality) est une bibliothèque logicielle exposant de manière portable et abstraite la topologie des machines, en terme de coeurs, caches partagés, threads, sockets, noeuds numa … . Elle est notamment utilisée par la plupart des bibliothèques de calcul parallèle de type MPI, OpenMP, … pour maîtriser le matériel et ainsi mieux l'exploiter en tenant compte des affinités entre différents composants et entre composants et tâches de calcul. Le composant le plus célèbre de hwloc est l'outil lstopo qui permet de visualiser dans de nombreux formats la topologie de la plate-forme telle que modélisée par hwloc.
+Le projet était composé de 2 parties avec une partie en C et une autre qui utilise les technologies Web. Le but de la 1ère partie devait être de créer une exportation des données à visualiser tandis que la seconde était une visualisation du code html suscité. Après discussion avec le client, nous avons compris que la première partie n'etait pas nécessaire étant donné que le fichier xml en sortie suffisait pour obtenir les données nécessaires à la création de l'application de visualisation. La seconde partie était donc la visualisation des données en ajoutant des options pour une personnalisation du rendu final.
 
 \newpage
 \section{Architecture}
