@@ -22,6 +22,8 @@ Then deploy the src code in Web server (Apache for instance)
 $ docker run -d -p 3000:80 -v --name lstopo-visualizer mlabouardy/lstopo-visualizer
 ```
 
+then go to http://localhost:3000
+
 # CI Workflow
 
 ![](preview/ci.png)
