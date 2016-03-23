@@ -13,6 +13,7 @@
 \usepackage{chngcntr}%			   pour numéroté les figures au lieux du numéro de section
 \usepackage[toc,page]{appendix}%   pour les annexes
 \usepackage{url}
+\usepackage{float}
 
 \graphicspath{{img/}} % Chemin par defaut des images
 \pagestyle{fancyplain}
@@ -92,10 +93,10 @@ La représentation des données issues du fichier XML est sensiblement la même 
 
 Cette représentation est essentiellement réalisée en HTML, CSS et Javascript avec notamment l'utilisation de bordures pour définir les contours de chaque objet. Nous reviendrons en détail sur les technologies utilisées dans l'une des parties suivantes.
 
-\begin{figure}[!h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{img/alaric.png}
-\caption[Résultats]{Exemple de représentation pour le XML Alaric}
+\caption{Exemple de représentation pour le XML Alaric}
 \end{figure}
 
 Le second objectif consistait à implémenter des fonctions permettant de personnaliser l'affichage des données issues du fichier XML généré, selon les besoins du client. Voici une liste des principales fonctionnalités d'intéraction : \newline
@@ -108,16 +109,16 @@ Le second objectif consistait à implémenter des fonctions permettant de person
 \item la possibilité d'enregistrer sur la machine la configuration des couleurs pour pouvoir la réutiliser plus tard et bien sur la possibilité de charger une configuration préexistante.
 \end{itemize}
 
-\begin{figure}[!h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.3]{img/filtre.png}
-\caption[Résultats]{ Interface graphique du menu d'option }
+\caption{Interface graphique du menu d'option}
 \end{figure}
 
-\begin{figure}[!h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.3]{img/alaric_modif.png}
-\caption[Résultats]{Exemple de représentation pour le xml Alaric avec options}
+\caption{Exemple de représentation pour le xml Alaric avec options}
 \end{figure}
 
 \subsection{Technologies utilisées}
@@ -129,20 +130,18 @@ AngularJS étend le \textbf{HTML} classique via l’apport de directives natives
 
 La visualisation concernant la partie des caches et des cœurs s’appuie sur du HTML via des balises \textbf{div} et \textbf{span} aidées par des feuilles de style \textbf{CSS}.
 
-\newpage
-
-\begin{figure}[!h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{img/caches.png}
-\caption[Résultats]{Exemple d'une représentation des caches et des coeurs obtenue avec lstopo}
+\caption{Exemple d'une représentation des caches et des coeurs obtenue avec lstopo}
 \end{figure}
 
 Pour la partie concernant les PCI il a fallu essayer plusieurs outils avec des résultats très variables. 
 
-\begin{figure}[!h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{img/treePCI.png}
-\caption[Résultats]{Exemple d'un arbre PCI obtenu avec lstopo}
+\caption{Exemple d'un arbre PCI obtenu avec lstopo}
 \end{figure}
 
 Voici les principales technologies qui ont été testées pour se rapprocher au maximum d’un résultat satisfaisant :
@@ -186,10 +185,10 @@ La conversion du fichier XML en JSON pour une manipulation des données en JavaS
 L’image ci-dessous réalisée avec le logiciel \textbf{Enterprise Architect} représente un schéma de l’architecture de l’application. Il est important de comprendre que ce schéma n’utilise pas une norme ni même un langage de modélisation en particulier. Il a simplement été conçu pour simplifier la compréhension et les liens existants entre les différentes entités de l’application, il ne peut être considéré comme exactement conforme à la réalité.
 \newline
 
-\begin{figure}[!h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{img/ped_architecture.png}
-\caption[Résultats]{Architecture simplifiée de l'application}
+\caption[Figure 6]{Architecture simplifiée de l'application}
 \end{figure}
 
 D’une certaine façon l’application est organisée suivant une architecture modèle-vue-contrôleur avec quelques particularités. Dans un souci de lisibilité, le schéma utilise un système de couleurs. En vert sont représentées les vues qui, dans notre cas, correspondent à des fichiers HTML et en rouge les différents contrôleurs.\newline
@@ -231,23 +230,31 @@ Le second contrôleur est entièrement dédié à la partie concernant les carte
 
 Une demonstration de notre application web est disponible sur ce lien \cite{APPLI}.
 
+\newpage
+
 \section{Intégration Continue}
 
 L'intégration continue est une étape importante à mettre en place dans le processus de développement logiciel. Nous parlerons donc ici de cette pratique et des outils utilisés au cours de ce projet.
 
-\begin{center}
+\begin{figure}[H]
+\centering
 \includegraphics[scale=0.5]{img/ci.png}
-\end{center}
+\caption{Processus d'intégration continue}
+\end{figure}
 
-Au moment d’un push d’un ou plusieurs commit au niveau de Bitbucket (sur la banche \textbf{release}) on déclenche via un hook la tâche de build qui permet la construction de l'image Docker à partir de Dockerfile, le push de cette image dans un dépôt privé, le déploiement de cette image dans un container exposé sur le port 80 et enfin de passage des tests unitaires au niveau de Jenkins. Dès qu’une modification du code est donc poussée sur le repository, il y a vérification que l’ensemble fonctionne toujours.
+Au moment d’un push d’un ou plusieurs commit au niveau de Bitbucket (sur la banche \textbf{release}) on déclenche via un hook la tâche de build qui permet la construction de l'image Docker à partir de Dockerfile, le push de cette image dans un dépôt privé, le déploiement de cette image dans un container exposé sur le port 80 et enfin de passage des tests unitaires au niveau de Jenkins. Dès qu’une modification du code est donc poussée sur le repository, il y a une vérification que l’ensemble fonctionne toujours.
 
-\begin{center}
+\newpage
+
+\begin{figure}[H]
+\centering
 \includegraphics[scale=0.7]{img/Dockerfile.png}
-\end{center}
+\caption {Le Dockerfile utilisé pour construire l'image}
+\end{figure}
 
 \subsection{Bitbucket}
 
-Un système de versionnement, il a été choisi pour héberger les sources des projets internes et clients.\cite{BITBUCKET} Pour ce projet trois branches ont été utilisé:\newline
+Un système de versionnement, il a été choisi pour héberger les sources des projets internes.\cite{BITBUCKET} Pour ce projet trois branches ont été utilisées:\newline
 
 \begin{itemize}
  \item \textbf{master} utilisé pour la phase de développement
@@ -257,67 +264,78 @@ Un système de versionnement, il a été choisi pour héberger les sources des p
 
 \subsection{Jenkins}
 
-Serveur d'intégration continue, il est capable d’aller se connecter à un outil de gestion de sources (Dans ce cas Git) et de voir si des modifications ont été effectuées. S’il en détecte, il peut lancer un \textbf{build} qui va pouvoir lancer un certain nombre d’actions(déploiement automatisé, tests unitaires ...)
+Serveur d'intégration continue, il est capable d’aller se connecter à un outil de gestion de sources (Dans ce cas \textbf{Bitbucket}) et de voir si des modifications ont été effectuées. S’il en détecte, il peut lancer un \textbf{build} qui va pouvoir lancer un certain nombre d’actions(déploiement automatisé, tests unitaires ...)
 
 \subsection{Docker}
 
-Docker est un système de container linux ultra léger basé sur les cgroups, lxc et aufs.\newline
+\textbf{Docker} est un système de container linux ultra léger basé sur les \textbf{cgroups}, \textbf{lxc} et \textbf{aufs}.\newline
 
 L'idée est la suivante pour un build:\newline
 
 \begin{itemize}
  \item Jenkins crée une image docker à partir de Dockerfile
- \item Jenkins push l'image dans un dépot privé
+ \item Jenkins push l'image dans un dépôt privé
  \item Jenkins crée un container docker à partir de cette image\newline
 \end{itemize}
 
-Les containers sont running de manière continue, permettant ainsi aux responsables du projet et au client de tester la dernière version du produit poussé manuellement à partir de Jenkins.
+Les containers sont running de manière continue, permettant ainsi aux responsables du projet et au client de tester la dernière version du produit crée à partir de Jenkins.
 
 \subsection{Private Registry}
 
-Depot pour stocker l'ensemble des versions de l'application tout au long de la phase de développement
+Depôt pour stocker l'ensemble des versions de l'application tout au long de la phase de développement
 
-\begin{center}
+\begin{figure}[H]
+\centering
 \includegraphics[scale=0.4]{img/registry.png}
-\end{center}
+\caption {Registry}
+\end{figure}
 
-L'avatange d'utilisation d'un docker private registry c'est avoir un systéme de versionning pour l'application. et rendre disponible facilement le dernier exécutable.
+L'avantage de l'utilisation d'un \textbf{Docker Private Registry} c'est d'avoir un systéme de versionning pour l'application et de rendre disponible facilement le dernier exécutable.
+
 \subsection{Selenium Webdriver}
-WebDriver est un framework de tests fonctionnels issu du projet Selenium, célèbre outil d'automatisation de tests pour navigateurs.\newline
+WebDriver est un framework de tests fonctionnels issu du projet \textbf{Selenium}, célèbre outil d'automatisation de tests pour les navigateurs.\newline
 
-Un exemple des test faites avec l'API Selenium c'est la mesure du temps d'execution pour un ensemble des exemples d'Architecture.
+Un exemple de test effectué avec l'API Selenium est la mesure du temps d'exécution pour un ensemble d'architectures.
 
-\begin{center}
+\begin{figure}[H]
+\centering
 \includegraphics[scale=0.4]{img/benchmark.png}
-\end{center}
+\caption {Exemples de performance}
+\end{figure}
 
 \subsection{JSLint/CSSLint}
 
-La qualité du code est vitale pour qu'un projet soit pérenne sur le moyen et long terme. De nombreux outils existent pour automatiser les contrôles et générer des rapports statistiques:\newline
+La qualité du code est vitale pour qu'un projet soit pérenne sur le moyen et long terme. De nombreux outils existent pour automatiser les contrôles et générer des rapports statistiques.\newline
 
-\textbf{JSLint} est un analyseur de code Javascript. Son but est de parser le code Javascript pour vérifier que vous respecter les règles de coding Javascript.\newline
+\textbf{JSLint} est un analyseur de code Javascript. Son but est de parser le code Javascript pour vérifier que vous respectez les standards du langage.\newline
 
-\begin{center}
+\begin{figure}[H]
+\centering
 \includegraphics[scale=0.4]{img/checkstyle.png}
-\end{center}
+\caption {Utilisation de JSLint}
+\end{figure}
 
 \textbf{CSSLint} détecte les problèmes d'une feuille de style CSS.
 
-\begin{center}
+\begin{figure}[H]
+\centering
 \includegraphics[scale=0.4]{img/jslint.png}
-\end{center}
+\caption {Utilisation de CSSLint}
+\end{figure}
 
 \subsection{AngularJS Batarang}
 
-Afin de développer tester, déboguer et surveiller notre application AngularJS, on a installé un plugin sur le navigateur:\newline
+Afin de développer, tester, déboguer et surveiller notre application AngularJS, nous avons installé un plugin sur le navigateur.\newline
 
-Une extension de Google Chrome. Il permet d'observer le code en action, de faire des benchmarks sur les fonctions, modules, etc...
+Il s'agit d'une extension de \textbf{Google Chrome}. Elle permet d'observer le code en action, de faire des benchmarks sur les fonctions, modules, etc.
+
+\newpage
 
 \section{Gestion de projet}
 
 \subsection{Scrum}
 
-Durant l'ensemble du projet nous avons suivi la méthode \textbf{Scrum} qui est une méthode agile. Le but était d'être en conditions réelles de projet avec une équipe de sept personnes. 
+Durant l'ensemble du projet nous avons suivi la méthode \textbf{Scrum} qui est une méthode agile. Le but était d'être en condition réelle de projet avec une équipe de sept personnes. 
 \newline
 
 Pour appliquer la méthode Scrum nous avons utilisé le logiciel \textbf{IceScrum} qui permet de répondre aux besoins de ce genre de projet \cite{ICESCRUM}. Il nous a permis notamment de définir un \textbf{backlog} qui contenait l'ensemble des \textbf{user stories} à réaliser pendant la durée du projet, définir différents sprints avec ces user stories et les différentes tâches les constituant. 
@@ -335,10 +353,10 @@ Pour les tâches nous avons choisi différentes couleurs afin de différencier d
 \item Tâches grises et rouges: elles représentent les recherches concernant certaines bibliothèques non mis en place, la rédaction de rapport et d'analyse comlémentaire.
 \end{itemize}
 
-\begin{figure}[!h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.3]{img/icescrum.png}
-\caption[Scrum]{Sprint 2 avec les différentes tâches}
+\caption {Sprint 2 avec les différentes tâches}
 \end{figure}
 
 Il est important de noter que les noms apparaissant en dessous des tâches ne correspondent pas forcément au responsable de l'entité. Des rencontres régulière ont eu lieu et une seule personne était chargée de modifier le kanban à ce moment là.
@@ -346,10 +364,12 @@ Il est important de noter que les noms apparaissant en dessous des tâches ne co
 \subsection{Outils complémentaires}
 En raison de nombreux problèmes de bug et de ralentissement rencontrés durant tout le projet, nous avons parfois délaissé IceScrum pour créer des kanbans sur des outils différents (Excel). 
 
+\newpage
+
 \section{Critiques}
 
 \subsection{Technologies}
-En ce qui concerne les technologies utilisées dans ce projet, nous aurions pu nous tourner vers ReactJS qui est une bibliothèque développée par Facebook et qui permet de manipuler un DOM virtuel.
+En ce qui concerne les technologies utilisées dans ce projet, nous aurions pu nous tourner vers ReactJS qui est une bibliothèque développée par Facebook et qui permet de manipuler un DOM virtuel \cite{reactjs}.
 \newline
 
 Par manque d'expérience avec cette bibliothèque, nous avons choisi de travailler avec AngularJS.
@@ -375,8 +395,16 @@ Certaines fonctionnalités (non prioritaires) n'ont pas été totalement implém
 \item amélioration des arbres PCI qui ne prennent pas en compte toutes les configurations possibles.
 \end{itemize}
 
-\section{Conclusion}
+\newpage
 
+\section{Conclusion}
+Ce projet qui mélangeait développement et gestion des ressources nous a permis une fois de plus d'accumuler de l'expérience dans la gestion de projet.
+\newline
+
+De plus ce projet nous a permis de découvrir de nouvelles technologies telles que les bibliothèques D3 et Joint.
+\newline
+
+Cet exercice avec un tel effectif et avec des rencontres régulières avec le client ou entre les membres de l'équipe nous a permis de nous rapprocher le plus possible de la réalité.
 
 \newpage
 
