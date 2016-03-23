@@ -16,7 +16,7 @@ $ git fetch && git checkout release
 ```
 Then deploy the src code in Web server (Apache for instance)
 
-1 - Using Docker
+2 - Using Docker
 
 ```sh
 $ docker run -d -p 3000:80 -v --name lstopo-visualizer mlabouardy/lstopo-visualizer
