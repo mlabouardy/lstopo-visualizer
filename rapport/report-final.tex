@@ -62,16 +62,16 @@ Le projet décrit dans ce rapport s'inscrit dans le cadre du projet d'étude et 
 Ce projet est lié à \textbf{hwloc} (Hardware Locality) qui est une bibliothèque logicielle exposant de manière portable et abstraite la topologie des machines, en terme de coeurs, caches partagés, threads, sockets, noeuds NUMA, etc \cite{lstopo}.
 \newline
 
-Hwloc est notamment utilisée par la plupart des bibliothèques de calcul parallèle de type MPI et OpenMP afin de maîtriser le matériel et ainsi mieux l'exploiter en tenant compte des affinités entre différents composants et entre composants et tâches de calcul.
+Hwloc est notamment utilisée par la plupart des bibliothèques de calcul parallèle de type \textbf{MPI} et \textbf{OpenMP} afin de maîtriser le matériel et ainsi mieux l'exploiter en tenant compte des affinités entre différents composants et entre composants et tâches de calcul.
 \newline
 
-L'un des constituants le plus célèbre de hwloc est l'outil \textbf{lstopo} qui permet de visualiser dans de nombreux formats la topologie de la plate-forme telle que modélisée par hwloc.
+L'un des constituants le plus célèbre de hwloc est l'outil \textbf{lstopo} qui permet de visualiser dans de nombreux formats la topologie de la plate-forme telle que analysée par hwloc.
 \newline
 
-Le projet était initialement composé de deux parties avec une partie en C et une autre qui utilise les technologies Web. Le but de la première partie devait être de créer une exportation des données à visualiser tandis que la seconde était l'implémentation de fonctions d'intéraction. 
+Le projet était initialement composé de deux parties avec une partie en C et une autre qui utilise les technologies Web. Le but de la première partie était de créer une exportation des données à visualiser tandis que la seconde consistait à implémenter des fonctions d'intéraction.
 \newline
 
-Après une première rencontre avec le client, nous avons convenu que la première partie n'etait pas nécessaire étant donné que le fichier XML en sortie suffisait pour obtenir les données nécessaires à la création de l'application de visualisation. La seconde partie était donc la visualisation des données en ajoutant des options pour une personnalisation du rendu final.
+Après une première rencontre avec le client, nous avons convenu que la première partie n'était pas nécessaire étant donné que le fichier XML qui peut être généré par hwloc suffisait pour obtenir les données nécessaires à la création de l'application de visualisation. La seconde partie était donc la visualisation des données avec l'ajout d'options pour une personnalisation du rendu final.
 
 \newpage
 
@@ -85,23 +85,23 @@ Les objectifs principaux de ce projet étaient les suivants : \newline
 \item implémentation de capacités d'intéraction.
 \end{itemize}
 
-La représentation des données issues du fichier XML et sensiblement la même que celle fournie par hwloc. Effectivement le but n'était pas d'avoir une représentation différente de celle produite par labibliothèque mais d'obtenir la même et de pouvoir l'exploiter dans un navigateur. 
+La représentation des données issues du fichier XML est sensiblement la même que celle fournie par hwloc. Effectivement le but n'était pas d'avoir une représentation différente de celle produite par la bibliothèque mais d'obtenir la même et de pouvoir l'exploiter dans un navigateur. 
 \newline
 
-Cette représentation est essentiellement réalisée en HTML, CSS et Javascript avec notamment l'utilisation de bordure pour faire les contours de chaque objet. Nous reviendrons en détail sur les technologies utilisées dans l'une des parties suivantes.
+Cette représentation est essentiellement réalisée en HTML, CSS et Javascript avec notamment l'utilisation de bordures pour définir les contours de chaque objet. Nous reviendrons en détail sur les technologies utilisées dans l'une des parties suivantes.
 
 \begin{figure}[!h]
 \centering
 \includegraphics[scale=0.5]{img/alaric.png}
-\caption[Résultats]{Exemple de représentation pour le xml Alaric}
+\caption[Résultats]{Exemple de représentation pour le XML Alaric}
 \end{figure}
 
-Le second objectif consistait à implémenter des fonctions permettant de personnaliser l'affichage du fichier XML généré selon les besoins du client. Voici une liste des principales fonctionnalités d'intéraction : \newline
+Le second objectif consistait à implémenter des fonctions permettant de personnaliser l'affichage des données issues du fichier XML généré, selon les besoins du client. Voici une liste des principales fonctionnalités d'intéraction : \newline
 
 \begin{itemize}
-\item la possibilité de cacher ou rendre visible certains éléments de la représentation comme les différents caches, la partie PCI ou des plus grosses entités comme des packages, groupes ou autres pour avoir une représentation spécifique ou plus générale.
+\item la possibilité de cacher ou de rendre visible certains éléments de la représentation comme les différents caches, la partie PCI ou des entités parentes comme des packages, groupes ou autres afin d'avoir une représentation spécifique ou plus générale.
 \item une personnalisation des couleurs pour l'ensemble des objets selon les besoins de l'utilisateur ou des standards mis en place.
-\item changer la taille de police de caractère pour avoir un affichage plus ou moins gros selon la visibilité de base. 
+\item changer la taille de police pour avoir un affichage plus ou moins important selon la visibilité initiale. 
 \item exporter au format PDF ou PNG l'ensemble des représentations personnalisées par le client.
 \item la possibilité d'enregistrer sur la machine la configuration des couleurs pour pouvoir la réutiliser plus tard et bien sur la possibilité de charger une configuration préexistante.
 \end{itemize}
@@ -122,22 +122,24 @@ Le second objectif consistait à implémenter des fonctions permettant de person
 
 \section{Architecture}
 
-\subsection{Technologies}
-\textbf{AngularJS} \cite{angular}, le framework javascript de Google est au cœur des relations entres les vues et les contrôleurs décrits précédemment. L’intérêt principal de cet outil est bien entendue la mise en place d’un architecture \textbf{MVC} et ce, même si l’on ne considère que le côté client d’une application.
+\subsection{Technologies utilisées}
+\textbf{AngularJS} \cite{angular}, le framework javascript de Google est au cœur des relations entre les vues et les contrôleurs décrits précédemment. L’intérêt principal de cet outil est bien entendu la mise en place d’un architecture \textbf{MVC} et ce, même si l’on ne considère que le côté client d’une application.
 \newline
 
-AngularJS étend le \textbf{HTML} classique via l’apport de directives natives qui ont la forme d’attributs HTML et qui permettent de maîtriser le \textbf{DOM}. Par exemple, à l’aide de la directive \textbf{ng-repeat} dans components.html on va pouvoir itérer indirectement sur les éléments parents du fichier XML de base (des packages ou des groupes par exemple) et appliquer de façon récursive un même template HTML sur les éléments enfants \cite{Foster14}.
+AngularJS étend le \textbf{HTML} classique via l’apport de directives natives qui ont la forme d’attributs HTML et qui permettent de manipuler le \textbf{DOM}. Par exemple, à l’aide de la directive \textbf{ng-repeat} dans components.html on va pouvoir itérer indirectement sur les éléments parents du fichier XML de base (des packages ou des groupes par exemple) et appliquer de façon récursive un même template HTML sur les éléments enfants \cite{Foster14}.
 \newline
 
 La visualisation concernant la partie des caches et des cœurs s’appuie sur du HTML via des balises \textbf{div} et \textbf{span} aidées par des feuilles de style \textbf{CSS}.
 
+\newpage
+
 \begin{figure}[!h]
 \centering
 \includegraphics[scale=0.5]{img/caches.png}
-\caption[Résultats]{Exemple d'une représentation des caches et des coeurs obtenu avec lstopo}
+\caption[Résultats]{Exemple d'une représentation des caches et des coeurs obtenue avec lstopo}
 \end{figure}
 
-Pour la partie concernant les PCI il a fallut essayer plusieurs outils avec des résultats très variables. 
+Pour la partie concernant les PCI il a fallu essayer plusieurs outils avec des résultats très variables. 
 
 \begin{figure}[!h]
 \centering
@@ -145,7 +147,7 @@ Pour la partie concernant les PCI il a fallut essayer plusieurs outils avec des 
 \caption[Résultats]{Exemple d'un arbre PCI obtenu avec lstopo}
 \end{figure}
 
-Voici les principales technologies qui ont été testé pour se rapprocher au maximum d’un résultat satisfaisant :
+Voici les principales technologies qui ont été testées pour se rapprocher au maximum d’un résultat satisfaisant :
 \newline
 
 \begin{itemize}
@@ -167,7 +169,7 @@ Si les solutions avec ces deux outils ont été abandonnées, malgré le fait qu
 Ces deux bibliothèques utilisent la technologie \textbf{SVG} (Scalable Vector Graphics) pour la représentation des données. Or cela implique une conversion avec canvas avant de pouvoir être exporté sous un format d’image. C’est sans doute cette conversion qui posait problème mais n’ayant pas trouvé de véritable solution nous nous sommes tourné vers la troisième technologie : canvas.
 \newline
 
-Canvas est un composant qui fait partie de la spécification \textbf{HTML5} et qui correspond à une zone de dessin. Du code javascript permet ensuite d’accéder à cette zone et d’utiliser toute une série de fonction de dessin comme une \textbf{API} classique.
+Canvas est un composant qui fait partie de la spécification \textbf{HTML5} et qui correspond à une zone de dessin. Du code javascript permet ensuite d’accéder à cette zone et d’utiliser toute une série de fonctions de dessin comme une \textbf{API} classique.
 \newline
 
 L’interface graphique de l’application utilise l’outil \textbf{Bootstrap} et plusieurs directives AngularJS particulières :
@@ -183,7 +185,7 @@ La conversion du fichier XML en JSON pour une manipulation des données en JavaS
 \newline
 
 \subsection{Système MVC}
-L’image ci-dessous réalisée avec le logiciel Enterprise Architect représente un schéma de l’architecture de l’application. Il est important de comprendre que ce schéma n’utilise pas une norme ni même un langage de modélisation en particulier. Il a simplement été conçu pour simplifier la compréhension et les liens existants entre les différentes entités de l’application, il ne peut être considéré comme exactement conforme à la réalité.
+L’image ci-dessous réalisée avec le logiciel \textbf{Enterprise Architect} représente un schéma de l’architecture de l’application. Il est important de comprendre que ce schéma n’utilise pas une norme ni même un langage de modélisation en particulier. Il a simplement été conçu pour simplifier la compréhension et les liens existants entre les différentes entités de l’application, il ne peut être considéré comme exactement conforme à la réalité.
 \newline
 
 \begin{figure}[!h]
@@ -192,11 +194,11 @@ L’image ci-dessous réalisée avec le logiciel Enterprise Architect représent
 \caption[Résultats]{Architecture simplifiée de l'application}
 \end{figure}
 
-D’une certaine façon l’application est organisée suivant une architecture modèle-vue-contrôleur avec quelques particularités. Dans un souci de lisibilité, le schéma utilise un système de couleur. En vert sont représentées les vues qui, dans notre cas, correspondent à des fichiers HTML et en rouge les différents contrôleurs.\newline
+D’une certaine façon l’application est organisée suivant une architecture modèle-vue-contrôleur avec quelques particularités. Dans un souci de lisibilité, le schéma utilise un système de couleurs. En vert sont représentées les vues qui, dans notre cas, correspondent à des fichiers HTML et en rouge les différents contrôleurs.\newline
 
 %Lors de la création du site web, nous avions utilisé une architecture \textbf{monopage} (single-page application) avec Angular Js, c'est à dire une application web accessible via une page web unique, contrairement à un site web classique composés de plusieurs pages et donc de plusieurs codes sources. Cette architecture nous permet de naviguer sur le site de la même manière qu'un site web classique mais sans avoir à recharger notre page à chaque action demandée, plus précisément les liens ne rechargent pas la page mais le contenu est modifié au fur et à mesure selon les requêtes. Pour ce faire il existe deux manières differentes: soit on charge tout les éléments dans un fichier html (template), soit on récupere et affiche dynamiquement les ressources nécessaires selon les requêtes envoyées par l'utilisateur.
   
-Avant de rentrer plus en détails, il est nécessaire de faire le point sur les objectifs des différentes entités présents sur le schéma :
+Avant de rentrer plus en détail, il est nécessaire de faire le point sur les objectifs des différentes entités présentes sur le schéma :
 \newline
 
 \begin{itemize}
@@ -207,13 +209,13 @@ Avant de rentrer plus en détails, il est nécessaire de faire le point sur les 
  \newline
 \end{itemize}
 
-L’utilisateur accède à l’application via index.html qui est le layout général. Cette page associée au script app.js gère le système de routage de l’application et va insérer le bon template (main.html ou visualizer.html) en fonction de l’URL demandé et en particulier des ancres \cite{Landazuri16}.
+L’utilisateur accède à l’application via index.html qui est le layout général. Cette page associée au script app.js gère le système de routage de l’application et va insérer le bon template (main.html ou visualizer.html) en fonction de l’URL demandée et en particulier des ancres \cite{Landazuri16}.
 \newline
 
 Dans notre cas, il n’existe pas de choix à proprement parler. Lorsque l’utilisateur lance l’application il est forcément dirigé sur main.html qui est la vue en charge de sélectionner le fichier XML à analyser. Le contrôleur associé main.js va traduire ce fichier XML au format JSON et insérer toutes les informations dans une variable javascript qu’il va transmettre au service jsonfactory.js en vue d’être exploitée par le contrôleur visualizer.js.
 \newline
 
-La vue visualizer.html inclus deux fragments externes HTML. Le premier, filter.html décrit l’interface graphique avec les différents boutons et autres éléments sur lesquels l’utilisateur peut interagir. Le second n’est autre que components.html qui est la vue pour l’affichage des informations provenant indirectement du fichier XML.
+La vue visualizer.html inclu deux fragments externes HTML. Le premier, filter.html décrit l’interface graphique avec les différents boutons et autres éléments sur lesquels l’utilisateur peut interagir. Le second n’est autre que components.html qui est la vue pour l’affichage des informations provenant indirectement du fichier XML.
 \newline
 
 Ces vues sont en relation avec le script visualizer.js qui contient deux contrôleurs. Le premier contient plusieurs types de fonctions :
@@ -225,23 +227,23 @@ Ces vues sont en relation avec le script visualizer.js qui contient deux contrô
  \newline
 \end{itemize}
 
-Ce contrôleur est donc en lien avec filtre.html et une partie de component.html.
+Ce contrôleur est donc en lien avec filtre.html et une partie de components.html.
 \newline
 
 Le second contrôleur est entièrement dédié à la partie concernant les cartes d’extension PCI et qui seront visuellement représenté sous la forme d’un arbre. Nous verrons dans une prochaine partie les technologies utilisées pour une telle représentation.
 \newline
 
-Une demonstration de notre application web est disponible sur ce lien.\cite{APPLI}
+Une demonstration de notre application web est disponible sur ce lien \cite{APPLI}.
 
 \section{Intégration Continue}
 
-Intégration continue est une étape importante à mettre en place dans le processus de développement logiciel. Nous parlerons donc ici de cette pratique et des outils utilisés au cours de ce projet.
+L'intégration continue est une étape importante à mettre en place dans le processus de développement logiciel. Nous parlerons donc ici de cette pratique et des outils utilisés au cours de ce projet.
 
 \begin{center}
 \includegraphics[scale=0.5]{img/ci.png}
 \end{center}
 
-Au moment d’un push d’un ou plusieurs commit au niveau de Bitbucket (sur la banche \textbf{release}) on déclenche via un hook la tâche de build qui permet la construction de l'image Docker à partir de Dockerfile, le push de cette image dans un dépot privé, le déploiement de cette image dans un container exposé sur le port 80 et enfin de passage des tests unitaires au niveau de Jenkins. Dès qu’une modification du code est donc poussée sur le repository, il y a vérification que l’ensemble fonctionne toujours.
+Au moment d’un push d’un ou plusieurs commit au niveau de Bitbucket (sur la banche \textbf{release}) on déclenche via un hook la tâche de build qui permet la construction de l'image Docker à partir de Dockerfile, le push de cette image dans un dépôt privé, le déploiement de cette image dans un container exposé sur le port 80 et enfin de passage des tests unitaires au niveau de Jenkins. Dès qu’une modification du code est donc poussée sur le repository, il y a vérification que l’ensemble fonctionne toujours.
 
 \begin{center}
 \includegraphics[scale=0.7]{img/Dockerfile.png}
