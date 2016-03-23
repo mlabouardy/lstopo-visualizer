@@ -241,17 +241,20 @@ L'intégration continue est une étape importante à mettre en place dans le pro
 
 \begin{center}
 \includegraphics[scale=0.5]{img/ci.png}
+\caption{Processus d'intégration continue}
 \end{center}
 
-Au moment d’un push d’un ou plusieurs commit au niveau de Bitbucket (sur la banche \textbf{release}) on déclenche via un hook la tâche de build qui permet la construction de l'image Docker à partir de Dockerfile, le push de cette image dans un dépôt privé, le déploiement de cette image dans un container exposé sur le port 80 et enfin de passage des tests unitaires au niveau de Jenkins. Dès qu’une modification du code est donc poussée sur le repository, il y a vérification que l’ensemble fonctionne toujours.
+Au moment d’un push d’un ou plusieurs commit au niveau de Bitbucket (sur la banche \textbf{release}) on déclenche via un hook la tâche de build qui permet la construction de l'image Docker à partir de Dockerfile, le push de cette image dans un dépôt privé, le déploiement de cette image dans un container exposé sur le port 80 et enfin de passage des tests unitaires au niveau de Jenkins. Dès qu’une modification du code est donc poussée sur le repository, il y a une vérification que l’ensemble fonctionne toujours.
 
-\begin{center}
+\begin{figure}[!h]
+\centering
 \includegraphics[scale=0.7]{img/Dockerfile.png}
-\end{center}
+\caption{Le Dockerfile utilisé pour construire l'image}
+\end{figure}
 
 \subsection{Bitbucket}
 
-Un système de versionnement, il a été choisi pour héberger les sources des projets internes et clients.\cite{BITBUCKET} Pour ce projet trois branches ont été utilisé:\newline
+Un système de versionnement, il a été choisi pour héberger les sources des projets internes.\cite{BITBUCKET} Pour ce projet trois branches ont été utilisées:\newline
 
 \begin{itemize}
  \item \textbf{master} utilisé pour la phase de développement
@@ -261,45 +264,46 @@ Un système de versionnement, il a été choisi pour héberger les sources des p
 
 \subsection{Jenkins}
 
-Serveur d'intégration continue, il est capable d’aller se connecter à un outil de gestion de sources (Dans ce cas Git) et de voir si des modifications ont été effectuées. S’il en détecte, il peut lancer un \textbf{build} qui va pouvoir lancer un certain nombre d’actions(déploiement automatisé, tests unitaires ...)
+Serveur d'intégration continue, il est capable d’aller se connecter à un outil de gestion de sources (Dans ce cas \textbf{Bitbucket}) et de voir si des modifications ont été effectuées. S’il en détecte, il peut lancer un \textbf{build} qui va pouvoir lancer un certain nombre d’actions(déploiement automatisé, tests unitaires ...)
 
 \subsection{Docker}
 
-Docker est un système de container linux ultra léger basé sur les cgroups, lxc et aufs.\newline
+\textbf{Docker} est un système de container linux ultra léger basé sur les \textbf{cgroups}, \textbf{lxc} et \textbf{aufs}.\newline
 
 L'idée est la suivante pour un build:\newline
 
 \begin{itemize}
  \item Jenkins crée une image docker à partir de Dockerfile
- \item Jenkins push l'image dans un dépot privé
+ \item Jenkins push l'image dans un dépôt privé
  \item Jenkins crée un container docker à partir de cette image\newline
 \end{itemize}
 
-Les containers sont running de manière continue, permettant ainsi aux responsables du projet et au client de tester la dernière version du produit poussé manuellement à partir de Jenkins.
+Les containers sont running de manière continue, permettant ainsi aux responsables du projet et au client de tester la dernière version du produit crée à partir de Jenkins.
 
 \subsection{Private Registry}
 
-Depot pour stocker l'ensemble des versions de l'application tout au long de la phase de développement
+Depôt pour stocker l'ensemble des versions de l'application tout au long de la phase de développement
 
 \begin{center}
 \includegraphics[scale=0.4]{img/registry.png}
 \end{center}
 
-L'avatange d'utilisation d'un docker private registry c'est avoir un systéme de versionning pour l'application. et rendre disponible facilement le dernier exécutable.
+L'avatange d'utilisation d'un \textbf{Docker Private Registry} c'est avoir un systéme de versionning pour l'application. et rendre disponible facilement le dernier exécutable.
 \subsection{Selenium Webdriver}
-WebDriver est un framework de tests fonctionnels issu du projet Selenium, célèbre outil d'automatisation de tests pour navigateurs.\newline
+WebDriver est un framework de tests fonctionnels issu du projet \textbf{Selenium}, célèbre outil d'automatisation de tests pour les navigateurs.\newline
 
-Un exemple des test faites avec l'API Selenium c'est la mesure du temps d'execution pour un ensemble des exemples d'Architecture.
+Un exemple de test effectué avec l'API Selenium c'est la mesure du temps d'exécution pour un ensemble d'architectures.
 
-\begin{center}
+\begin{figure}[!h]
+\centering
 \includegraphics[scale=0.4]{img/benchmark.png}
-\end{center}
+\end{figure}
 
 \subsection{JSLint/CSSLint}
 
 La qualité du code est vitale pour qu'un projet soit pérenne sur le moyen et long terme. De nombreux outils existent pour automatiser les contrôles et générer des rapports statistiques:\newline
 
-\textbf{JSLint} est un analyseur de code Javascript. Son but est de parser le code Javascript pour vérifier que vous respecter les règles de coding Javascript.\newline
+\textbf{JSLint} est un analyseur de code Javascript. Son but est de parser le code Javascript pour vérifier que vous respecter les standards JS.\newline
 
 \begin{center}
 \includegraphics[scale=0.4]{img/checkstyle.png}
