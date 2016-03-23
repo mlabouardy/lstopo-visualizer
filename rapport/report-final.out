@@ -1,0 +1,21 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Description du projet}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Fonctionnalit\351s}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Technologies utilis\351es}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Syst\350me MVC}{section.2}% 5
+\BOOKMARK [1][-]{section.3}{Int\351gration Continue}{}% 6
+\BOOKMARK [2][-]{subsection.3.1}{Bitbucket}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.2}{Jenkins}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.3}{Docker}{section.3}% 9
+\BOOKMARK [2][-]{subsection.3.4}{Private Registry}{section.3}% 10
+\BOOKMARK [2][-]{subsection.3.5}{Selenium Webdriver}{section.3}% 11
+\BOOKMARK [2][-]{subsection.3.6}{JSLint/CSSLint}{section.3}% 12
+\BOOKMARK [2][-]{subsection.3.7}{AngularJS Batarang}{section.3}% 13
+\BOOKMARK [1][-]{section.4}{Gestion de projet}{}% 14
+\BOOKMARK [2][-]{subsection.4.1}{Scrum}{section.4}% 15
+\BOOKMARK [2][-]{subsection.4.2}{Outils compl\351mentaires}{section.4}% 16
+\BOOKMARK [1][-]{section.5}{Critiques}{}% 17
+\BOOKMARK [2][-]{subsection.5.1}{Technologies}{section.5}% 18
+\BOOKMARK [2][-]{subsection.5.2}{Critiques d'IceScrum}{section.5}% 19
+\BOOKMARK [2][-]{subsection.5.3}{Performances}{section.5}% 20
+\BOOKMARK [2][-]{subsection.5.4}{Am\351liorations possibles}{section.5}% 21

@@ -75,6 +75,8 @@ Après une première rencontre avec le client, nous avons convenu que la premiè
 
 \newpage
 
+\section{Description du projet}
+
 \subsection{Fonctionnalités}
 
 Les objectifs principaux de ce projet étaient les suivants : \newline
@@ -117,10 +119,6 @@ Le second objectif consistait à implémenter des fonctions permettant de person
 \includegraphics[scale=0.3]{img/alaric_modif.png}
 \caption[Résultats]{Exemple de représentation pour le xml Alaric avec options}
 \end{figure}
-
-\newpage
-
-\section{Architecture}
 
 \subsection{Technologies utilisées}
 \textbf{AngularJS} \cite{angular}, le framework javascript de Google est au cœur des relations entre les vues et les contrôleurs décrits précédemment. L’intérêt principal de cet outil est bien entendu la mise en place d’un architecture \textbf{MVC} et ce, même si l’on ne considère que le côté client d’une application.
@@ -195,8 +193,6 @@ L’image ci-dessous réalisée avec le logiciel \textbf{Enterprise Architect} r
 \end{figure}
 
 D’une certaine façon l’application est organisée suivant une architecture modèle-vue-contrôleur avec quelques particularités. Dans un souci de lisibilité, le schéma utilise un système de couleurs. En vert sont représentées les vues qui, dans notre cas, correspondent à des fichiers HTML et en rouge les différents contrôleurs.\newline
-
-%Lors de la création du site web, nous avions utilisé une architecture \textbf{monopage} (single-page application) avec Angular Js, c'est à dire une application web accessible via une page web unique, contrairement à un site web classique composés de plusieurs pages et donc de plusieurs codes sources. Cette architecture nous permet de naviguer sur le site de la même manière qu'un site web classique mais sans avoir à recharger notre page à chaque action demandée, plus précisément les liens ne rechargent pas la page mais le contenu est modifié au fur et à mesure selon les requêtes. Pour ce faire il existe deux manières differentes: soit on charge tout les éléments dans un fichier html (template), soit on récupere et affiche dynamiquement les ressources nécessaires selon les requêtes envoyées par l'utilisateur.
   
 Avant de rentrer plus en détail, il est nécessaire de faire le point sur les objectifs des différentes entités présentes sur le schéma :
 \newline
@@ -317,21 +313,20 @@ Afin de développer tester, déboguer et surveiller notre application AngularJS,
 
 Une extension de Google Chrome. Il permet d'observer le code en action, de faire des benchmarks sur les fonctions, modules, etc...
 
-\newpage
 \section{Gestion de projet}
 
 \subsection{Scrum}
 
-Durant l'ensemble du projet nous avons suivi la méthode Scrum qui est une méthode agile. Le but était d'être en conditions réelles de projet avec une équipe de sept personnes. 
+Durant l'ensemble du projet nous avons suivi la méthode \textbf{Scrum} qui est une méthode agile. Le but était d'être en conditions réelles de projet avec une équipe de sept personnes. 
 \newline
 
-Pour appliquer la méthode Scrum nous avons utilisé le logiciel Icescrum qui permet de répondre aux besoins de ce genre de projet \cite{ICESCRUM}. Il nous a permis notamment de définir un backlog qui contenait l'ensemble des User Stories à réaliser pendant la durée du projet, définir différents sprints avec ces User Stories et les différentes tâches les constituant. 
+Pour appliquer la méthode Scrum nous avons utilisé le logiciel \textbf{IceScrum} qui permet de répondre aux besoins de ce genre de projet \cite{ICESCRUM}. Il nous a permis notamment de définir un \textbf{backlog} qui contenait l'ensemble des \textbf{user stories} à réaliser pendant la durée du projet, définir différents sprints avec ces user stories et les différentes tâches les constituant. 
 \newline
 
-Dans chaque sprint on peut définir le kanban pour les différentes tâches et connaitre leur état. Nous avons choisi de réaliser des sprints de deux semaines comme c'était prévu à la base.
+Dans chaque sprint on peut définir le kanban pour les différentes tâches et connaitre leur état. Nous avons choisi de réaliser des sprints de douze jours environ.
 \newline
 
-Pour les tâches nous avons choisi différentes couleurs afin de différencier les différents types de tâches :
+Pour les tâches nous avons choisi différentes couleurs afin de différencier des types de tâches :
 \newline
 
 \begin{itemize}
@@ -346,12 +341,10 @@ Pour les tâches nous avons choisi différentes couleurs afin de différencier l
 \caption[Scrum]{Sprint 2 avec les différentes tâches}
 \end{figure}
 
-Il est important de noter que les noms apparaissant en dessous des tâches ne correspondent pas forcément au responsable de l'entité. Des rencontres régulière ont eu lieux et une seule personne était chargée de modifier le kanban.
+Il est important de noter que les noms apparaissant en dessous des tâches ne correspondent pas forcément au responsable de l'entité. Des rencontres régulière ont eu lieu et une seule personne était chargée de modifier le kanban à ce moment là.
 
 \subsection{Outils complémentaires}
 En raison de nombreux problèmes de bug et de ralentissement rencontrés durant tout le projet, nous avons parfois délaissé IceScrum pour créer des kanbans sur des outils différents (Excel). 
-
-\newpage
 
 \section{Critiques}
 
@@ -362,7 +355,7 @@ En ce qui concerne les technologies utilisées dans ce projet, nous aurions pu n
 Par manque d'expérience avec cette bibliothèque, nous avons choisi de travailler avec AngularJS.
 
 \subsection{Critiques d'IceScrum}
-Ce logiciel qui nous a été imposé durant le cycle de développement du projet n'était pas assez d'intuitif et comme nous l'avons évoqué précédemment,des ralentissements liés au serveur nous ont parfois empêchés d'intéragir avec nos sprints.
+Ce logiciel qui nous a été imposé durant le cycle de développement du projet n'est pas assez intuitif et comme nous l'avons évoqué précédemment, des ralentissements liés au serveur nous ont parfois empêchés d'intéragir avec nos sprints.
 
 \subsection{Performances}
 On peut trouver plusieurs pratiques qui nous ont permis ou qui pourrait permettre d’améliorer les performances de l’application :
@@ -381,6 +374,9 @@ Certaines fonctionnalités (non prioritaires) n'ont pas été totalement implém
 \item amélioration des feuilles de style
 \item amélioration des arbres PCI qui ne prennent pas en compte toutes les configurations possibles.
 \end{itemize}
+
+\section{Conclusion}
+
 
 \newpage
 

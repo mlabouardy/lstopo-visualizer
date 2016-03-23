@@ -1,0 +1,87 @@
+\begin{thebibliography}{14}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[lst()]{lstopo}
+Portable hardware locality.
+\newblock \url{https://www.open-mpi.org/projects/hwloc/}.
+\newblock Accessed on 22 March 2016.
+
+\bibitem[Wikipedia({\natexlab{a}})]{angular}
+Wikipedia.
+\newblock Angularjs.
+\newblock \url{https://en.wikipedia.org/wiki/AngularJS}, {\natexlab{a}}.
+\newblock Accessed on 22 March 2016.
+
+\bibitem[Foster(2014)]{Foster14}
+Ben Foster.
+\newblock Angularjs recursive templates.
+\newblock \url{http://benfoster.io/blog/angularjs-recursive-templates}, 2014.
+\newblock Accessed on 22 March 2016.
+
+\bibitem[Wikipedia({\natexlab{b}})]{d3}
+Wikipedia.
+\newblock D3.js.
+\newblock \url{https://en.wikipedia.org/wiki/D3.js}, {\natexlab{b}}.
+\newblock Accessed on 22 March 2016.
+
+\bibitem[joi()]{jointjs}
+Jointjs - getting started.
+\newblock \url{http://jointjs.com/tutorial}.
+\newblock Accessed on 22 March 2016.
+
+\bibitem[can()]{canvas}
+Dessiner avec canvas.
+\newblock
+  \url{https://developer.mozilla.org/fr/docs/Web/Guide/Graphics/Dessiner_avec_canvas}.
+\newblock Accessed on 22 March 2016.
+
+\bibitem[Bostock(2016)]{Bostock16}
+Mike Bostock.
+\newblock Collapsible indented tree.
+\newblock \url{https://bl.ocks.org/mbostock/1093025}, 2016.
+\newblock Accessed on 22 March 2016.
+
+\bibitem[col(2013)]{colorpicker13}
+Native angularjs colorpicker directive.
+\newblock \url{https://github.com/buberdds/angular-bootstrap-colorpicker},
+  2013.
+\newblock Accessed on 22 March 2016.
+
+\bibitem[sel(2014)]{select14}
+A multiple select dropdown directive for angularjs.
+\newblock \url{https://github.com/isteven/angular-multi-select}, 2014.
+\newblock Accessed on 22 March 2016.
+
+\bibitem[x2j(2014)]{x2js14}
+x2js - xml to json and vice versa for javascript.
+\newblock \url{https://github.com/abdmob/x2js}, 2014.
+\newblock Accessed on 22 March 2016.
+
+\bibitem[Landazuri(2016)]{Landazuri16}
+Paul Landazuri.
+\newblock Utilisation complète d'angularjs - le routage.
+\newblock
+  \url{http://www.tutoriel-angularjs.fr/tutoriel/2-utilisation-complete-d-angularjs/1-le-routage},
+  2016.
+\newblock Accessed on 22 March 2016.
+
+\bibitem[GreenScrum({\natexlab{a}})]{APPLI}
+GreenScrum.
+\newblock lstopo - show the topology of the system provides a detailed
+  explanation of the hwloc system.
+\newblock \url{http://vps259935.ovh.net:3000/ped}, {\natexlab{a}}.
+
+\bibitem[GreenScrum({\natexlab{b}})]{BITBUCKET}
+GreenScrum.
+\newblock \url{https://bitbucket.org/berguizzz/ped_green}, {\natexlab{b}}.
+
+\bibitem[GreenScrum({\natexlab{c}})]{ICESCRUM}
+GreenScrum.
+\newblock \url{http://vps166100.ovh.net:54321/m2scrum/p/LSTOPO},
+  {\natexlab{c}}.
+
+\end{thebibliography}
