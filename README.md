@@ -1,12 +1,14 @@
-# About
+## About
 
 lstopo - Show the topology of the system provides a detailed explanation of the hwloc system.
 
-# Demo
+![](screenshot.png)
+
+## Demo
 
 [http://vps259935.ovh.net:3000/ped](Link URL)
 
-# Quick start
+## Quick start
 
 1 - Using Web Server
 
@@ -24,6 +26,10 @@ $ docker run -d -p 3000:80 -v --name lstopo-visualizer mlabouardy/lstopo-visuali
 
 then go to http://localhost:3000
 
-# CI Workflow
+## CI Workflow
 
 ![](preview/ci.png)
+
+## Help
+
+If you run into issues, please don't hesitate to find help on the GitHub project.
